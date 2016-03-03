@@ -206,7 +206,81 @@ return $res;
 }
 
 /* Fin */	
-	
+
+function TraerEtaposPorTorneosZonas($idTorneo,$idZona) {
+	$sql = "select 
+			e.idetapa, e.descripcion, e.valor
+		from
+			tbplayoff p
+				inner join
+			dbplayoff pp ON p.refplayoffequipo_a = pp.idplayoff
+				inner join
+			dbtorneos t ON t.idtorneo = pp.reftorneo
+				inner join
+			dbgrupos g ON g.idgrupo = pp.refzona
+				inner join
+			tbetapas e ON p.refetapa = e.idetapa
+				inner join
+			tbcanchas c ON p.refcancha = c.idcancha
+		where pp.refzona = ".$idZona." and pp.reftorneo = ".$idTorneo."
+		group by e.idetapa, e.descripcion, e.valor
+		order by e.idetapa";
+	//return $sql;	
+	$res = $this->query($sql,0);
+	return $res;	
+}
+
+function traerArmarPlayOffPorEtapa($idTorneo, $idZona, $idEtapa) {
+$sql = "select 
+			p.idplayoff,
+			(select 
+					eq.nombre
+				from
+					dbequipos eq
+						inner join
+					dbplayoff pl ON eq.idequipo = pl.refequipo
+				where
+					pl.idplayoff = p.refplayoffequipo_a) as refplayoffequipo_a,
+			refplayoffresultado_a,
+			refplayoffresultado_b,
+			(select 
+					eq.nombre
+				from
+					dbequipos eq
+						inner join
+					dbplayoff pl ON eq.idequipo = pl.refequipo
+				where
+					pl.idplayoff = p.refplayoffequipo_b) as refplayoffequipo_b,
+			
+			t.nombre,
+			g.nombre,
+			fechajuego,
+			e.descripcion,
+			p.hora,
+			refcancha,
+			chequeado,
+			refetapa,
+			penalesa,
+			penalesb
+		from
+			tbplayoff p
+				inner join
+			dbplayoff pp ON p.refplayoffequipo_a = pp.idplayoff
+				inner join
+			dbtorneos t ON t.idtorneo = pp.reftorneo
+				inner join
+			dbgrupos g ON g.idgrupo = pp.refzona
+				inner join
+			tbetapas e ON p.refetapa = e.idetapa
+				inner join
+			tbcanchas c ON p.refcancha = c.idcancha
+		where pp.refzona = ".$idZona." and pp.reftorneo = ".$idTorneo." and p.refetapa = ".$idEtapa."
+		order by 1";
+$res = $this->query($sql,0);
+return $res;
+}
+
+
 	function query($sql,$accion) {
 		
 		require_once 'appconfig.php';

@@ -99,11 +99,7 @@ $cabeceras 		= "	<th>Equipo 1</th>
 
 
 
-$formulario 	= $serviciosFunciones->camposTabla("insertarFixture",$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
-
 $lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosZonasEquipos->TraerTodoFixture(),98);
-
-$resZonasTorneos = $serviciosDatos->traerZonasPorTorneo($_SESSION['idtorneo_predio']);
 
 
 ?>
@@ -174,11 +170,66 @@ $resZonasTorneos = $serviciosDatos->traerZonasPorTorneo($_SESSION['idtorneo_pred
         	
         </div>
     	<div class="cuerpoBox">
-    		<form class="form-inline formulario" role="form">
-            <div class="row" style="margin-left:25px; margin-right:25px;">
-    		<?php echo $formulario; ?>
-            </div>
-            
+            <form class="form-inline formulario" role="form" method="POST" action="generarfixturemanual.php">
+                    <div class="row" style="margin-left:25px; margin-right:25px;">
+                        <?php for ($i=1;$i<=12;$i++) { ?>
+                        <div class="form-group col-md-4">
+                        <label class="control-label" style="text-align:left" for="lbl">Equipo Local</label>
+                            <div class="input-group col-md-12">
+                                <select type="text" id="reftorneoge_a<?php echo $i; ?>" name="reftorneoge_a<?php echo $i; ?>" class="form-control"/>
+                                    <option value="0">-- Seleccionar --</option>
+                                    <?php echo $cadRef; ?>
+                            
+                                </select>
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="form-group col-md-1">
+                        <label class="control-label" style="text-align:left" for="lbl">Res. L.</label>
+                            <div class="input-group col-md-12">
+                                <input type="text" id="resultado_a<?php echo $i; ?>" name="resultado_a<?php echo $i; ?>" class="form-control" />
+                            </div>
+                        </div>
+
+
+
+
+
+                        <div class="form-group col-md-1">
+                        <label class="control-label" style="text-align:left" for="lbl">Res. V.</label>
+                            <div class="input-group col-md-12">
+                                <input type="text" id="resultado_b<?php echo $i; ?>" name="resultado_b<?php echo $i; ?>" class="form-control"/>
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="form-group col-md-4">
+                        <label class="control-label" style="text-align:left" for="lbl">Equipo Visitante</label>
+                            <div class="input-group col-md-12">
+                                <select type="text" id="reftorneoge_b<?php echo $i; ?>" name="reftorneoge_b<?php echo $i; ?>" class="form-control" required/>
+                                    <option value="0">-- Seleccionar --</option>
+                                    <?php echo $cadRef; ?>
+                            
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group col-md-2">
+                            <label class="control-label" style="text-align:left" for="lbl">Fecha</label>
+                            <div class="input-group col-md-12">
+                                <select class="form-control" id="reffecha<?php echo $i; ?>" name="reffecha<?php echo $i; ?>">
+                                    <?php echo $cadRef2; ?>
+                                </select>
+                            </div>
+                        </div>
+                    <?php } ?>
+                    </div>
+                
             <div class="row" style="margin-left:25px; margin-right:25px;">
                 <div class="alert"> </div>
                 <div id="load"> </div>
@@ -187,17 +238,9 @@ $resZonasTorneos = $serviciosDatos->traerZonasPorTorneo($_SESSION['idtorneo_pred
                 <div class="col-md-12">
                 <ul class="list-inline" style="margin-top:15px;">
                     <li>
-                        <button type="button" class="btn btn-primary" id="cargar" style="margin-left:0px;">Guardar</button>
+                        <button type="submit" class="btn btn-primary" id="cargar" style="margin-left:0px;">Guardar</button>
                     </li>
-                    <li>
-                        <button type="button" class="btn btn-success" id="chequearF" style="margin-left:0px;">Chequear Fixture</button>
-                    </li>
-                    <li>
-                        <button type="button" class="btn btn-success" id="conductaF" style="margin-left:0px;">Cargar Conducta al Fixture</button>
-                    </li>
-                    <li>
-                        <button type="button" class="btn btn-primary" id="fixtureM" style="margin-left:0px;">Fixture Manual</button>
-                    </li>
+                    
                 </ul>
                 </div>
             </div>
@@ -209,15 +252,7 @@ $resZonasTorneos = $serviciosDatos->traerZonasPorTorneo($_SESSION['idtorneo_pred
                     </li>
                 </ul>
             </div>
-            <div class="row" align="center">
-                <ul class="list-inline">
-                	<?php while ($row = mysql_fetch_array($resZonasTorneos)) { ?>
-                	<li>
-                    	<a href="generarfixture.php?idtorneo=<?php echo $row[2]; ?>&idzona=<?php echo $row[0]; ?>"><button type="button" class="btn btn-primary" style="margin-left:0px;"><?php echo $row[1]; ?> Generar Fixture</button></a>
-                    </li>
-					<?php } ?>
-                </ul>
-            </div>
+            
             </form>
     	</div>
     </div>
@@ -253,79 +288,21 @@ $resZonasTorneos = $serviciosDatos->traerZonasPorTorneo($_SESSION['idtorneo_pred
 
 <script type="text/javascript">
 $(document).ready(function(){
-	$('#timepicker2').timepicker({
-		minuteStep: 15,
-		showSeconds: false,
-		showMeridian: false,
-		defaultTime: false
-		});
-	 <?php 
-		echo $serviciosHTML->validacion($tabla);
-	
-	?>
-	
-	$('#chequearF').click( function() {
-		url = "chequear.php";
-		$(location).attr('href',url);
-	});
-        
-        $('#fixtureM').click( function() {
-		url = "fixturemanual.php";
-		$(location).attr('href',url);
-	});
-	
-	$('#generar').click( function() {
-		url = "generarfixture.php";
-		$(location).attr('href',url);
-	});
-	
-	$('#conductaF').click( function() {
-		url = "conductafixture.php";
-		$(location).attr('href',url);
-	});
-	
-	$('.varborrar').click(function(event){
-		  usersid =  $(this).attr("id");
-		  if (!isNaN(usersid)) {
-			$("#idEliminar").val(usersid);
-			$("#dialog2").dialog("open");
+    $('.varborrar').click(function(event){
+            usersid =  $(this).attr("id");
+            if (!isNaN(usersid)) {
+                  $("#idEliminar").val(usersid);
+                  $("#dialog2").dialog("open");
 
-			
-			//url = "../clienteseleccionado/index.php?idcliente=" + usersid;
-			//$(location).attr('href',url);
-		  } else {
-			alert("Error, vuelva a realizar la acción.");	
-		  }
-	});//fin del boton eliminar
-	
-	
-	$('.estadistica').click(function(event){
-		  usersid =  $(this).attr("id");
-		  if (!isNaN(usersid)) {
-			url = "../estadisticas/estadisticas.php?id="+usersid;
-			$(location).attr('href',url);
 
-			
-			//url = "../clienteseleccionado/index.php?idcliente=" + usersid;
-			//$(location).attr('href',url);
-		  } else {
-			alert("Error, vuelva a realizar la acción.");	
-		  }
-	});//fin del boton estadisticas
-	
-
-	$("#example").on("click",'.varmodificar', function(){
-		  usersid =  $(this).attr("id");
-		  if (!isNaN(usersid)) {
-			
-			url = "modificar.php?id=" + usersid;
-			$(location).attr('href',url);
-		  } else {
-			alert("Error, vuelva a realizar la acción.");	
-		  }
-	});//fin del boton modificar
-
-	 $( "#dialog2" ).dialog({
+                  //url = "../clienteseleccionado/index.php?idcliente=" + usersid;
+                  //$(location).attr('href',url);
+            } else {
+                  alert("Error, vuelva a realizar la acción.");	
+            }
+  });//fin del boton eliminar
+  
+  $( "#dialog2" ).dialog({
 		 	
 			    autoOpen: false,
 			 	resizable: false,
@@ -343,7 +320,7 @@ $(document).ready(function(){
 											
 									},
 									success:  function (response) {
-											url = "index.php";
+											url = "fixturemanual.php";
 											$(location).attr('href',url);
 											
 									}
@@ -362,78 +339,6 @@ $(document).ready(function(){
 		 
 		 
 	 		}); //fin del dialogo para eliminar
-	
-	
-	//al enviar el formulario
-    $('#cargar').click(function(){
-		
-		if (validador() == "")
-        {
-			//información del formulario
-			var formData = new FormData($(".formulario")[0]);
-			var message = "";
-			//hacemos la petición ajax  
-			$.ajax({
-				url: '../../ajax/ajax.php',  
-				type: 'POST',
-				// Form data
-				//datos del formulario
-				data: formData,
-				//necesario para subir archivos via ajax
-				cache: false,
-				contentType: false,
-				processData: false,
-				//mientras enviamos el archivo
-				beforeSend: function(){
-					$("#load").html('<img src="../../imagenes/load13.gif" width="50" height="50" />');       
-				},
-				//una vez finalizado correctamente
-				success: function(data){
-
-					if (data == '') {
-                                            $(".alert").removeClass("alert-danger");
-											$(".alert").removeClass("alert-info");
-                                            $(".alert").addClass("alert-success");
-                                            $(".alert").html('<strong>Ok!</strong> Se cargo exitosamente el <strong>Fixture</strong>. ');
-											$(".alert").delay(3000).queue(function(){
-												/*aca lo que quiero hacer 
-												  después de los 2 segundos de retraso*/
-												$(this).dequeue(); //continúo con el siguiente ítem en la cola
-												
-											});
-											$("#load").html('');
-											//url = "index.php";
-											var a = $('#reftorneoge_a option:selected').html();
-											var b = $('#reftorneoge_b option:selected').html();
-											a = a.split(' - ');
-											b = b.split(' - ');
-											
-											$('#resultados').prepend('<tr><td>' + a[1] + '</td><td></td><td></td><td>' + 
-																		+ b[1] + '</td><td>' + 
-																		a[0] + '</td><td>' + 
-																		$('#fechajuego option:selected').html() + '</td><td>' + 
-																		$('#reffecha option:selected').html() + '</td><td>' + 
-																		$('#hora option:selected').html() + '</td><td style="color:#f00;">Nuevo</td></tr>').fadeIn(300);
-											
-											//$(location).attr('href',url);
-                                            
-											
-                                        } else {
-                                        	$(".alert").removeClass("alert-danger");
-                                            $(".alert").addClass("alert-danger");
-                                            $(".alert").html('<strong>Error!</strong> '+data);
-                                            $("#load").html('');
-                                        }
-				},
-				//si ha ocurrido un error
-				error: function(){
-					$(".alert").html('<strong>Error!</strong> Actualice la pagina');
-                    $("#load").html('');
-				}
-			});
-		}
-    });
-	
 
 });
 </script>
@@ -455,3 +360,5 @@ $('.form_date').datetimepicker({
 <?php } ?>
 </body>
 </html>
+
+

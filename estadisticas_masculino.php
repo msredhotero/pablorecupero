@@ -22,7 +22,7 @@ $serviciosPlayOff = new ServiciosPlayOff();
 if (isset($_GET["id"])) {
 	$idTipoTorneo = $_GET["id"];
 } else {
-	$idTipoTorneo = 6;
+	$idTipoTorneo = 1;
 }
 
 if (isset($_GET["zona"])) {
@@ -38,7 +38,7 @@ if (isset($_GET["fecha"])) {
 
 	$idfecha = 23;
 }
-
+echo $idTipoTorneo;
 $torneo = $serviciosFunciones->TraerTorneosActivoPorTipo($idTipoTorneo);
 
 $nombreTorneo = mysql_result($torneo,0,'descripciontorneo')." / ".mysql_result($torneo,0,'nombre');

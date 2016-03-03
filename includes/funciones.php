@@ -1227,7 +1227,7 @@ function deshactivarTorneos($idtorneo,$idtipotorneo) {
 	function TraerHorarios($tipotorneo) {
 		$sql = "select t.idhorario, t.horario from tbhorarios t 
 				inner join tbtipotorneo tp on t.reftipotorneo = tp.idtipotorneo 
-				where tp.descripciontorneo = '".$tipotorneo."'";
+				where tp.idtipotorneo = ".$tipotorneo;
 		return $this-> query($sql,0);
 	}
 	
