@@ -1,12 +1,12 @@
 <?php
 
-include ('includes/funciones.php');
-include ('includes/funcionesJugadores.php');
-include ('includes/funcionesEquipos.php');
-include ('includes/funcionesGrupos.php');
-include ('includes/funcionesZonasEquipos.php');
-include ('includes/generadorfixturefijo.php');
-include ('includes/funcionesDATOS.php');
+include ('../includes/funciones.php');
+include ('../includes/funcionesJugadores.php');
+include ('../includes/funcionesEquipos.php');
+include ('../includes/funcionesGrupos.php');
+include ('../includes/funcionesZonasEquipos.php');
+include ('../includes/generadorfixturefijo.php');
+include ('../includes/funcionesDATOS.php');
 
 $serviciosFunciones = new Servicios();
 $serviciosJugadores = new ServiciosJ();
@@ -19,13 +19,13 @@ $serviciosDatos = new ServiciosDatos();
 if (isset($_GET["id"])) {
 	$idTipoTorneo = $_GET["id"];
 } else {
-	$idTipoTorneo = 3;
+	$idTipoTorneo = 11;
 }
 
 if (isset($_GET["zona"])) {
 	$idzona = $_GET['zona'];
 } else {
-	$idzona = 19;
+	$idzona = 1887;
 }
 
 if (isset($_GET["fecha"])) {
@@ -129,9 +129,9 @@ $cant += 1;
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="language" content="es" />
   
-<script type="text/javascript" src="jscss/jquery-1.8.3.min.js" charset="UTF-8"></script>
-  <script type="text/javascript" src="jscss/tablas_export.js?v=2" charset="UTF-8"></script>
-    	<link type="text/css" rel="stylesheet" href="jscss/tablas_export.css" media="screen" />
+<script type="text/javascript" src="../jscss/jquery-1.8.3.min.js" charset="UTF-8"></script>
+  <script type="text/javascript" src="../jscss/tablas_export.js?v=2" charset="UTF-8"></script>
+    	<link type="text/css" rel="stylesheet" href="../jscss/tablas_export.css" media="screen" />
         
       	<style>
   		body .list .items .item.odd-row {

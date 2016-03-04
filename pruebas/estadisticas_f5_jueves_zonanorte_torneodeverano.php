@@ -1,14 +1,14 @@
 ﻿<?php
 
 
-include ('includes/funciones.php');
-include ('includes/funcionesJugadores.php');
-include ('includes/funcionesEquipos.php');
-include ('includes/funcionesGrupos.php');
-include ('includes/funcionesZonasEquipos.php');
-include ('includes/generadorfixturefijo.php');
-include ('includes/funcionesDATOS.php');
-include ('includes/funcionesPlayoff.php');
+include ('../includes/funciones.php');
+include ('../includes/funcionesJugadores.php');
+include ('../includes/funcionesEquipos.php');
+include ('../includes/funcionesGrupos.php');
+include ('../includes/funcionesZonasEquipos.php');
+include ('../includes/generadorfixturefijo.php');
+include ('../includes/funcionesDATOS.php');
+include ('../includes/funcionesPlayoff.php');
 
 $serviciosFunciones = new Servicios();
 $serviciosJugadores = new ServiciosJ();
@@ -38,7 +38,7 @@ if (isset($_GET["fecha"])) {
 
 	$idfecha = 23;
 }
-echo $idTipoTorneo;
+//echo $idTipoTorneo;
 $torneo = $serviciosFunciones->TraerTorneosActivoPorTipo($idTipoTorneo);
 
 $nombreTorneo = mysql_result($torneo,0,'descripciontorneo')." / ".mysql_result($torneo,0,'nombre');
@@ -455,9 +455,9 @@ $idTab += 1;
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="language" content="es" />
   
-  <script type="text/javascript" src="jscss/jquery-1.8.3.min.js" charset="UTF-8"></script>
-  <script type="text/javascript" src="jscss/tablas_export.js?v=2" charset="UTF-8"></script>
-    	<link type="text/css" rel="stylesheet" href="jscss/tablas_export.css" media="screen" />
+  <script type="text/javascript" src="../jscss/jquery-1.8.3.min.js" charset="UTF-8"></script>
+  <script type="text/javascript" src="../jscss/tablas_export.js?v=2" charset="UTF-8"></script>
+    	<link type="text/css" rel="stylesheet" href="../jscss/tablas_export.css" media="screen" />
       	<style>
   		body .section .list .items .item.odd-row {
         	background-color: #DEE1E6;
@@ -711,7 +711,7 @@ puntos.</p>
     	</div>
 	</div>
   </div>
-  <div style="display: block;" class="vallamenosvencida-wrapper section">
+  <div style="display:block;" class="vallamenosvencida-wrapper section">
   		<div class="vallamenosvencida list">
     	<div class="titles">
     		<div class="col col1">Equipo</div>
