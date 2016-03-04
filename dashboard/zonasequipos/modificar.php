@@ -35,7 +35,7 @@ $id = $_GET['id'];
 $resResultado = $serviciosZonasEquipos->TraerEquiposZonasPorId($id);
 
 
-$resHorarios = $serviciosFunciones->TraerHorarios($_SESSION['torneo_predio']);
+$resHorarios = $serviciosFunciones->TraerHorarios($_SESSION['idtorneo_predio']);
 $resResHor	 = $serviciosFunciones->TraerHorariosId($id);
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
@@ -44,7 +44,7 @@ $tabla 			= "dbtorneoge";
 $lblCambio	 	= array("refgrupo","refequipo","reftorneo");
 $lblreemplazo	= array("Zonas","Equipos","Torneo");
 
-$resTipoTorneo 	= $serviciosFunciones->TraerTorneosActivo($_SESSION['torneo_predio']);
+$resTipoTorneo 	= $serviciosFunciones->TraerTorneosActivo($_SESSION['idtorneo_predio']);
 
 $cadRef = '';
 $idtorneo = 0;

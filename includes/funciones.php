@@ -1110,7 +1110,7 @@ function deshactivarTorneos($idtorneo,$idtipotorneo) {
 		$sql = "select t.idtorneo,t.nombre,t.fechacreacion,t.activo,tt.descripciontorneo from dbtorneos t
 				inner join
 				tbtipotorneo tt on t.reftipotorneo = tt.idtipotorneo
-				where tt.descripciontorneo = '".$tipotorneo."' and t.activo = 1";
+				where tt.idtipotorneo = ".$tipotorneo." and t.activo = 1";
 		return $this-> query($sql,0);
 	}
 	
