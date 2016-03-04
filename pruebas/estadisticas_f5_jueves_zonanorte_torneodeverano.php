@@ -25,11 +25,6 @@ if (isset($_GET["id"])) {
 	$idTipoTorneo = 3;
 }
 
-if (isset($_GET["zona"])) {
-	$idzona = $_GET['zona'];
-} else {
-	$idzona = 19;
-}
 
 if (isset($_GET["fecha"])) {
 
@@ -39,6 +34,19 @@ if (isset($_GET["fecha"])) {
 	$idfecha = 23;
 }
 //echo $idTipoTorneo;
+
+$zonas = $serviciosFunciones->traerZonaPorTipoTorneos($idTipoTorneo);
+$zonas2 = $serviciosFunciones->traerZonaPorTipoTorneos($idTipoTorneo);
+$zonas3 = $serviciosFunciones->traerZonaPorTipoTorneos($idTipoTorneo);
+
+if (mysql_num_rows($zonas2)>0) {
+    $idzona = mysql_result($zonas2, 0, 0);
+    
+} else {
+    $idzona = 19;
+}
+
+
 $torneo = $serviciosFunciones->TraerTorneosActivoPorTipo($idTipoTorneo);
 
 $nombreTorneo = mysql_result($torneo,0,'descripciontorneo')." / ".mysql_result($torneo,0,'nombre');
@@ -51,7 +59,8 @@ if (mysql_num_rows($idfecha)>0) {
 	$idfecha = 23;	
 }
 
-$resTorneos = $serviciosDatos->TraerFixturePorZonaTorneo($idTipoTorneo,$idzona,$idfecha);
+//$resTorneos = $serviciosDatos->TraerFixturePorZonaTorneo($idTipoTorneo,$idzona,$idfecha);
+//$resTorneos2 = $serviciosDatos->TraerFixturePorZonaTorneo($idTipoTorneo,20,$idfecha);
 $resGoles = $serviciosDatos->Goleadores($idTipoTorneo,$idzona,$idfecha);
 $resFairPlay = $serviciosDatos->fairplay($idTipoTorneo,$idzona,$idfecha);
 $resSuspendido = $serviciosDatos->SuspendidosNuevo($idTipoTorneo,$idzona,$idfecha);
@@ -79,7 +88,7 @@ $resFinal = $serviciosPlayOff->traerArmarPlayOffPorEtapa($idTorneo,$idzona,6); /
 
 
 
-$idTab = 2097;
+$idTab = 2101;
 $cadCab = '';
 $cadCuerpo = '';
 
@@ -492,21 +501,63 @@ $idTab += 1;
       </head>
 <body>
  
-  
-  <div class="section-tabs">
+ 
+<div class="section-tabs">
 	<div id="tab-posiciones" class="item posiciones">Posiciones</div>
 	<div id="tab-goleadores" class="item goleadores">Goleadores</div>
 	<div id="tab-fairplay" class="item fairplay">Fair Play</div>
 	<div id="tab-vallamenosvencida" class="item vallamenosvencida selected">Valla menos vencida</div>
-		  </div>
+</div>
+    
+
   <div style="display: none;" class="posiciones-wrapper section">
     	<div class="tabs-posiciones tabs-tablas">
-      	<div class="tab-tabla selected" id="tab-tabla-2097"><?php echo $nombreTorneo; ?></div>
-  	    	<!-- otras etapas -->
+            
+  	    <?php 
+            /*
+            $resTorneos = $serviciosDatos->TraerFixturePorZonaTorneo($idTipoTorneo,$idzona,$idfecha);
+            $resGoles = $serviciosDatos->Goleadores($idTipoTorneo,$idzona,$idfecha);
+            $resFairPlay = $serviciosDatos->fairplay($idTipoTorneo,$idzona,$idfecha);
+            $resSuspendido = $serviciosDatos->SuspendidosNuevo($idTipoTorneo,$idzona,$idfecha);
+            $resAmarillas = $serviciosDatos->traerAcumuladosAmarillasPorTorneoZona($idTipoTorneo,$idzona,$idfecha);
+            $resVallaMenosVencida = $serviciosDatos->TraerFixturePorZonaTorneoMenosGoles($idTipoTorneo,$idzona,$idfecha);
+            */
+                $idCss = 2097;
+                while ($rowZona = mysql_fetch_array($zonas)) { 
+                    if ($idCss == 2097) {
+            ?> 
+                    <div class="tab-tabla selected" id="tab-tabla-<?php echo $idCss; ?>"><?php echo $rowZona['descripciontorneo'].' / '.$rowZona['nombre']; ?></div>
+                    <?php } else { ?>
+                    <div class="tab-tabla" id="tab-tabla-<?php echo $idCss; ?>"><?php echo $rowZona['descripciontorneo'].' / '.$rowZona['nombre']; ?></div>
+                    <?php } ?> 
+            <?php 
+                $idCss += 1;
+                } 
+            ?> 
+            <!-- otras etapas -->
             <?php echo $cadCab; ?>
+               
   	    <div class="bottom-line"></div>
 </div>
+      
+      
+
 <div class="tablas-posiciones">
+    
+<?php 
+            /*
+            $resTorneos = $serviciosDatos->TraerFixturePorZonaTorneo($idTipoTorneo,$idzona,$idfecha);
+            $resGoles = $serviciosDatos->Goleadores($idTipoTorneo,$idzona,$idfecha);
+            $resFairPlay = $serviciosDatos->fairplay($idTipoTorneo,$idzona,$idfecha);
+            $resSuspendido = $serviciosDatos->SuspendidosNuevo($idTipoTorneo,$idzona,$idfecha);
+            $resAmarillas = $serviciosDatos->traerAcumuladosAmarillasPorTorneoZona($idTipoTorneo,$idzona,$idfecha);
+            $resVallaMenosVencida = $serviciosDatos->TraerFixturePorZonaTorneoMenosGoles($idTipoTorneo,$idzona,$idfecha);
+            */
+    $idCss = 2097;
+    while ($rowZonaPosiciones = mysql_fetch_array($zonas3)) { 
+        $resTorneos = $serviciosDatos->TraerFixturePorZonaTorneo($idTipoTorneo,$rowZonaPosiciones[0],$idfecha);
+        
+?> 
 	<div class="posiciones list" id="tabla-posiciones-2097">
     	<div class="titles">
     		<div class="col col1"></div>
@@ -564,6 +615,12 @@ contra, GD: diferencia de goles, PB: puntos bonus, FP: fair play, P:
 puntos.</p>
         </div>
 	</div>
+  <?php 
+    $idCss += 1;
+    } 
+?>            
+ 
+          
 		<?php echo $cadCuerpo; ?>
         
         
@@ -571,8 +628,11 @@ puntos.</p>
         
         
         
-	</div>
-	</div>
+    </div>
+</div><!-- fin tablas-posiciones -->
+ 
+        
+        
   </div>
   <div class="goleadores-wrapper section">
   		<div class="goleadores list">
@@ -742,6 +802,7 @@ puntos.</p>
   </div>
   
   </div>
+
 </body>
 </html>
 <!-- Localized -->

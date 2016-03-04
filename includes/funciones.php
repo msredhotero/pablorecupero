@@ -1131,6 +1131,22 @@ function deshactivarTorneos($idtorneo,$idtipotorneo) {
 				group by z.idgrupo,z.nombre ";	
 		return $this-> query($sql,0);
 	}
+        
+        function traerZonaPorTipoTorneos($refTipoTorneo) {
+		$sql = "select 
+                            distinct tge.refgrupo,g.nombre,tp.descripciontorneo
+                        from
+                            dbtorneos t
+                                inner join
+                            tbtipotorneo tp ON tp.idtipotorneo = t.reftipotorneo
+                                        inner join
+                                dbtorneoge tge ON tge.reftorneo = t.idtorneo
+                                        inner join
+                                dbgrupos g ON g.idgrupo = tge.refgrupo
+                        where	t.activo = 1 and tp.idtipotorneo = ".$refTipoTorneo."
+                        order by g.idgrupo ";	
+		return $this-> query($sql,0);
+	}
 	
 	function TraerTorneoPorTipoTorneo($idtipotorneo) {
 		$sql = "select t.idtorneo,t.nombre,t.fechacreacion, 
