@@ -556,7 +556,7 @@ $idTab += 1;
     $idCss = 2097;
     while ($rowZonaPosiciones = mysql_fetch_array($zonas3)) { 
         $resTorneos = $serviciosDatos->TraerFixturePorZonaTorneo($idTipoTorneo,$rowZonaPosiciones[0],$idfecha);
-        
+        echo mysql_num_rows($resTorneos);
 ?> 
 	<div class="posiciones list" id="tabla-posiciones-2097">
     	<div class="titles">
@@ -577,7 +577,7 @@ $idTab += 1;
 	
 	$cant = 1;
 	
-	while ($row = mysql_fetch_array($resTorneos)) {
+	while ($row = mysql_fetch_array($resTorneos, MYSQL_ASSOC)) {
 	?>
     
     <?php if (($cant % 2) != 0) { ?>
@@ -602,7 +602,8 @@ $idTab += 1;
     
     <?php 
 		$cant = $cant + 1;
-		} 
+		}
+                mysql_free_result($resTorneos);
 	?>
     
     
