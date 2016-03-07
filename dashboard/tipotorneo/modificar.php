@@ -66,13 +66,13 @@ if ($_SESSION['refroll_predio'] != 1) {
 
 <head>
 
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 
 
-<title>Gesti&oacute;n: Tres Sesenta F&uacute;tbol</title>
+<title>GestiÃ³n: Tres Sesenta FÃºtbol</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
@@ -195,10 +195,10 @@ $('#timepicker2').timepicker({
 		
 		if (validador() == "")
         {
-			//información del formulario
+			//informaciÃ³n del formulario
 			var formData = new FormData($(".formulario")[0]);
 			var message = "";
-			//hacemos la petición ajax  
+			//hacemos la peticiÃ³n ajax  
 			$.ajax({
 				url: '../../ajax/ajax.php',  
 				type: 'POST',
@@ -223,8 +223,8 @@ $('#timepicker2').timepicker({
                                             $(".alert").html('<strong>Ok!</strong> Se modifico exitosamente la <strong>Cancha</strong>. ');
 											$(".alert").delay(3000).queue(function(){
 												/*aca lo que quiero hacer 
-												  después de los 2 segundos de retraso*/
-												$(this).dequeue(); //continúo con el siguiente ítem en la cola
+												  despuÃ©s de los 2 segundos de retraso*/
+												$(this).dequeue(); //continÃºo con el siguiente Ã­tem en la cola
 												
 											});
 											$("#load").html('');

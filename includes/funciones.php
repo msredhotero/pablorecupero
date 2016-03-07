@@ -1757,7 +1757,7 @@ return $res;
 	function modificarTipoTorneo($id,$descripciontorneo) {
 		$sql = "update tbtipotorneo
 		set
-		descripciontorneo = '".utf8_decode($descripciontorneo)."'
+		descripciontorneo = '".($descripciontorneo)."'
 		where idtipotorneo =".$id;
 		$res = $this->query($sql,0);
 		return $res;
