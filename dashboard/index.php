@@ -191,7 +191,7 @@ $goleadores7c = $serviciosFUNC->Amarillas(3,21);
                         <div class="input-group col-md-12">
                             <select id="refzona" class="form-control" name="refzona">
                                 <option value="0">--Seleccione--</option>
-                                <?php echo $cadZ; ?>
+                                
                                     
                             </select>
                         </div>
@@ -321,6 +321,28 @@ $goleadores7c = $serviciosFUNC->Amarillas(3,21);
 <script type="text/javascript">
 $(document).ready(function(){
 	
+        function TraerZonas(refTorneo) {
+            $.ajax({
+                data:  {reftorneo: refTorneo,
+                        accion: 'traerZonasPorTorneo'},
+                url:   '../ajax/ajax.php',
+                type:  'post',
+                beforeSend: function () {
+
+                },
+                success:  function (response) {
+                                $('#refzona').html(response);
+
+                }
+            });
+        }
+        
+        $('#reftorneo').change(function() {
+            TraerZonas($('#reftorneo').val());
+        });
+        
+        TraerZonas($('#reftorneo').val());
+        
 	$('#buscar').click(function(e) {
         $.ajax({
 				data:  {reftorneo: $('#reftorneo').val(),

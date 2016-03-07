@@ -277,6 +277,9 @@ break;
 	
 	
 	/* para los torneo-zonas-equipos */
+        case 'traerZonasPorTorneo':
+            traerZonasPorTorneo($serviciosDatos);
+            break;
 	case 'modificarFixtureChequeado':
 		modificarFixtureChequeado($serviciosZonasEquipos);
 		break;
@@ -2422,6 +2425,20 @@ echo $res;
 
 
 /* para los torneo-zonas-equipos */
+
+function traerZonasPorTorneo($serviciosDatos) {
+    $idTorneo = $_POST['reftorneo'];
+    
+    $res = $serviciosDatos->traerZonasPorTorneo($idTorneo);
+    
+    $cad = '';
+    while ($row = mysql_fetch_array($res)) {
+        $cad .= '<option value="'.$row[0].'">'.$row[1]."</option>";
+    }
+    
+    echo $cad;
+}
+
 
 /* PARA Reemplazos */
 function insertarReemplazos($serviciosReemplazos) {
