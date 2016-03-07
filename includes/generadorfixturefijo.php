@@ -57,15 +57,15 @@ function traerEquipos($idtorneo, $idZona) {
 				inner
 								join		tbtipotorneo tp
 								on			tp.idtipotorneo = t.reftipotorneo
-					
+				inner join tbletras l on l.id = tge.idtorneoge	
 					where	t.idtorneo = ".$idtorneo." and tge.refgrupo = ".$idZona." and t.activo = 1
 					
-			
+			   order by l.letra
 				";
 
 	
 	$res2 = $this->query($sql,0);
-
+//echo $sql;
 	return $res2;
 }
 
@@ -228,23 +228,26 @@ if ((mysql_num_rows($equipo)%2) == 1) {
 	}
 }
 
-//var_dump($arEquipos);
-
+//die(var_dump($arEquiposId));
+//die(var_dump($cantidadEquipos));
 
 
 $columnas	= $cantidadEquipos - 1;
 $filas		= $cantidadEquipos / 2;
 
+//die(var_dump($columnas."-".$filas));
+
 $fixture = array();
 
 $fixtureNum = array();
 
-if (mysql_num_rows($res)<1) {
+//if (mysql_num_rows($res)<1) {
 
 $k = $cantidadEquipos;
 $m = 2;
 
 for ($i=1;$i<=$filas;$i++) {
+	echo $i;
 	$m = $i + 1;
 
 	if ($i >2) {
@@ -285,10 +288,108 @@ for ($i=1;$i<=$filas;$i++) {
 		
 		
 	}	
+//}
+
 }
+//die(var_dump($fixture));
+return $fixture;
 
 }
 
+
+
+function Generar360($idtorneo, $idZona) {
+	$equipo = $this->traerEquipos($idtorneo, $idZona);
+
+	$res = $this->TraerTodoFixture($idtorneo,$idZona);
+
+$cadFixture = '';
+$arEquipos = array();
+$arEquiposId = array();
+
+if ((mysql_num_rows($equipo)%2) == 1) {
+	$cantidadEquipos = mysql_num_rows($equipo)+1;
+	for ($p=0;$p<mysql_num_rows($equipo);$p++) {
+		$arEquipos[$p] = mysql_result($equipo,$p,0);
+		$arEquiposId[$p] = mysql_result($equipo,$p,1);
+	}
+	$arEquipos[$cantidadEquipos-1] = "borrar";
+	$arEquiposId[$cantidadEquipos-1] = 0;
+} else {
+	$cantidadEquipos = mysql_num_rows($equipo);
+	for ($p=0;$p<mysql_num_rows($equipo);$p++) {
+		$arEquipos[$p] = mysql_result($equipo,$p,0);
+		$arEquiposId[$p] = mysql_result($equipo,$p,1);
+	}
+}
+
+//die(var_dump($arEquipos));
+//die(var_dump($cantidadEquipos));
+
+//die(var_dump($arEquipos));
+$columnas	= $cantidadEquipos - 1;
+$filas		= $cantidadEquipos / 2;
+
+//die(var_dump($columnas."-".$filas));
+
+$fixture = array();
+
+$fixtureNum = array();
+
+//if (mysql_num_rows($res)<1) {
+
+$k = $cantidadEquipos;
+$m = 1;
+
+for ($i=1;$i<=$columnas;$i++) {
+
+
+	for ($j=1;$j<=$filas;$j++) {
+		$fixture[$i-1][$j-1] = $arEquipos[$m-1]."***".$arEquiposId[$m-1];
+		$fixtureNum[$i-1][$j-1] = $arEquiposId[$m-1];
+		
+		if ($m == ($cantidadEquipos - 1)) {
+			$m = 0;	
+		}
+		
+		$m += 1;
+	}
+		
+		
+}	
+
+
+
+for ($j=1;$j<=$columnas;$j++) {
+
+	$fixture[$j-1][0] .= "***".$arEquipos[5]."***".$arEquiposId[5];
+	$fixtureNum[$j-1][0] .= "***".$arEquiposId[5];
+
+	
+}
+	
+
+$m = $cantidadEquipos - 1;
+for ($i=1;$i<=$columnas;$i++) {
+
+
+	for ($j=2;$j<=$filas;$j++) {
+		$fixture[$i-1][$j-1] .= "***".$arEquipos[$m-1]."***".$arEquiposId[$m-1];
+		$fixtureNum[$i-1][$j-1] .= "***".$arEquiposId[$m-1];
+		
+		if ($m == 1) {
+			$m = $cantidadEquipos - 1;	
+		}
+		
+		$m -= 1;
+		
+	}
+		
+		
+}	
+
+
+//die(var_dump($fixture));
 return $fixture;
 
 }

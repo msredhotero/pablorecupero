@@ -19,14 +19,9 @@ $serviciosDatos = new ServiciosDatos();
 if (isset($_GET["id"])) {
 	$idTipoTorneo = $_GET["id"];
 } else {
-	$idTipoTorneo = 11;
+	$idTipoTorneo = 30;
 }
 
-if (isset($_GET["zona"])) {
-	$idzona = $_GET['zona'];
-} else {
-	$idzona = 1887;
-}
 
 if (isset($_GET["fecha"])) {
 
@@ -35,6 +30,7 @@ if (isset($_GET["fecha"])) {
 
 	$idfecha = 23;
 }
+
 
 $resZonasTorneos = $serviciosDatos->traerZonasPorTorneo($idTipoTorneo);
 
@@ -60,7 +56,7 @@ while ($row = mysql_fetch_array($resZonasTorneos)) {
 	<div class="fechas-selectores">
 <div class="texto">Fechas: </div>';
 		while ($rowFF = mysql_fetch_array($lstFechas)) {
-			$res = $serviciosDatos->traerResultadosPorTorneoZonaFecha($idTipoTorneo,$idzona,$rowFF[0]);
+			$res = $serviciosDatos->traerResultadosPorTorneoZonaFecha($idTipoTorneo,$row[0],$rowFF[0]);
 			$cadCuerpo .= '<div class="fecha-selector'; 
 			if ($cant2 == 1) {
 				$cadCuerpo .= ' selected';	
@@ -68,6 +64,7 @@ while ($row = mysql_fetch_array($resZonasTorneos)) {
 			$cadCuerpo .= '" id="fecha-selector-'.$cant2.'">'.$cant2.'</div>';
 			
 			$cant3 = 1;
+			$rowRR='';
 			while ($rowRR = mysql_fetch_array($res)) {
 				if ($cant3 == 1) {
 					$cadCuerpoFechas .= '<div class="fecha" id="fecha-'.$cant2.'">
@@ -112,7 +109,7 @@ while ($row = mysql_fetch_array($resZonasTorneos)) {
 	$cadCuerpo .= '</div>';
 	$cadCuerpo .= '<div class="items">';
 	$cadCuerpo .= $cadCuerpoFechas;
-	$cadCuerpo .= '</div>';
+	$cadCuerpo .= '</div></div>';
 $cant += 1;
 } 
 

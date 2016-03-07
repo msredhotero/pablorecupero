@@ -130,6 +130,12 @@ $res = $this->query($sql,0);
 return $res;
 }
 
+function eliminarPuntosEquiposPorFixtureEquipo($refFixture, $refEquipo, $resFecha, $refTorneo) {
+$sql = "delete from tbpuntosequipos where reffixture =".$refFixture." and reffecha =".$resFecha." and reftorneo =".$refTorneo." and refequipo =".$refEquipo;
+$res = $this->query($sql,0);
+return $res;
+}
+
 
 function traerPuntosEquipos() {
 $sql = "select idpuntosequipo,refequipo,puntos,amarillas,azules,rojas,reffixture,reffecha,reftorneo from tbpuntosequipos order by 1";

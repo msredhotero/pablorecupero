@@ -18,8 +18,26 @@ class Servicios {
 		
 	}
 
+	function traerLetras() {
+		$sql = "SELECT * FROM tbletras order by letra";
+		$res 	=	$this->query($sql,0);
+		
+		return $res;
+	}
 	
+	function modificarLetra($letra,$id) {
+		$sql = "update tbletras set id =".$id." where idletra = ".$letra;
+		$res 	=	$this->query($sql,0);
+		
+		return $res;	
+	}
 	
+	function modificarTodasLetra() {
+		$sql = "update tbletras set id =null";
+		$res 	=	$this->query($sql,0);
+		
+		return $res;	
+	}
 	
 	/* fin */
 
@@ -39,7 +57,7 @@ class Servicios {
 				$adicional = "";
 				break;
 			case 98:
-				$cantidad = 9;
+				$cantidad = 10;
 				$classMod = 'varmodificar';
 				$classEli = 'varborrar';
 				$idresultados = "resultados";
@@ -603,7 +621,12 @@ class Servicios {
 					THEN  '1'
 					ELSE  '0'
 					END
-					) AS chequeado
+					) AS chequeado,
+					(CASE WHEN jugo =1
+					THEN  '1'
+					ELSE  '0'
+					END
+					) AS jugo
 				FROM dbfixture 
 				where idfixture = ".$id;
 		return $this->query($sql,0);	
@@ -1115,12 +1138,13 @@ function deshactivarTorneos($idtorneo,$idtipotorneo) {
 	}
 	
 	function TraerTorneosActivoPorTipo($tipotorneo) {
-		$sql = "select t.idtorneo,t.nombre,t.fechacreacion,t.activo,tt.descripciontorneo from dbtorneos t
-				inner join
-				tbtipotorneo tt on t.reftipotorneo = tt.idtipotorneo
-				where tt.idtipotorneo = '".$tipotorneo."' and t.activo = 1";
+		$sql = "select t.idtorneo,t.nombre,t.fechacreacion,t.activo,tt.descripciontorneo  
+				from dbtorneos t 
+				inner join 
+				tbtipotorneo tt on t.reftipotorneo = tt.idtipotorneo 
+				where tt.idtipotorneo = ".$tipotorneo." and t.activo = 1";
 		//return $sql;
-		return $this-> query($sql,0);
+		return $this->query($sql,0);
 	}
 	
 	function traerZonaPorTorneos($refTorneo) {
@@ -1830,10 +1854,12 @@ return $res;
 		}
 		if($error==1){
 			mysql_query("ROLLBACK");
+			mysql_close($conex);
 			return false;
 		}
 		 else{
 			mysql_query("COMMIT");
+			mysql_close($conex);
 			return $result;
 		}
 		

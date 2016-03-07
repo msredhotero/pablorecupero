@@ -1872,6 +1872,7 @@ $reftorneo = $_POST['reftorneo'];
 $resExiste = $serviciosPuntosEquipos->traerPuntosEquiposPorFixtureEquipoFechaTorneo($reffixture,$refequipo,$reffecha,$reftorneo);
 
 	if (mysql_num_rows($resExiste)<1) {
+		$serviciosPuntosEquipos->eliminarPuntosEquiposPorFixtureEquipo($reffixture,$refequipo,$reffecha,$reftorneo);
 		$res = $serviciosPuntosEquipos->insertarPuntosEquipos($refequipo,$puntos,$amarillas,$azules,$rojas,$reffixture,$reffecha,$reftorneo,$observacion);
 		if ((integer)$res > 0) {
 			echo '';
@@ -2661,8 +2662,14 @@ function modificarFixture($serviciosZonasEquipos) {
 	} else {
 		$chequeado = 0;
 	}
+	
+	if (isset($_POST['jugo'])) {
+		$jugo = 1;
+	} else {
+		$jugo = 0;
+	}
 
-	$res = $serviciosZonasEquipos->modificarFixtureTodo($id,$reftorneoge_a,$resultado_a,$reftorneoge_b,$resultado_b,$fechajuego,$refFecha,$cancha,$horario,$chequeado);
+	$res = $serviciosZonasEquipos->modificarFixtureTodo($id,$reftorneoge_a,$resultado_a,$reftorneoge_b,$resultado_b,$fechajuego,$refFecha,$cancha,$horario,$chequeado,$jugo);
 	if ($res == true) {
 		echo '';
 	} else {

@@ -43,7 +43,7 @@ $lblreemplazo	= array("Zona-Equipo 1","Resultado 1","Zona-Equipo 2","Resultado 2
 
 $resZonasEquipos 	= $serviciosZonasEquipos->TraerEquiposZonas();
 
-$cadRef = '';
+$cadRef = '<option value="0">Libre</option>';
 while ($rowTT = mysql_fetch_array($resZonasEquipos)) {
 	$cadRef = $cadRef.'<option value="'.$rowTT[0].'">'.$rowTT[1].' - '.$rowTT[2].'</option>';
 	
@@ -92,7 +92,8 @@ $cabeceras 		= "	<th>Equipo 1</th>
 				<th>Fecha Juego</th>
 				<th>Fecha</th>
 				<th>Hora</th>
-				<th>Chequeado</th>";
+				<th>Chequeado</th>
+				<th>Jugo</th>";
 
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
@@ -102,6 +103,7 @@ $cabeceras 		= "	<th>Equipo 1</th>
 $formulario 	= $serviciosFunciones->camposTabla("insertarFixture",$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 
 $lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosZonasEquipos->TraerTodoFixture(),98);
+$lstCargados2 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosZonasEquipos->TraerTodoFixtureSinEquipo(),98);
 
 $resZonasTorneos = $serviciosDatos->traerZonasPorTorneo($_SESSION['idtorneo_predio']);
 
@@ -213,7 +215,7 @@ $resZonasTorneos = $serviciosDatos->traerZonasPorTorneo($_SESSION['idtorneo_pred
                 <ul class="list-inline">
                 	<?php while ($row = mysql_fetch_array($resZonasTorneos)) { ?>
                 	<li>
-                    	<a href="generarfixture.php?idtorneo=<?php echo $row[2]; ?>&idzona=<?php echo $row[0]; ?>"><button type="button" class="btn btn-primary" style="margin-left:0px;"><?php echo $row[1]; ?> Generar Fixture</button></a>
+                    	<a href="pregenerarfixture.php?idtorneo=<?php echo $row[2]; ?>&idzona=<?php echo $row[0]; ?>"><button type="button" class="btn btn-primary" style="margin-left:0px;"><?php echo $row[1]; ?> Generar Fixture</button></a>
                     </li>
 					<?php } ?>
                 </ul>

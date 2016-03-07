@@ -42,19 +42,27 @@ $resZonasEquipos2 	= $serviciosZonasEquipos->TraerEquiposZonas();
 
 $cadRef = '';
 while ($rowTT = mysql_fetch_array($resZonasEquipos)) {
-	if (mysql_result($resResultado,0,1) == $rowTT[0]) {
-		$cadRef = $cadRef.'<option value="'.$rowTT[0].'" selected>'.utf8_encode($rowTT[1]).' - '.utf8_encode($rowTT[2]).'</option>';
+	if (mysql_result($resResultado,0,1) == 0) {
+		$cadRef = '<option value="0">Libre</option>';
 	} else {
-		$cadRef = $cadRef.'<option value="'.$rowTT[0].'">'.utf8_encode($rowTT[1]).' - '.utf8_encode($rowTT[2]).'</option>';	
+		if (mysql_result($resResultado,0,1) == $rowTT[0]) {
+			$cadRef = $cadRef.'<option value="'.$rowTT[0].'" selected>'.utf8_encode($rowTT[1]).' - '.utf8_encode($rowTT[2]).'</option>';
+		} else {
+			$cadRef = $cadRef.'<option value="'.$rowTT[0].'">'.utf8_encode($rowTT[1]).' - '.utf8_encode($rowTT[2]).'</option>';	
+		}
 	}
 }
 
 $cadRefb = '';
 while ($rowTT2 = mysql_fetch_array($resZonasEquipos2)) {
-	if (mysql_result($resResultado,0,3) == $rowTT2[0]) {
-		$cadRefb = $cadRefb.'<option value="'.$rowTT2[0].'" selected>'.utf8_encode($rowTT2[1]).' - '.utf8_encode($rowTT2[2]).'</option>';
+	if (mysql_result($resResultado,0,3) == 0) {
+		$cadRefb = '<option value="0">Libre</option>';
 	} else {
-		$cadRefb = $cadRefb.'<option value="'.$rowTT2[0].'">'.utf8_encode($rowTT2[1]).' - '.utf8_encode($rowTT2[2]).'</option>';	
+		if (mysql_result($resResultado,0,3) == $rowTT2[0]) {
+			$cadRefb = $cadRefb.'<option value="'.$rowTT2[0].'" selected>'.utf8_encode($rowTT2[1]).' - '.utf8_encode($rowTT2[2]).'</option>';
+		} else {
+			$cadRefb = $cadRefb.'<option value="'.$rowTT2[0].'">'.utf8_encode($rowTT2[1]).' - '.utf8_encode($rowTT2[2]).'</option>';	
+		}
 	}
 }
 
@@ -84,7 +92,7 @@ while ($rowC = mysql_fetch_array($resCanchas)) {
 }
 
 
-$resHorarios 	= $serviciosFunciones->TraerHorarios($_SESSION['torneo_predio']);
+$resHorarios 	= $serviciosFunciones->TraerHorarios($_SESSION['idtorneo_predio']);
 
 $cadRef4 = '';
 while ($rowH = mysql_fetch_array($resHorarios)) {

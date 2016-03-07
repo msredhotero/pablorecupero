@@ -293,7 +293,11 @@ class ServiciosZonasEquipos {
 }
 	
 	function TraerTodoFixture() {
-		$sql = "select 
+		$sql = "
+			select
+		*
+		from(
+		select 
 			fi.idfixture,
 			(select e.nombre 
 			        from dbtorneoge tge
@@ -372,6 +376,11 @@ class ServiciosZonasEquipos {
 					else '0' 
 					end
 					) as chequeado,
+			(case when fi.jugo = 1 
+					then '1' 
+					else '0' 
+					end
+					) as jugo,
 			g.nombre
 					from dbfixture as fi
 					        inner 
@@ -391,6 +400,154 @@ class ServiciosZonasEquipos {
 					        on g.idgrupo = tge.refgrupo
 							
 							where tp.idtipotorneo = ".$_SESSION['idtorneo_predio']."
+				union all
+					select 
+				fi.idfixture,
+				(select 
+						e.nombre
+					from
+						dbtorneoge tge
+							inner join
+						dbtorneos t ON tge.reftorneo = t.idtorneo
+							and t.activo = true
+							inner join
+						dbequipos e ON e.idequipo = tge.refequipo
+							inner join
+						dbgrupos g ON g.idgrupo = tge.refgrupo
+					where
+						tge.idtorneoge = fi.reftorneoge_a) as equipoa,
+				null as resultadoa,
+				null as resultadob,
+				(select 
+						e.nombre
+					from
+						dbtorneoge tge
+							inner join
+						dbtorneos t ON tge.reftorneo = t.idtorneo
+							and t.activo = true
+							inner join
+						dbequipos e ON e.idequipo = tge.refequipo
+							inner join
+						dbgrupos g ON g.idgrupo = tge.refgrupo
+					where
+						tge.idtorneoge = fi.reftorneoge_b) as equipob,
+				(select 
+						g.nombre
+					from
+						dbtorneoge tge
+							inner join
+						dbtorneos t ON tge.reftorneo = t.idtorneo
+							and t.activo = true
+							inner join
+						dbequipos e ON e.idequipo = tge.refequipo
+							inner join
+						dbgrupos g ON g.idgrupo = tge.refgrupo
+					where
+						(tge.idtorneoge = fi.reftorneoge_b and fi.reftorneoge_a = 0) or (tge.idtorneoge = fi.reftorneoge_a and fi.reftorneoge_b = 0)) as zona,
+				fi.fechajuego,
+				f.tipofecha as fecha,
+				fi.hora,
+				(case
+					when fi.chequeado = 1 then '1'
+					else '0'
+				end) as chequeado,
+				(case
+					when fi.jugo = 1 then '1'
+					else '0'
+				end) as jugo,
+				g.nombre
+			from
+				dbfixture as fi
+					inner join
+				tbfechas AS f ON fi.reffecha = f.idfecha
+					inner join
+				dbtorneoge tge ON (tge.idtorneoge = fi.reftorneoge_b and fi.reftorneoge_a = 0) or (tge.idtorneoge = fi.reftorneoge_a and fi.reftorneoge_b = 0)
+					inner join
+				dbtorneos t ON tge.reftorneo = t.idtorneo
+					and t.activo = true
+					inner join
+				tbtipotorneo tp ON tp.idtipotorneo = t.reftipotorneo
+					inner join
+				dbgrupos g ON g.idgrupo = tge.refgrupo
+			where
+				tp.idtipotorneo =  ".$_SESSION['idtorneo_predio']."
+				) ff			
+					 order by ff.nombre,ff.fecha,ff.hora";
+		 return $this-> query($sql,0);
+	}
+	
+	
+	function TraerTodoFixtureSinEquipo() {
+		$sql = "select 
+				fi.idfixture,
+				(select 
+						e.nombre
+					from
+						dbtorneoge tge
+							inner join
+						dbtorneos t ON tge.reftorneo = t.idtorneo
+							and t.activo = true
+							inner join
+						dbequipos e ON e.idequipo = tge.refequipo
+							inner join
+						dbgrupos g ON g.idgrupo = tge.refgrupo
+					where
+						tge.idtorneoge = fi.reftorneoge_a) as equipoa,
+				null as resultadoa,
+				null as resultadob,
+				(select 
+						e.nombre
+					from
+						dbtorneoge tge
+							inner join
+						dbtorneos t ON tge.reftorneo = t.idtorneo
+							and t.activo = true
+							inner join
+						dbequipos e ON e.idequipo = tge.refequipo
+							inner join
+						dbgrupos g ON g.idgrupo = tge.refgrupo
+					where
+						tge.idtorneoge = fi.reftorneoge_b) as equipob,
+				(select 
+						g.nombre
+					from
+						dbtorneoge tge
+							inner join
+						dbtorneos t ON tge.reftorneo = t.idtorneo
+							and t.activo = true
+							inner join
+						dbequipos e ON e.idequipo = tge.refequipo
+							inner join
+						dbgrupos g ON g.idgrupo = tge.refgrupo
+					where
+						(tge.idtorneoge = fi.reftorneoge_b and fi.reftorneoge_a = 0) or (tge.idtorneoge = fi.reftorneoge_a and fi.reftorneoge_b = 0)) as zona,
+				fi.fechajuego,
+				f.tipofecha as fecha,
+				fi.hora,
+				(case
+					when fi.chequeado = 1 then '1'
+					else '0'
+				end) as chequeado,
+				(case
+					when fi.jugo = 1 then '1'
+					else '0'
+				end) as jugo,
+				g.nombre
+			from
+				dbfixture as fi
+					inner join
+				tbfechas AS f ON fi.reffecha = f.idfecha
+					inner join
+				dbtorneoge tge ON (tge.idtorneoge = fi.reftorneoge_b and fi.reftorneoge_a = 0) or (tge.idtorneoge = fi.reftorneoge_a and fi.reftorneoge_b = 0)
+					inner join
+				dbtorneos t ON tge.reftorneo = t.idtorneo
+					and t.activo = true
+					inner join
+				tbtipotorneo tp ON tp.idtipotorneo = t.reftipotorneo
+					inner join
+				dbgrupos g ON g.idgrupo = tge.refgrupo
+			where
+				tp.idtipotorneo =  ".$_SESSION['idtorneo_predio']."
 							
 					 order by g.nombre,f.tipofecha,fi.hora";
 		 return $this-> query($sql,0);
@@ -615,15 +772,15 @@ class ServiciosZonasEquipos {
 		$cancha = $resC;
             }
 		
-		$sql = "insert into dbfixture(Idfixture,reftorneoge_a,resultado_a,reftorneoge_b,resultado_b,fechajuego,refFecha,cancha,hora)
-		values ('',".$reftorneoge_a.",".($resultado_a == '' ? 'null' : $resultado_a).",".$reftorneoge_b.",".($resultado_b == '' ? 'null' : $resultado_b).",'".utf8_decode($fechajuego)."',".$refFecha.",'".$cancha."','".$horario."')";
+		$sql = "insert into dbfixture(Idfixture,reftorneoge_a,resultado_a,reftorneoge_b,resultado_b,fechajuego,refFecha,cancha,hora,jugo)
+		values ('',".$reftorneoge_a.",".($resultado_a == '' ? 'null' : $resultado_a).",".$reftorneoge_b.",".($resultado_b == '' ? 'null' : $resultado_b).",'".utf8_decode($fechajuego)."',".$refFecha.",'".$cancha."','".$horario."',0)";
 		
 		$res = $this->query($sql,1);
 		return $res;
 	}
 	
 	
-	function modificarFixtureTodo($id,$reftorneoge_a,$resultado_a,$reftorneoge_b,$resultado_b,$fechajuego,$refFecha,$cancha,$horario,$chequeado) {
+	function modificarFixtureTodo($id,$reftorneoge_a,$resultado_a,$reftorneoge_b,$resultado_b,$fechajuego,$refFecha,$cancha,$horario,$chequeado,$jugo) {
 		
 		if ($horario != '') {
                     $sqlH = "select
@@ -654,7 +811,7 @@ class ServiciosZonasEquipos {
 		
 		$sql = "update dbfixture
 		set
-		reftorneoge_a = ".$reftorneoge_a.",resultado_a = ".$resultado_a.",reftorneoge_b = ".$reftorneoge_b.",resultado_b = ".$resultado_b.",fechajuego = '".$fechajuego."',refFecha = ".$refFecha.",cancha = '".utf8_decode($cancha)."',hora = '".$horario."', chequeado = ".$chequeado."  
+		reftorneoge_a = ".$reftorneoge_a.",resultado_a = ".$resultado_a.",reftorneoge_b = ".$reftorneoge_b.",resultado_b = ".$resultado_b.",fechajuego = '".$fechajuego."',refFecha = ".$refFecha.",cancha = '".utf8_decode($cancha)."',hora = '".$horario."', chequeado = ".$chequeado." , jugo = ".$jugo." 
 		where Idfixture =".$id;
 		
 		$res = $this->query($sql,0);
@@ -1296,7 +1453,12 @@ function cargarTablaConducta($reffecha,$reftorneo,$refzona) {
 					THEN  '1'
 					ELSE  '0'
 					END
-					) AS chequeado
+					) AS chequeado,
+					(CASE WHEN jugo =1
+					THEN  '1'
+					ELSE  '0'
+					END
+					) AS jugo
 				FROM dbfixture 
 				where idfixture = ".$id;
 		return $this->query($sql,0);	

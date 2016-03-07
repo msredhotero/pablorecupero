@@ -41,7 +41,17 @@ $tabla 			= "dbfixture";
 $lblCambio	 	= array("reftorneoge_a","resultado_a","reftorneoge_b","resultado_b","fechajuego","refFecha","cancha");
 $lblreemplazo	= array("Zona-Equipo 1","Resultado 1","Zona-Equipo 2","Resultado 2","Fecha Juego","Fecha","Cancha");
 
-$resZonasEquipos 	= $serviciosZonasEquipos->TraerEquiposZonasPorZonas($_GET['idzona']);
+$resZonasEquipos 	= $serviciosZonasEquipos->TraerEquiposZonasPorZonas($_POST['idzona']);
+$resZonasEquipos2 	= $serviciosZonasEquipos->TraerEquiposZonasPorZonas($_POST['idzona']);
+
+
+while ($rowAA = mysql_fetch_array($resZonasEquipos2)) {
+	$letra = $_POST['letra'.$rowAA[0]];
+
+	$serviciosFunciones->modificarLetra($letra,$rowAA[0]);
+	
+}
+
 
 $cadRef = '';
 while ($rowTT = mysql_fetch_array($resZonasEquipos)) {
@@ -67,12 +77,17 @@ while ($rowC = mysql_fetch_array($resCanchas)) {
 }
 
 
-$resHorarios 	= $serviciosFunciones->TraerHorarios($_SESSION['torneo_predio']);
+$resHorarios 	= $serviciosFunciones->TraerHorarios($_SESSION['idtorneo_predio']);
 
 $cadRef4 = '';
+if (mysql_num_rows($resHorarios)>0) {
+
 while ($rowH = mysql_fetch_array($resHorarios)) {
 	$cadRef4 = $cadRef4.'<option value="'.$rowH[0].'">'.$rowH[1].'</option>';
 	
+}
+} else {
+	$cadRef4 = $cadRef4.'<option value=""></option>';
 }
 
 
@@ -98,10 +113,14 @@ $cabeceras 		= "	<th>Equipo 1</th>
 
 $lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosZonasEquipos->TraerTodoFixture(),8);
 
-$fixtureGenerardo = $Generar->Generar($_GET['idtorneo'],$_GET['idzona']);
+$fixtureGenerardo = $Generar->Generar360($_POST['idtorneo'],$_POST['idzona']);
 
-$cantFechas = mysql_num_rows($resZonasEquipos) - 1;
-//die(var_dump($fixtureGenerardo));
+if ((mysql_num_rows($resZonasEquipos) % 2)==0) {
+	$cantFechas = mysql_num_rows($resZonasEquipos)-1;
+} else {
+	$cantFechas = mysql_num_rows($resZonasEquipos);
+}
+//die(var_dump($cantFechas));
 ?>
 
 <!DOCTYPE HTML>
@@ -142,12 +161,6 @@ $cantFechas = mysql_num_rows($resZonasEquipos) - 1;
 		  padding:0;
 		}
 		
-		body {
-		
-			background:url(../imagenes/bgdash.jpg) repeat;
-		
-		/*background:#FFF;*/
-		}
 		
 		#content {
 			margin-left:21%;
@@ -627,7 +640,7 @@ background-image: linear-gradient(to bottom, #454A4E 0%, #464F52 100%);
                     <hr>
                 </div>
     		<?php 
-			//die(var_dump($fixtureGenerardo));
+			//die(var_dump($fixtureGenerardo[0][0]));
 			$total = 1;
 			if (count($fixtureGenerardo)>0) {
 			for ($i=0;$i<$cantFechas;$i++) {
@@ -647,14 +660,14 @@ background-image: linear-gradient(to bottom, #454A4E 0%, #464F52 100%);
 					  <div class="form-group col-md-4 col-sm-4" style="border:1px solid #121212;">
 					  	<label>Equipo B</label>
 					  </div>';
-			foreach ($fixtureGenerardo as $item) {
-				$lstEquipos = explode("***",$item[$i]);
+			for ($k=0;$k<3;$k++) {
+				$lstEquipos = explode("***",$fixtureGenerardo[$i][$k]);
 				
 				echo '
 					  	<div class="form-group col-md-4 col-sm-4" style="border:1px solid #121212; padding:5px;">
 						<select id="equipoa'.$total.'" name="equipoa'.$total.'" class="form-control letraChica">
                                 
-                                <option value="'.$lstEquipos[2].'">'.$lstEquipos[0].'</option>
+                                <option value="'.$lstEquipos[1].'">'.$lstEquipos[0].'</option>
                                 '.$cadRef.'
                          </select>
 						 </div>
@@ -676,7 +689,7 @@ background-image: linear-gradient(to bottom, #454A4E 0%, #464F52 100%);
 						 
 						 <div class="form-group col-md-4 col-sm-4" style="border:1px solid #121212; padding:5px;">
 						<select id="equipob'.$total.'" name="equipob'.$total.'" class="form-control letraChica">
-                                <option value="'.$lstEquipos[3].'">'.$lstEquipos[1].'</option>
+                                <option value="'.$lstEquipos[3].'">'.$lstEquipos[2].'</option>
                                 '.$cadRef.' 
                          </select>
 						 </div>';
@@ -693,8 +706,8 @@ background-image: linear-gradient(to bottom, #454A4E 0%, #464F52 100%);
 			}
 			echo '<input type="hidden" id="cantfechas" name="cantfechas" value="'.($i + 1).'" />';
 			echo '<input type="hidden" id="total" name="total" value="'.$total.'" />';
-			echo '<input type="hidden" id="idtorneo" name="idtorneo" value="'.$_GET['idtorneo'].'" />';
-			echo '<input type="hidden" id="idzona" name="idzona" value="'.$_GET['idzona'].'" />';
+			echo '<input type="hidden" id="idtorneo" name="idtorneo" value="'.$_POST['idtorneo'].'" />';
+			echo '<input type="hidden" id="idzona" name="idzona" value="'.$_POST['idzona'].'" />';
 	
 			} else {
 				echo '<h2>Ya fue Cargado el Fixture completo para este torneo';	

@@ -51,7 +51,7 @@ while ($rowF = mysql_fetch_array($resFechas)) {
 
 $lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosZonasEquipos->TraerFixtureSinTablaConducta(),2);
 
-$resTipoTorneo 	= $serviciosFunciones->TraerTorneosActivo($_SESSION['torneo_predio']);
+$resTipoTorneo 	= $serviciosFunciones->TraerTorneosActivo($_SESSION['idtorneo_predio']);
 
 $cadT = '';
 $idtorneo = 0;

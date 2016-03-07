@@ -22,7 +22,7 @@ $serviciosPlayOff = new ServiciosPlayOff();
 if (isset($_GET["id"])) {
 	$idTipoTorneo = $_GET["id"];
 } else {
-	$idTipoTorneo = 3;
+	$idTipoTorneo = 28;
 }
 
 
@@ -38,6 +38,12 @@ if (isset($_GET["fecha"])) {
 $zonas = $serviciosFunciones->traerZonaPorTipoTorneos($idTipoTorneo);
 $zonas2 = $serviciosFunciones->traerZonaPorTipoTorneos($idTipoTorneo);
 $zonas3 = $serviciosFunciones->traerZonaPorTipoTorneos($idTipoTorneo);
+$zonas4 = $serviciosFunciones->traerZonaPorTipoTorneos($idTipoTorneo);
+
+$cadZon = '';
+while ($rz = mysql_fetch_array($zonas4)) {
+	$cadZon .= $rz['refgrupo'].",";	
+}
 
 if (mysql_num_rows($zonas2)>0) {
     $idzona = mysql_result($zonas2, 0, 0);
@@ -61,11 +67,11 @@ if (mysql_num_rows($idfecha)>0) {
 
 //$resTorneos = $serviciosDatos->TraerFixturePorZonaTorneo($idTipoTorneo,$idzona,$idfecha);
 //$resTorneos2 = $serviciosDatos->TraerFixturePorZonaTorneo($idTipoTorneo,20,$idfecha);
-$resGoles = $serviciosDatos->Goleadores($idTipoTorneo,$idzona,$idfecha);
-$resFairPlay = $serviciosDatos->fairplay($idTipoTorneo,$idzona,$idfecha);
-$resSuspendido = $serviciosDatos->SuspendidosNuevo($idTipoTorneo,$idzona,$idfecha);
-$resAmarillas = $serviciosDatos->traerAcumuladosAmarillasPorTorneoZona($idTipoTorneo,$idzona,$idfecha);
-$resVallaMenosVencida = $serviciosDatos->TraerFixturePorZonaTorneoMenosGoles($idTipoTorneo,$idzona,$idfecha);
+$resGoles = $serviciosDatos->Goleadores($idTipoTorneo,(substr($cadZon,0,strlen($cadZon)-1)),$idfecha);
+$resFairPlay = $serviciosDatos->fairplay($idTipoTorneo,(substr($cadZon,0,strlen($cadZon)-1)),$idfecha);
+$resSuspendido = $serviciosDatos->SuspendidosNuevo($idTipoTorneo,(substr($cadZon,0,strlen($cadZon)-1)),$idfecha);
+$resAmarillas = $serviciosDatos->traerAcumuladosAmarillasPorTorneoZona($idTipoTorneo,(substr($cadZon,0,strlen($cadZon)-1)),$idfecha);
+$resVallaMenosVencida = $serviciosDatos->TraerFixturePorZonaTorneoMenosGoles($idTipoTorneo,(substr($cadZon,0,strlen($cadZon)-1)),$idfecha);
 
 
 /////////////////////// PARA EL PLAYOFF /////////////////////////////////////////////
@@ -556,9 +562,9 @@ $idTab += 1;
     $idCss = 2097;
     while ($rowZonaPosiciones = mysql_fetch_array($zonas3)) { 
         $resTorneos = $serviciosDatos->TraerFixturePorZonaTorneo($idTipoTorneo,$rowZonaPosiciones[0],$idfecha);
-        echo mysql_num_rows($resTorneos);
+        //echo mysql_num_rows($resTorneos);
 ?> 
-	<div class="posiciones list" id="tabla-posiciones-2097">
+	<div class="posiciones list" id="tabla-posiciones-<?php echo $idCss; ?>">
     	<div class="titles">
     		<div class="col col1"></div>
     		<div class="col col2 col-number">PJ</div>
@@ -576,7 +582,7 @@ $idTab += 1;
     <?php
 	
 	$cant = 1;
-	
+	$row = '';
 	while ($row = mysql_fetch_array($resTorneos, MYSQL_ASSOC)) {
 	?>
     

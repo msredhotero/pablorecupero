@@ -33,7 +33,7 @@ $resMenu = $serviciosHTML->menu(utf8_encode($_SESSION['nombre_predio']),"ZonasEq
 
 
 
-$resHorarios = $serviciosFunciones->TraerHorarios($_SESSION['torneo_predio']);
+$resHorarios = $serviciosFunciones->TraerHorarios($_SESSION['idtorneo_predio']);
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
@@ -42,7 +42,7 @@ $tabla 			= "dbtorneoge";
 $lblCambio	 	= array("refgrupo","refequipo","reftorneo");
 $lblreemplazo	= array("Categorias","Equipos","Torneo");
 
-$resTipoTorneo 	= $serviciosFunciones->TraerTorneosActivo($_SESSION['torneo_predio']);
+$resTipoTorneo 	= $serviciosFunciones->TraerTorneosActivo($_SESSION['idtorneo_predio']);
 
 $cadRef = '';
 $idtorneo = 0;
