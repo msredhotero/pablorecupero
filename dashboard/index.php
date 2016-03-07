@@ -34,7 +34,7 @@ $resMenu = $serviciosHTML->menu($_SESSION['nombre_predio'],"Dashboard",$_SESSION
 $cadTT = '';
 $resTorneos = $serviciosFunciones->traerTipoTorneo();
 while ($rowTT = mysql_fetch_array($resTorneos)) {
-	$cadTT = $cadTT.'<option value="'.$rowTT[0].'">'.($rowTT[1]).'</option>';	
+	$cadTT = $cadTT.'<option value="'.$rowTT[0].'">'.  utf8_encode($rowTT[1]).'</option>';	
 }
 
 ///////////////////////////////////////////////////
@@ -105,7 +105,7 @@ $goleadores7c = $serviciosFUNC->Amarillas(3,21);
 
 
 
-<title>Gesti&oacute;n: Tres Sesenta Fútbol</title>
+<title>Gestión: Tres Sesenta Fútbol</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
