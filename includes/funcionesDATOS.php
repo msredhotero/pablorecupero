@@ -259,7 +259,7 @@ class ServiciosDatos {
 			(
 				select 
 		       r.nombre,
-		       count(*) as partidos,
+		       sum(case when r.resultado_a is null then 0 else 1 end) as partidos,
 		       sum(case when r.resultado_a > r.resultado_b then 1 else 0 end) as ganados, 
 		       sum(case when r.resultado_a = r.resultado_b then 1 else 0 end) as empatados,
 		       sum(case when r.resultado_a < r.resultado_b then 1 else 0 end) as perdidos,
@@ -654,7 +654,7 @@ left join
 				) r
 				group by r.nombre,r.apyn ,r.reemplzado, r.volvio,r.refequipo, r.refjugador, r.reemplzadovolvio
 				) t
-				order by t.cantidad,t.nombre desc';
+				order by t.cantidad desc,t.nombre desc';
 			return $this-> query($sql,0);
 	}
 	
@@ -1626,7 +1626,7 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 	
 	function fairplay($idtipoTorneo,$idzona,$reffecha) {
 		$sql = "select
-				e.nombre, ss.puntos, ppe.amarillas, ppe.rojas, pe.observacion, ss.refequipo
+				e.nombre, ss.puntos, ppe.amarillas, ppe.rojas,ppe.azules, pe.observacion, ss.refequipo
 				
 				from		tbconducta ss
 				
@@ -1649,13 +1649,13 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 				ON pe.refequipo = ss.refequipo and ss.reftorneo = pe.reftorneo and ss.reffecha = pe.reffecha
 
 				inner join
-				(select sum(COALESCE(amarillas,0)) as amarillas, sum(COALESCE(rojas,0)) as rojas,refequipo, reftorneo
+				(select sum(COALESCE(amarillas,0)) as amarillas, sum(COALESCE(rojas,0)) as rojas,sum(COALESCE(azules,0)) as azules,refequipo, reftorneo
 					from tbpuntosequipos 
 					group by refequipo, reftorneo) ppe 
 				ON ppe.refequipo = ss.refequipo and ppe.reftorneo = ss.reftorneo and ppe.reftorneo = t.idtorneo
 		
 				where	tp.idtipotorneo = ".$idtipoTorneo." and tge.refgrupo in (".$idzona.") and ss.reffecha = ".$reffecha."
-				group by e.nombre, ss.puntos, ppe.amarillas, ppe.rojas, pe.observacion, ss.refequipo
+				group by e.nombre, ss.puntos, ppe.amarillas, ppe.rojas,ppe.azules, pe.observacion, ss.refequipo
 				order by ss.puntos desc";
 		return $this-> query($sql,0);
 	}

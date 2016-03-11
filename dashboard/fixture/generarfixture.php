@@ -120,7 +120,11 @@ if ((mysql_num_rows($resZonasEquipos) % 2)==0) {
 } else {
 	$cantFechas = mysql_num_rows($resZonasEquipos);
 }
-//die(var_dump($cantFechas));
+
+$array = $Generar->devolverCantFilas($_POST['idtorneo'],$_POST['idzona']);
+
+$filas = $array["filas"] * $array["columnas"];
+//die(var_dump($fixtureGenerardo));
 ?>
 
 <!DOCTYPE HTML>
@@ -660,7 +664,7 @@ background-image: linear-gradient(to bottom, #454A4E 0%, #464F52 100%);
 					  <div class="form-group col-md-4 col-sm-4" style="border:1px solid #121212;">
 					  	<label>Equipo B</label>
 					  </div>';
-			for ($k=0;$k<3;$k++) {
+			for ($k=0;$k<$array["filas"];$k++) {
 				$lstEquipos = explode("***",$fixtureGenerardo[$i][$k]);
 				
 				echo '

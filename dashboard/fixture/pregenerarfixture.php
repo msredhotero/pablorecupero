@@ -129,7 +129,7 @@ if ((mysql_num_rows($resZonasEquipos) % 2)==0) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-<link href="../../css/estiloDash.css" rel="stylesheet" type="text/css">
+<!--<link href="../../css/estiloDash.css" rel="stylesheet" type="text/css">-->
     
 
     

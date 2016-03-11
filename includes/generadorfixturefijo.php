@@ -341,6 +341,8 @@ $fixtureNum = array();
 $k = $cantidadEquipos;
 $m = 1;
 
+
+//ok
 for ($i=1;$i<=$columnas;$i++) {
 
 
@@ -348,7 +350,7 @@ for ($i=1;$i<=$columnas;$i++) {
 		$fixture[$i-1][$j-1] = $arEquipos[$m-1]."***".$arEquiposId[$m-1];
 		$fixtureNum[$i-1][$j-1] = $arEquiposId[$m-1];
 		
-		if ($m == ($cantidadEquipos - 1)) {
+		if ($m == ($cantidadEquipos-1)) {
 			$m = 0;	
 		}
 		
@@ -359,17 +361,19 @@ for ($i=1;$i<=$columnas;$i++) {
 }	
 
 
-
+//ok
 for ($j=1;$j<=$columnas;$j++) {
 
-	$fixture[$j-1][0] .= "***".$arEquipos[5]."***".$arEquiposId[5];
-	$fixtureNum[$j-1][0] .= "***".$arEquiposId[5];
+	$fixture[$j-1][0] .= "***".$arEquipos[$cantidadEquipos - 1]."***".$arEquiposId[$cantidadEquipos - 1];
+	$fixtureNum[$j-1][0] .= "***".$arEquiposId[$cantidadEquipos - 1];
 
 	
 }
+
 	
 
 $m = $cantidadEquipos - 1;
+
 for ($i=1;$i<=$columnas;$i++) {
 
 
@@ -378,7 +382,11 @@ for ($i=1;$i<=$columnas;$i++) {
 		$fixtureNum[$i-1][$j-1] .= "***".$arEquiposId[$m-1];
 		
 		if ($m == 1) {
-			$m = $cantidadEquipos - 1;	
+			if (($cantidadEquipos % 2)==0) {
+				$m = $cantidadEquipos;	
+			} else {
+				$m = $cantidadEquipos - 1;	
+			}
 		}
 		
 		$m -= 1;
