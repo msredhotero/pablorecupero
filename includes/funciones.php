@@ -129,8 +129,21 @@ class Servicios {
 						';
 						
 				for ($i=1;$i<=$cantidad;$i++) {
-				
-					$cadsubRows = $cadsubRows.'<td style="max-width:130px;">'.$row[$i].'</td>';	
+					if ($i == 10) {
+						$cadsubRows = $cadsubRows.'<td style="max-width:130px;"><input type="checkbox" class="form-control input-sm jugo" id="'.$row[0].'" name="'.$row[0].'" style="width:30px;"';
+						if ($row["jugo"] == '1') { 
+							$cadsubRows = $cadsubRows."checked"; 
+						} 
+						$cadsubRows = $cadsubRows.'/></td>';	
+					} else if ($i==9) {
+							$cadsubRows = $cadsubRows.'<td style="max-width:130px;"><input type="checkbox" class="form-control input-sm chequeado" id="'.$row[0].'" name="'.$row[0].'" style="width:30px;"';
+							if ($row["chequeado"] == '1') { 
+								$cadsubRows = $cadsubRows."checked"; 
+							} 
+							$cadsubRows = $cadsubRows.'/></td>';	
+						} else {
+						$cadsubRows = $cadsubRows.'<td style="max-width:130px;">'.$row[$i].'</td>';	
+					}
 				}
 				
 				$cadRows = $cadRows.'
@@ -1137,6 +1150,13 @@ function deshactivarTorneos($idtorneo,$idtipotorneo) {
 		return $this-> query($sql,0);
 	}
 	
+        function TraerTorneosActivoTodos() {
+		$sql = "select t.idtorneo,t.nombre,t.fechacreacion,t.activo,tt.descripciontorneo from dbtorneos t
+				inner join
+				tbtipotorneo tt on t.reftipotorneo = tt.idtipotorneo
+				where t.activo = 1";
+		return $this-> query($sql,0);
+	}
 	function TraerTorneosActivoPorTipo($tipotorneo) {
 		$sql = "select t.idtorneo,t.nombre,t.fechacreacion,t.activo,tt.descripciontorneo  
 				from dbtorneos t 

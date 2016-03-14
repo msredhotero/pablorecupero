@@ -46,7 +46,7 @@ while ($rowE = mysql_fetch_array($resEquipos)) {
 	$pdf->Rect(5,45,200,230,'');
 	$pdf->SetFont('Arial','U',15);
 	$pdf->SetXY(17,6);
-	$pdf->Cell(30,7,'PREDIO 98',0,0,'C',false);
+	$pdf->Cell(30,7,'Tres Sesenta Fútbol',0,0,'C',false);
 	$pdf->SetFont('Arial','',15);
 	$pdf->SetXY(60,5);
 	$pdf->Cell(30,20,strtoupper($rowE['zona']),1,0,'C',false);
@@ -64,7 +64,7 @@ while ($rowE = mysql_fetch_array($resEquipos)) {
 	$pdf->Ln();
 	$pdf->SetFont('Arial','',8);
 	$pdf->SetX(5);
-	$pdf->MultiCell(200,4,'IMPORTANTE:  El "Predio 98” canchas de fútbol, denominado también “La Organización” no se responsabiliza por lesiones ocasionadas en uso de las instalaciones, prácticas de juego, y/o hechos de fuerza mayor y/o caso fortuito, agresiones personales u otros hechos que causen perjuicios material y/o lesiones corporales, como asimismo tampoco se responsabiliza por extravío y/o pérdida de objetos personales, reservándose el derecho de admisión a la totalidad de canchas y/o establecimiento.',1,'L',false);
+	$pdf->MultiCell(200,4,'IMPORTANTE:  El "Tres Sesenta Fútbol” canchas de fútbol, denominado también “La Organización” no se responsabiliza por lesiones ocasionadas en uso de las instalaciones, prácticas de juego, y/o hechos de fuerza mayor y/o caso fortuito, agresiones personales u otros hechos que causen perjuicios material y/o lesiones corporales, como asimismo tampoco se responsabiliza por extravío y/o pérdida de objetos personales, reservándose el derecho de admisión a la totalidad de canchas y/o establecimiento.',1,'L',false);
 	$pdf->SetFont('Arial','B',8);
 	$pdf->SetX(5);
 	$pdf->MultiCell(200,4,'Con la firma del presente, expresamente desiste de cualquier reclamo y acción al respecto. Los DNI y firmas pueden ser completados en la 1º fecha en el Predio.',1,'L',false);

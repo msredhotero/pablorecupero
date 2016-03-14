@@ -47,7 +47,7 @@ $resTipoTorneo 	= $serviciosEquipos->TraerEquipos();
 
 $cadRef = '';
 while ($rowTT = mysql_fetch_array($resTipoTorneo)) {
-	if (mysql_result($resResultado,0,'idequipo')==$rowTT[0]) {
+	if ( mysql_result($resResultado,0,3) == $rowTT[0]) {
 		$cadRef = $cadRef.'<option value="'.$rowTT[0].'" selected>'.$rowTT[1].'</option>';
 	} else {
 		$cadRef = $cadRef.'<option value="'.$rowTT[0].'">'.$rowTT[1].'</option>';
@@ -110,7 +110,7 @@ if ($_SESSION['refroll_predio'] != 1) {
 
 
 
-<title>Gestión: Predio 98</title>
+<title>Gesti&oacute;n: Tres Sesenta F&uacute;tbol</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 

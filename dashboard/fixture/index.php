@@ -103,7 +103,7 @@ $cabeceras 		= "	<th>Equipo 1</th>
 $formulario 	= $serviciosFunciones->camposTabla("insertarFixture",$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 
 $lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosZonasEquipos->TraerTodoFixture(),98);
-$lstCargados2 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosZonasEquipos->TraerTodoFixtureSinEquipo(),98);
+//$lstCargados2 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosZonasEquipos->TraerTodoFixtureSinEquipo(),98);
 
 $resZonasTorneos = $serviciosDatos->traerZonasPorTorneo($_SESSION['idtorneo_predio']);
 
@@ -299,6 +299,79 @@ $(document).ready(function(){
 			alert("Error, vuelva a realizar la acción.");	
 		  }
 	});//fin del boton eliminar
+	
+	function jugo(idFixture) {
+		$.ajax({
+				data:  {idFixture: idFixture, accion: 'marcarJugo'},
+				url:   '../../ajax/ajax.php',
+				type:  'post',
+				beforeSend: function () {
+						
+				},
+				success:  function (response) {
+						alert('Se marco correctamente');
+						
+				}
+		});	
+	}
+	
+	function chequeado(idFixture) {
+		$.ajax({
+				data:  {idFixture: idFixture, accion: 'marcarChequeado'},
+				url:   '../../ajax/ajax.php',
+				type:  'post',
+				beforeSend: function () {
+						
+				},
+				success:  function (response) {
+						alert('Se marco correctamente');
+						
+				}
+		});	
+	}
+	
+	$("#example").on("click",'.jugo', function(){
+		  usersid =  $(this).attr("id");
+		  if (!isNaN(usersid)) {
+			$.ajax({
+				data:  {idFixture: usersid, accion: 'marcarJugo'},
+				url:   '../../ajax/ajax.php',
+				type:  'post',
+				beforeSend: function () {
+						
+				},
+				success:  function (response) {
+						alert('Se marco correctamente');
+						
+				}
+			});	
+			
+		  } else {
+			alert("Error, vuelva a realizar la acción.");	
+		  }
+	});//fin del boton jugo
+	
+	
+	$("#example").on("click",'.chequeado', function(){
+		  usersid =  $(this).attr("id");
+		  if (!isNaN(usersid)) {
+		  	$.ajax({
+					data:  {idFixture: usersid, accion: 'marcarChequeado'},
+					url:   '../../ajax/ajax.php',
+					type:  'post',
+					beforeSend: function () {
+							
+					},
+					success:  function (response) {
+							alert('Se marco correctamente');
+							
+					}
+			});
+
+		  } else {
+			alert("Error, vuelva a realizar la acción.");	
+		  }
+	});//fin del boton chequeado
 	
 	
 	$('.estadistica').click(function(event){

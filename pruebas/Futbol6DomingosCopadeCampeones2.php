@@ -46,7 +46,7 @@ if (isset($_GET["id"])) {
 
 } else {
 
-	$idTipoTorneo = 43;  /** Esto es lo unico que hay que modificar */
+	$idTipoTorneo = 36;  /** Esto es lo unico que hay que modificar */
 
 }
 
@@ -1062,7 +1062,7 @@ $idTab += 1;
                 $idCss = 2097;
 
                 while ($rowZona = mysql_fetch_array($zonas)) { 
-
+					
                     if ($idCss == 2097) {
 
             ?> 
@@ -1126,8 +1126,21 @@ $idTab += 1;
     while ($rowZonaPosiciones = mysql_fetch_array($zonas3)) { 
 
         $resTorneos = $serviciosDatos->TraerFixturePorZonaTorneo($idTipoTorneo,$rowZonaPosiciones[0],$idfecha);
-
+		echo $idTipoTorneo."--".$rowZonaPosiciones[0]."--".$idfecha;
         //echo mysql_num_rows($resTorneos);
+		$idfecha = $serviciosFunciones->UltimaFechaPorTorneoZona($idTipoTorneo,$rowZonaPosiciones[0]);
+
+
+
+		if (mysql_num_rows($idfecha)>0) {
+		
+			$idfecha = mysql_result($idfecha,0,0);	
+		
+		} else {
+		
+			$idfecha = 23;	
+		
+		}
 
 ?> 
 

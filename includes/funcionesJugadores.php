@@ -128,7 +128,7 @@ class ServiciosJ {
 					where
 						j.idequipo = ".$idequipo." and j.invitado = 1
 							and j.expulsado = 0 union all select 
-						j.idjugador, j.apyn, j.dni, j.invitado, 1 as suspendido,1 as orden
+						j.idjugador, concat(j.apellido, ', ',j.nombre) as apyn, j.dni, j.invitado, 1 as suspendido,1 as orden
 					from
 						dbjugadores j
 					where

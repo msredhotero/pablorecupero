@@ -106,7 +106,7 @@ if ($_SESSION['refroll_predio'] != 1) {
 
 
 
-<title>Gestión: Predio 98</title>
+<title>Gesti&oacute;n: Tres Sesenta F&uacute;tbol</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 

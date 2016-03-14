@@ -34,6 +34,9 @@ $resFix = $serviciosZonasEquipos->TraerFixturePorId($idFixture);
 
 $refFecha = mysql_result($resFix,0,6);
 $refChequeado = mysql_result($resFix,0,'chequeado');
+$refJugo = mysql_result($resFix,0,'jugo');
+$resultadoA = mysql_result($resFix,0,'resultado_a');
+$resultadoB = mysql_result($resFix,0,'resultado_b');
 
 $resEquipos = $serviciosEquipos->TraerEquipos();
 
@@ -201,7 +204,7 @@ $resJugadoresB = $serviciosJugadores->traerJugadoresPorFixtureB($idFixture);
 		var autocompletar = new Array();
 		<?php //Esto es un poco de php para obtener lo que necesitamos
 		 for($p = 0;$p < count($arreglo_php); $p++){ //usamos count para saber cuantos elementos hay ?>
-		   autocompletar.push('<?php echo $arreglo_php[$p]; ?>');
+		   autocompletar.push('<?php echo str_replace("'","",$arreglo_php[$p]); ?>');
 		 <?php } ?>
 		 $("#apyn").autocomplete({ //Usamos el ID de la caja de texto donde lo queremos
 		   source: autocompletar //Le decimos que nuestra fuente es el arreglo
@@ -522,14 +525,44 @@ $resJugadoresB = $serviciosJugadores->traerJugadoresPorFixtureB($idFixture);
             
             </div>
             
-            <div class='row' style="margin-left:15px; margin-right:15px;">
-                <div class="form-group col-md-2">
+            <div class='row' style="margin-left:15px; margin-right:15px; border:1px solid #CCC;">
+                <div class="form-group col-md-3">
                  <label class="control-label" style="text-align:left" for="reftorneo">Chequeado</label>
-                    <div class="input-group col-md-8">
+                    <div class="input-group col-md-12">
                         <input type="checkbox" class="form-control input-sm" id="chequeado" name="chequeado" style="width:30px;" <?php if ($refChequeado == 1) { echo "checked"; } ?>/>
                     </div>
                 </div>
             
+
+                <div class="form-group col-md-3">
+                 <label class="control-label" style="text-align:left" for="reftorneo">Jugo</label>
+                    <div class="input-group col-md-12">
+                        <input type="checkbox" class="form-control input-sm" id="jugo" name="jugo" style="width:30px;" <?php if ($refJugo == 1) { echo "checked"; } ?>/>
+                    </div>
+                </div>
+            
+
+                <div class="form-group col-md-3">
+                 <label class="control-label" style="text-align:left" for="reftorneo">Resultado Local</label>
+                    <div class="input-group col-md-12">
+                        <input type="number" class="form-control input-sm" id="resultado_a" name="resultado_a" value="<?php echo $resultadoA; ?>"/>
+                    </div>
+                </div>
+            
+
+                <div class="form-group col-md-3">
+                 <label class="control-label" style="text-align:left" for="reftorneo">Resultado Visitante</label>
+                    <div class="input-group col-md-12">
+                        <input type="number" class="form-control input-sm" id="resultado_b" name="resultado_b" value="<?php echo $resultadoB; ?>"/>
+                    </div>
+                </div>
+            	
+                <div class="form-group col-md-12">
+                    <div class="input-group col-md-12">
+                        <button type="button" class="btn btn-primary" id="guardarsolo">Guardar</button>
+                        <h4 id="msgResultadoS"></h4>
+                    </div>
+                </div>
             </div>
             
             
@@ -692,7 +725,98 @@ $(document).ready(function(){
 			}
 		});
 	});
+	
+	
+	function jugo(idFixture) {
+		$.ajax({
+				data:  {idFixture: idFixture, accion: 'marcarJugo'},
+				url:   '../../ajax/ajax.php',
+				type:  'post',
+				beforeSend: function () {
+						
+				},
+				success:  function (response) {
+						alert('Se marco correctamente');
+						
+				}
+		});	
+	}
+	
+	function chequeado(idFixture) {
+		$.ajax({
+				data:  {idFixture: idFixture, accion: 'marcarChequeado'},
+				url:   '../../ajax/ajax.php',
+				type:  'post',
+				beforeSend: function () {
+						
+				},
+				success:  function (response) {
+						alert('Se marco correctamente');
+						
+				}
+		});	
+	}
+	
+	$("#jugo").click(function(){
 
+		$.ajax({
+			data:  {idFixture: <?php echo $idFixture; ?>, accion: 'marcarJugo'},
+			url:   '../../ajax/ajax.php',
+			type:  'post',
+			beforeSend: function () {
+					
+			},
+			success:  function (response) {
+					alert('Se marco correctamente');
+					
+			}
+		});	
+
+	});//fin del boton jugo
+	
+	
+	$("#chequeado").click(function(){
+
+		$.ajax({
+				data:  {idFixture: <?php echo $idFixture; ?>, accion: 'marcarChequeado'},
+				url:   '../../ajax/ajax.php',
+				type:  'post',
+				beforeSend: function () {
+						
+				},
+				success:  function (response) {
+						alert('Se marco correctamente');
+						
+				}
+		});
+
+	});//fin del boton chequeado
+	
+	$('#guardarsolo').click(function(event) {
+			$.ajax({
+				data:  {resultado_a: 	$('#resultado_a').val(),
+						resultado_b: 	$('#resultado_b').val(),
+						reffixture:	<?php echo $idFixture; ?>,
+						accion: 	'modificarFixtureResultados'},
+				url:   '../../ajax/ajax.php',
+				type:  'post',
+				success:  function (response) {
+					if (response == '') {
+				
+						$('#msgResultadoS').html("<img src='../../imagenes/check.gif'> Se cargo correctamente!!");
+						$('#msgResultadoS').show(300);
+						$('#msgResultadoS').toggle(120);
+						$('#msgResultadoS').show(150);
+					} else {
+						$('#msgResultadoS').show(300);
+						$('#msgResultadoS').toggle(120);
+						$('#msgResultadoS').show(150);
+						$('#msgResultadoS').html("<img src='../../imagenes/errorico.png'> " + response);
+						
+					}
+				}
+			}); 	
+	});
 
 	$('.guardarpuntosA').click(function(event){
 		usersid =  $(this).attr("id");

@@ -329,11 +329,20 @@ break;
 	case 'modificarFixture':
 		modificarFixture($serviciosZonasEquipos);
 		break;
+	case 'modificarFixtureResultados':
+		modificarFixtureResultados($serviciosZonasEquipos);
+		break;
 	case 'eliminarFixture':
 		eliminarFixture($serviciosZonasEquipos);
 		break; 
 	case 'traerFixturePorEquipo':
 		traerFixturePorEquipo($serviciosZonasEquipos);
+		break;
+	case 'marcarJugo':
+		marcarJugo($serviciosZonasEquipos);
+		break;
+	case 'marcarChequeado':
+		marcarChequeado($serviciosZonasEquipos);
 		break;
 	/* fin fixture */
 	
@@ -1182,22 +1191,22 @@ function TraerFixturePorZonaPorTorneo($serviciosDatos, $serviciosFunciones) {
 	
 	$cad2 = '
 	<div class="row">
-                	<table cellpadding="0" cellspacing="0" border="2" bordercolor="#FF0000" style="width:auto; margin-left:20px; font-weight:bold; margin-right:5px;">
-                    	<tr bgcolor="#bfbfbf">
-                        	<td colspan="11" align="center" style="font-size:1.9em;">RESULTADOS '.$zona.'</td>
+                	<table class="table table-responsive table-striped table3" style="margin:2px 20px;">
+                    	<tr>
+                        	<td colspan="11" align="center">RESULTADOS '.$zona.'</td>
                         </tr>
-                        <tr style="font-size:1.5em;">
-                        	<td align="center" style="padding:1px 6px;">POSICION</td>
-                            <td align="center" style="padding:1px 6px;">EQUIPO</td>
-                            <td align="center" style="padding:1px 6px;">PTS</td>
-                            <td align="center" style="padding:1px 6px;">PJ</td>
-                            <td align="center" style="padding:1px 6px;">PG</td>
-                            <td align="center" style="padding:1px 6px;">PE</td>
-                            <td align="center" style="padding:1px 6px;">PP</td>
-                            <td align="center" style="padding:1px 6px;">GF</td>
-                            <td align="center" style="padding:1px 6px;">GC</td>
-                            <td align="center" style="padding:1px 6px;">DIF</td>
-                            <td align="center" style="padding:1px 6px;">F.P.</td>
+                        <tr>
+                        	<td align="center">POSICION</td>
+                            <td align="center">EQUIPO</td>
+                            <td align="center">PTS</td>
+                            <td align="center">PJ</td>
+                            <td align="center">PG</td>
+                            <td align="center">PE</td>
+                            <td align="center">PP</td>
+                            <td align="center">GF</td>
+                            <td align="center">GC</td>
+                            <td align="center">DIF</td>
+                            <td align="center">F.P.</td>
                         </tr>';
 
 						$i =1;
@@ -1206,18 +1215,18 @@ function TraerFixturePorZonaPorTorneo($serviciosDatos, $serviciosFunciones) {
 							
 							
 							if (($row1['reemplzado'] == '0') || (($row1['volvio'] == '1') && ($row1['reemplzadovolvio'] == '1'))) {	
-							$cad2 = $cad2.'<tr style="font-size:1.5em;">
-								<td align="right" style="padding:1px 6px;">'.$i.'</td>
-								<td align="left" style="padding:1px 6px;">'.utf8_encode($row1['nombre']).'</td>
-								<td align="right" style="padding:1px 6px;">'.$row1['pts'].'</td>
-								<td align="right" style="padding:1px 6px;">'.$row1['partidos'].'</td>
-								<td align="right" style="padding:1px 6px;">'.$row1['ganados'].'</td>
-								<td align="right" style="padding:1px 6px;">'.$row1['empatados'].'</td>
-								<td align="right" style="padding:1px 6px;">'.$row1['perdidos'].'</td>
-								<td align="right" style="padding:1px 6px;">'.$row1['golesafavor'].'</td>
-								<td align="right" style="padding:1px 6px;">'.$row1['golesencontra'].'</td>
-								<td align="right" style="padding:1px 6px;">'.$row1['diferencia'].'</td>
-								<td align="right" style="padding:1px 6px;">'.$row1['puntos'].'</td>
+							$cad2 = $cad2.'<tr>
+								<td align="right">'.$i.'</td>
+								<td align="left">'.utf8_encode($row1['nombre']).'</td>
+								<td align="right">'.$row1['pts'].'</td>
+								<td align="right">'.$row1['partidos'].'</td>
+								<td align="right">'.$row1['ganados'].'</td>
+								<td align="right">'.$row1['empatados'].'</td>
+								<td align="right">'.$row1['perdidos'].'</td>
+								<td align="right">'.$row1['golesafavor'].'</td>
+								<td align="right">'.$row1['golesencontra'].'</td>
+								<td align="right">'.$row1['diferencia'].'</td>
+								<td align="right">'.$row1['puntos'].'</td>
 							</tr>';
 					
 							$i = $i + 1;
@@ -2696,6 +2705,20 @@ function modificarFixture($serviciosZonasEquipos) {
 } 
 
 
+function modificarFixtureResultados($serviciosZonasEquipos) {
+	$id 			= $_POST['reffixture'];
+	$resultado_a 	= $_POST['resultado_a'];
+	$resultado_b 	= $_POST['resultado_b'];
+
+	$res = $serviciosZonasEquipos->modificarFixture($id,$resultado_a,$resultado_b);
+	if ($res == true) {
+		echo '';
+	} else {
+		echo 'Huvo un error al modificar datos';
+	}
+
+} 
+
 function eliminarFixture($serviciosZonasEquipos) {
 $id = $_POST['id'];
 $res = $serviciosZonasEquipos->eliminarFixture($id);
@@ -2715,6 +2738,38 @@ function traerFixturePorEquipo($serviciosZonasEquipos) {
 	}
 	echo $cad;
 		
+}
+
+function marcarJugo($serviciosZonasEquipos) {
+	$idFixture		=	$_POST['idFixture'];
+	
+	$serviciosZonasEquipos->marcarJugo($idFixture);
+	
+	///////////   BORRO Y CREO EL FAIRPLAY /////////////////////////////////////////////////
+	$resTorneo  = $serviciosZonasEquipos->TraerFixturePorIdGral($idFixture);
+	$reffecha	= mysql_result($resTorneo,0,2);
+	$reftorneo	= mysql_result($resTorneo,0,1);
+	
+	$serviciosZonasEquipos->calcularTablaConductaPorFixture($reffecha, $idFixture, $reftorneo);
+	//////////     FIN                    //////////////////////////////////////////////////
+	
+	echo '';
+}
+
+function marcarChequeado($serviciosZonasEquipos) {
+	$idFixture		=	$_POST['idFixture'];
+	
+	$serviciosZonasEquipos->marcarChequeado($idFixture);
+	
+	///////////   BORRO Y CREO EL FAIRPLAY /////////////////////////////////////////////////
+	$resTorneo  = $serviciosZonasEquipos->TraerFixturePorIdGral($idFixture);
+	$reffecha	= mysql_result($resTorneo,0,2);
+	$reftorneo	= mysql_result($resTorneo,0,1);
+	
+	$serviciosZonasEquipos->calcularTablaConductaPorFixture($reffecha, $idFixture, $reftorneo);
+	//////////     FIN                    //////////////////////////////////////////////////
+	
+	echo '';
 }
 /* fin fixture */
 	
