@@ -52,8 +52,6 @@ if (isset($_GET["id"])) {
 
 
 
-
-
 if (isset($_GET["fecha"])) {
 
 
@@ -1066,11 +1064,11 @@ $idTab += 1;
 
             ?> 
 
-                    <div class="tab-tabla selected" id="tab-tabla-<?php echo $idCss; ?>"><?php echo $rowZona['descripciontorneo'].' / '.$rowZona['nombre']; ?></div>
+                    <div class="tab-tabla selected" id="tab-tabla-<?php echo $idCss; ?>"><?php echo $rowZona['nombre']; ?></div>
 
                     <?php } else { ?>
 
-                    <div class="tab-tabla" id="tab-tabla-<?php echo $idCss; ?>"><?php echo $rowZona['descripciontorneo'].' / '.$rowZona['nombre']; ?></div>
+                    <div class="tab-tabla" id="tab-tabla-<?php echo $idCss; ?>"><?php echo $rowZona['nombre']; ?></div>
 
                     <?php } ?> 
 
@@ -1126,7 +1124,19 @@ $idTab += 1;
 
         $resTorneos = $serviciosDatos->TraerFixturePorZonaTorneo($idTipoTorneo,$rowZonaPosiciones[0],$idfecha);
 
-        //echo mysql_num_rows($resTorneos);
+        $idfecha = $serviciosFunciones->UltimaFechaPorTorneoZona($idTipoTorneo,$rowZonaPosiciones[0]);
+
+
+
+		if (mysql_num_rows($idfecha)>0) {
+		
+			$idfecha = mysql_result($idfecha,0,0);	
+		
+		} else {
+		
+			$idfecha = 23;	
+		
+		}
 
 ?> 
 
@@ -1365,16 +1375,30 @@ puntos.</p>
 	<div class="fairplay equipos list" id="tabla-fairplay-equipos">
 
     	<div class="titles">
-		<div class="col col1">Equipo</div>
-        <div class="col col13">Puntos</div>
-        <div class="col col3"></div>
-    	<div class="col col5"></div>
-        <div class="col col4"></div>
-</div>
-<div class="items">
 
-<?php $cant = 1;
-while ($rowFP = mysql_fetch_array($resFairPlay)) {?>
+    		<div class="col col1">Equipo</div>
+
+    		<div class="col col2">Puntos</div>
+
+			<div class="col col3"></div>
+    		<div class="col col4"></div>
+			<div class="col col5"></div>
+
+    	</div>
+
+    	<div class="items">
+
+        	<?php
+
+	
+
+			$cant = 1;
+
+			
+
+			while ($rowFP = mysql_fetch_array($resFairPlay)) {
+
+			?>
 
 			
 
@@ -1394,13 +1418,15 @@ while ($rowFP = mysql_fetch_array($resFairPlay)) {?>
 
                 </div>
 
-                
-                
-                <div class="col col13"><?php echo $rowFP['puntos']; ?></div>
+                <div class="col col2"><?php echo $rowFP['puntos']; ?></div>
                 <div class="col col3"><?php echo $rowFP['amarillas']; ?></div>
                 <div class="col col4"><?php echo $rowFP['azules']; ?></div>
                 <div class="col col5"><?php echo $rowFP['rojas']; ?></div>
-</div>
+
+
+
+
+            </div>
 
 
 

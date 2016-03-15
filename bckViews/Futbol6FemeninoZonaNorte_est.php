@@ -52,8 +52,6 @@ if (isset($_GET["id"])) {
 
 
 
-
-
 if (isset($_GET["fecha"])) {
 
 
@@ -949,42 +947,66 @@ $idTab += 1;
     	<link type="text/css" rel="stylesheet" href="../jscss/tablas_export.css" media="screen" />
 
       	<style>
-	  			body .list .items .item.odd-row {
-	        	background-color: #F8DCEC;
-	        }
-	        body .list .items .item.pair-row {
-	        	background-color: #EFADD3;
-	        }
-	        body .tabs-tablas .bottom-line {
-	        	background-color: #D1288B;
-	        }
-	        body .tabs-tablas .tab-fairplay {
-	        	background-color: #EFADD3;
-	        }
-	        body .tabs-tablas .tab-fairplay.selected {
-	        	background-color: #D1288B;
-	        	color: white;
-	        }
-	        body .list .titles {
-	        	background-color: #D1288B;
-	        }
-			
-			 body .list .titles2 {
-	        	background-color: #D1288B;
-	        }
-			
-			
-	        body .tabs-tablas .tab-tabla {
-	        	background-color: #EFADD3;
-	        }
-	        body .tabs-tablas .tab-tabla.selected {
-	        	background-color: #D1288B;
-	        	color: white;
-	        }
-	        body .posiciones.list .col.col1 {
-	        	width: 29%;
-	        }
-	  	</style>
+
+  		body .section .list .items .item.odd-row {
+
+        	background-color: #DEE1E6;
+
+        }
+
+        body .section .list .items .item.pair-row {
+
+        	background-color: #B0B7C1;
+
+        }
+
+        body .section .tabs-tablas .bottom-line {
+
+        	background-color: #FF4200;
+
+        }
+
+        body .section .tabs-tablas .tab-fairplay {
+
+        	background-color: #B0B7C1;
+
+        }
+
+        body .section .tabs-tablas .tab-fairplay.selected {
+
+        	background-color: #FF4200;
+
+        	color: white;
+
+        }
+
+        body .section .list .titles {
+
+        	background-color: #FF4200;
+
+        }
+
+        body .section .tabs-tablas .tab-tabla {
+
+        	background-color: #B0B7C1;
+
+        }
+
+        body .section .tabs-tablas .tab-tabla.selected {
+
+        	background-color: #FF4200;
+
+        	color: white;
+
+        }
+
+        body .section .posiciones.list .col.col1 {
+
+        	width: 29%;
+
+        }
+
+  	</style>
 
       </head>
 
@@ -998,7 +1020,7 @@ $idTab += 1;
 
 	<div id="tab-posiciones" class="item selected posiciones">Posiciones</div>
 
-	<div id="tab-goleadores" class="item goleadores">Goleadoras</div>
+	<div id="tab-goleadores" class="item goleadores">Goleadores</div>
 
 	<div id="tab-fairplay" class="item fairplay">Fair Play</div>
 
@@ -1042,11 +1064,11 @@ $idTab += 1;
 
             ?> 
 
-                    <div class="tab-tabla selected" id="tab-tabla-<?php echo $idCss; ?>"><?php echo $rowZona['descripciontorneo'].' / '.$rowZona['nombre']; ?></div>
+                    <div class="tab-tabla selected" id="tab-tabla-<?php echo $idCss; ?>"><?php echo $rowZona['nombre']; ?></div>
 
                     <?php } else { ?>
 
-                    <div class="tab-tabla" id="tab-tabla-<?php echo $idCss; ?>"><?php echo $rowZona['descripciontorneo'].' / '.$rowZona['nombre']; ?></div>
+                    <div class="tab-tabla" id="tab-tabla-<?php echo $idCss; ?>"><?php echo $rowZona['nombre']; ?></div>
 
                     <?php } ?> 
 
@@ -1102,7 +1124,19 @@ $idTab += 1;
 
         $resTorneos = $serviciosDatos->TraerFixturePorZonaTorneo($idTipoTorneo,$rowZonaPosiciones[0],$idfecha);
 
-        //echo mysql_num_rows($resTorneos);
+        $idfecha = $serviciosFunciones->UltimaFechaPorTorneoZona($idTipoTorneo,$rowZonaPosiciones[0]);
+
+
+
+		if (mysql_num_rows($idfecha)>0) {
+		
+			$idfecha = mysql_result($idfecha,0,0);	
+		
+		} else {
+		
+			$idfecha = 23;	
+		
+		}
 
 ?> 
 
@@ -1266,7 +1300,7 @@ puntos.</p>
 
     	<div class="titles">
 
-    		<div class="col col1">Jugadora</div>
+    		<div class="col col1">Jugador</div>
 
     		<div class="col col2">Equipo</div>
 
@@ -1330,7 +1364,7 @@ puntos.</p>
 
   <div class="tab-fairplay selected" id="tab-fairplay-equipos">Equipos</div>
 
-  <div class="tab-fairplay" id="tab-fairplay-jugadores">Jugadoras</div>
+  <div class="tab-fairplay" id="tab-fairplay-jugadores">Jugadores</div>
 
   <div class="tab-fairplay" id="tab-fairplay-suspendidos">Suspendidos</div>
 
@@ -1344,10 +1378,11 @@ puntos.</p>
 
     		<div class="col col1">Equipo</div>
 
-    		<div class="col col13">Puntos</div>
+    		<div class="col col2">Puntos</div>
 
-<div class="col col3"></div>
-    		<div class="col col4"></div><div class="col col5"></div>
+			<div class="col col3"></div>
+    		<div class="col col4"></div>
+			<div class="col col5"></div>
 
     	</div>
 
@@ -1383,7 +1418,7 @@ puntos.</p>
 
                 </div>
 
-                <div class="col col13"><?php echo $rowFP['puntos']; ?></div>
+                <div class="col col2"><?php echo $rowFP['puntos']; ?></div>
                 <div class="col col3"><?php echo $rowFP['amarillas']; ?></div>
                 <div class="col col4"><?php echo $rowFP['azules']; ?></div>
                 <div class="col col5"><?php echo $rowFP['rojas']; ?></div>
@@ -1405,7 +1440,7 @@ puntos.</p>
 
     	<div class="titles2">
 
-    		<div class="col col1">Jugadora</div>
+    		<div class="col col1">Jugador</div>
 
     		<div class="col col2">Equipo</div>
 
@@ -1473,7 +1508,7 @@ puntos.</p>
 
     	<div class="titles">
 
-    		<div class="col col1">Jugadora</div>
+    		<div class="col col1">Jugador</div>
 
     		<div class="col col2">Equipo</div>
 

@@ -52,8 +52,6 @@ if (isset($_GET["id"])) {
 
 
 
-
-
 if (isset($_GET["fecha"])) {
 
 
@@ -145,7 +143,6 @@ $resSuspendido = $serviciosDatos->SuspendidosNuevo($idTipoTorneo,(substr($cadZon
 $resAmarillas = $serviciosDatos->traerAcumuladosAmarillasPorTorneoZona($idTipoTorneo,(substr($cadZon,0,strlen($cadZon)-1)),$idfecha);
 
 $resVallaMenosVencida = $serviciosDatos->TraerFixturePorZonaTorneoMenosGoles($idTipoTorneo,(substr($cadZon,0,strlen($cadZon)-1)),$idfecha);
-
 
 
 
@@ -968,6 +965,11 @@ $idTab += 1;
 	        body .list .titles {
 	        	background-color: #D1288B;
 	        }
+			
+			 body .list .titles2 {
+	        	background-color: #D1288B;
+	        }
+			
 	        body .tabs-tablas .tab-tabla {
 	        	background-color: #EFADD3;
 	        }
@@ -979,6 +981,7 @@ $idTab += 1;
 	        	width: 29%;
 	        }
 	  	</style>
+
       </head>
 
 <body>
@@ -991,7 +994,7 @@ $idTab += 1;
 
 	<div id="tab-posiciones" class="item selected posiciones">Posiciones</div>
 
-	<div id="tab-goleadores" class="item goleadores">Goleadores</div>
+	<div id="tab-goleadores" class="item goleadores">Goleadoras</div>
 
 	<div id="tab-fairplay" class="item fairplay">Fair Play</div>
 
@@ -1095,7 +1098,19 @@ $idTab += 1;
 
         $resTorneos = $serviciosDatos->TraerFixturePorZonaTorneo($idTipoTorneo,$rowZonaPosiciones[0],$idfecha);
 
-        //echo mysql_num_rows($resTorneos);
+        $idfecha = $serviciosFunciones->UltimaFechaPorTorneoZona($idTipoTorneo,$rowZonaPosiciones[0]);
+
+
+
+		if (mysql_num_rows($idfecha)>0) {
+		
+			$idfecha = mysql_result($idfecha,0,0);	
+		
+		} else {
+		
+			$idfecha = 23;	
+		
+		}
 
 ?> 
 
@@ -1259,7 +1274,7 @@ puntos.</p>
 
     	<div class="titles">
 
-    		<div class="col col1">Jugador</div>
+    		<div class="col col1">Jugadora</div>
 
     		<div class="col col2">Equipo</div>
 
@@ -1323,7 +1338,7 @@ puntos.</p>
 
   <div class="tab-fairplay selected" id="tab-fairplay-equipos">Equipos</div>
 
-  <div class="tab-fairplay" id="tab-fairplay-jugadores">Jugadores</div>
+  <div class="tab-fairplay" id="tab-fairplay-jugadores">Jugadoras</div>
 
   <div class="tab-fairplay" id="tab-fairplay-suspendidos">Suspendidos</div>
 
@@ -1337,10 +1352,11 @@ puntos.</p>
 
     		<div class="col col1">Equipo</div>
 
-    		<div class="col col13">Puntos</div>
+    		<div class="col col2">Puntos</div>
 
-<div class="col col3"></div>
-    		<div class="col col5"></div>
+			<div class="col col3"></div>
+    		<div class="col col4"></div>
+			<div class="col col5"></div>
 
     	</div>
 
@@ -1376,7 +1392,10 @@ puntos.</p>
 
                 </div>
 
-                <div class="col col3"><?php echo $rowFP[1]; ?></div>
+                <div class="col col2"><?php echo $rowFP['puntos']; ?></div>
+                <div class="col col3"><?php echo $rowFP['amarillas']; ?></div>
+                <div class="col col4"><?php echo $rowFP['azules']; ?></div>
+                <div class="col col5"><?php echo $rowFP['rojas']; ?></div>
 
 
 
@@ -1392,9 +1411,9 @@ puntos.</p>
 
 	<div class="fairplay list jugadores" id="tabla-fairplay-jugadores">
 
-    	<div class="titles">
+    	<div class="titles2">
 
-    		<div class="col col1">Jugador</div>
+    		<div class="col col1">Jugadora</div>
 
     		<div class="col col2">Equipo</div>
 
@@ -1462,7 +1481,7 @@ puntos.</p>
 
     	<div class="titles">
 
-    		<div class="col col1">Jugador</div>
+    		<div class="col col1">Jugadora</div>
 
     		<div class="col col2">Equipo</div>
 

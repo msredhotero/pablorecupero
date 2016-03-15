@@ -1126,7 +1126,19 @@ $idTab += 1;
 
         $resTorneos = $serviciosDatos->TraerFixturePorZonaTorneo($idTipoTorneo,$rowZonaPosiciones[0],$idfecha);
 
-        //echo mysql_num_rows($resTorneos);
+        $idfecha = $serviciosFunciones->UltimaFechaPorTorneoZona($idTipoTorneo,$rowZonaPosiciones[0]);
+
+
+
+		if (mysql_num_rows($idfecha)>0) {
+		
+			$idfecha = mysql_result($idfecha,0,0);	
+		
+		} else {
+		
+			$idfecha = 23;	
+		
+		}
 
 ?> 
 
@@ -1368,11 +1380,11 @@ puntos.</p>
 
     		<div class="col col1">Equipo</div>
 
-    		<div class="col col13">Puntos</div>
+    		<div class="col col2">Puntos</div>
 
-<div class="col col3"></div>
-<div class="col col4"></div>
-<div class="col col5"></div>
+			<div class="col col3"></div>
+			<div class="col col4"></div>
+			<div class="col col5"></div>
 
     	</div>
 
@@ -1408,7 +1420,7 @@ puntos.</p>
 
                 </div>
 
-                <div class="col col13"><?php echo $rowFP['puntos']; ?></div>
+                <div class="col col2"><?php echo $rowFP['puntos']; ?></div>
                 <div class="col col3"><?php echo $rowFP['amarillas']; ?></div>
                 <div class="col col4"><?php echo $rowFP['azules']; ?></div>
                 <div class="col col5"><?php echo $rowFP['rojas']; ?></div>
