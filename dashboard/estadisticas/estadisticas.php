@@ -1060,22 +1060,7 @@ $(document).ready(function(){
 
 	});//fin del boton abrir
 	
-	$('#chequeado').click(function() {
-		$.ajax({
-				data:  {id: <?php echo $idFixture; ?>, chequeado: $('#chequeado').is(':checked') ? 1 : 0, accion: 'modificarFixtureChequeado'},
-				url:   '../../ajax/ajax.php',
-				type:  'post',
-				beforeSend: function () {
-						
-				},
-				success:  function (response) {
-						$('.'+$('#idEliminar').val()).fadeOut( "slow", function() {
-							$(this).remove();
-						});
-						
-				}
-		});	
-	});
+	
 	
 	
 	$('#cargamasiva').click(function(e) {
