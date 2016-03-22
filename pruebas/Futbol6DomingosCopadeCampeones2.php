@@ -1067,11 +1067,11 @@ $idTab += 1;
 
             ?> 
 
-                    <div class="tab-tabla selected" id="tab-tabla-<?php echo $idCss; ?>"><?php echo $rowZona['descripciontorneo'].' / '.$rowZona['nombre']; ?></div>
+                    <div class="tab-tabla selected" id="tab-tabla-<?php echo $idCss; ?>"><?php echo $rowZona['nombre']; ?></div>
 
                     <?php } else { ?>
 
-                    <div class="tab-tabla" id="tab-tabla-<?php echo $idCss; ?>"><?php echo $rowZona['descripciontorneo'].' / '.$rowZona['nombre']; ?></div>
+                    <div class="tab-tabla" id="tab-tabla-<?php echo $idCss; ?>"><?php echo $rowZona['nombre']; ?></div>
 
                     <?php } ?> 
 
