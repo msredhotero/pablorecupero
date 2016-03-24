@@ -34,7 +34,7 @@ $resMenu = $serviciosHTML->menu($_SESSION['nombre_predio'],"Canchas",$_SESSION['
 $tabla 			= "dbplayoff";
 
 $lblCambio	 	= array("refequipo","reftorneo","refzona","fechacreacion");
-$lblreemplazo	= array("Equipo","Torneo","Zona","Fecha Creación");
+$lblreemplazo	= array("Equipo","Torneo","Categorias","Fecha Creación");
 
 $resEquipos 	= $serviciosEquipos->TraerEquipos();
 
@@ -71,7 +71,7 @@ $refCampo	 	= array("refzona","refequipo","reftorneo");
 /////////////////////// Opciones para la creacion del view  /////////////////////
 $cabeceras 		= "	<th>Equipo</th>
 					<th>Torneo</th>
-					<th>Zona</th>
+					<th>Categoria</th>
 					<th>Fecha Creación</th>";
 
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
@@ -440,7 +440,7 @@ $(document).ready(function(){
                                             $(".alert").removeClass("alert-danger");
 											$(".alert").removeClass("alert-info");
                                             $(".alert").addClass("alert-success");
-                                            $(".alert").html('<strong>Ok!</strong> Se cargo exitosamente la <strong>Cancha</strong>. ');
+                                            $(".alert").html('<strong>Ok!</strong> Se cargo exitosamente. ');
 											$(".alert").delay(3000).queue(function(){
 												/*aca lo que quiero hacer 
 												  después de los 2 segundos de retraso*/

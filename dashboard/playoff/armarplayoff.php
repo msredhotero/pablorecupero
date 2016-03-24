@@ -36,8 +36,8 @@ $idZona = $_GET['idzona'];
 $tabla 			= "tbplayoff";
 
 
-$lblCambio	 	= array("refplayoffequipo_a","refplayoffresultado_a","refplayoffequipo_b","refplayoffresultado_b","fechajuego","refcancha","refetapa","penalesa","penalesb");
-$lblreemplazo	= array("Equipo 1","Resultado 1","Equipo 2","Resultado 2","Fecha Juego","Cancha","Etapa","Penales A","Penales B");
+$lblCambio	 	= array("refplayoffequipo_a","refplayoffresultado_a","refplayoffequipo_b","refplayoffresultado_b","fechajuego","refcancha","refetapa","penalesa","penalesb","refzona");
+$lblreemplazo	= array("Equipo 1","Resultado 1","Equipo 2","Resultado 2","Fecha Juego","Cancha","Etapa","Penales A","Penales B","Categoria");
 
 $resEquiposA = $serviciosPlayOff->traerPlayOffPorTorneoZona($idTorneo,$idZona);
 
@@ -65,7 +65,7 @@ while ($rowC = mysql_fetch_array($resCanchas)) {
 }
 
 
-$resHorarios 	= $serviciosFunciones->TraerHorarios($_SESSION['torneo_predio']);
+$resHorarios 	= $serviciosFunciones->TraerHorarios($_SESSION['idtorneo_predio']);
 
 $cadRef4 = '';
 while ($rowH = mysql_fetch_array($resHorarios)) {
@@ -73,9 +73,19 @@ while ($rowH = mysql_fetch_array($resHorarios)) {
 	
 }
 
+$resZonas 	= $serviciosGrupos->TraerGrupos();
 
-$refdescripcion = array(0 => $cadRef,1=>$cadRef,2=>$cadRef2,3=>$cadRef3,4=>$cadRef4);
-$refCampo	 	= array("refplayoffequipo_a","refplayoffequipo_b","refetapa","refcancha","hora"); 
+$cadRef5 = '';
+while ($rowZo = mysql_fetch_array($resZonas)) {
+	if ($rowZo[0] == $idZona) {
+		$cadRef5 = $cadRef5.'<option value="'.$rowZo[0].'" selected>'.$rowZo[1].'</option>';
+	}
+	
+}
+
+
+$refdescripcion = array(0 => $cadRef,1=>$cadRef,2=>$cadRef2,3=>$cadRef3,4=>$cadRef4,5=>$cadRef5);
+$refCampo	 	= array("refplayoffequipo_a","refplayoffequipo_b","refetapa","refcancha","hora","refzona"); 
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
 
@@ -344,46 +354,9 @@ $(document).ready(function(){
 		});
 	}
 	
-	function buscarZona(idTorneo) {
-		$.ajax({
-				data:  {reftorneo: idTorneo, 
-						accion: 'traerZonaPorTorneos'},
-				url:   '../../ajax/ajax.php',
-				type:  'post',
-				beforeSend: function () {
-						
-				},
-				success:  function (response) {
-					if(response){
-						var cad = '';	//idproducto,codigo,nombre,descripcion,stock,stockmin,preciocosto,precioventa,utilidad,estado,imagen,idcategoria,tipoimagen,nroserie,codigobarra
-						json = $.parseJSON(response);
-						
-						$.each(json, function(i, item) {
-							
-							cad = '<option value="'+item.idgrupo+'">'+item.nombre+'</option>';
-						});
-						
-						$("#refzona").html(cad);
-						
-						buscarEquipo(idTorneo,$("#refzona").val());
-					}
-						
-				}
-		});
-	}
-	
-	$("#refzona").change(function(e) {
-        buscarEquipo($("#reftorneo").val(),$("#refzona").val());
-    });
 	
 	
 	
-
-	$("#reftorneo").change(function(e) {
-        buscarZona($('#reftorneo').val());
-    });
-	
-	buscarZona($('#reftorneo').val());
 
 
 	 $( "#dialog2" ).dialog({
@@ -462,7 +435,7 @@ $(document).ready(function(){
                                             $(".alert").removeClass("alert-danger");
 											$(".alert").removeClass("alert-info");
                                             $(".alert").addClass("alert-success");
-                                            $(".alert").html('<strong>Ok!</strong> Se cargo exitosamente la <strong>Cancha</strong>. ');
+                                            $(".alert").html('<strong>Ok!</strong> Se cargo exitosamente. ');
 											$(".alert").delay(3000).queue(function(){
 												/*aca lo que quiero hacer 
 												  después de los 2 segundos de retraso*/

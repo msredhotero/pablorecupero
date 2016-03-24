@@ -12,6 +12,8 @@ include ('../includes/funcionesDATOS.php');
 include ('../includes/funcionesPlayoff.php');
 include ('../includes/funcionesContenido.php');
 include ('../includes/funcionesHistorial.php');
+include ('../includes/funcionesPagos.php');
+include ('../includes/funcionesImportar.php');
 
 $serviciosUsuarios  	= new ServiciosUsuarios();
 $serviciosFunciones 	= new Servicios();
@@ -25,6 +27,8 @@ $serviciosDatos 		= new ServiciosDatos();
 $serviciosPlayOff 		= new ServiciosPlayOff();
 $serviciosContenido		= new ServiciosContenido();
 $serviciosHistorial		= new ServiciosHistorial();
+$serviciosPagos 		= new ServiciosPagos();
+$serviciosImportar 		= new ServiciosImportar();
 
 $accion = $_POST['accion'];
 
@@ -596,8 +600,11 @@ $chequeado = 1;
 } else {
 $chequeado = 0;
 }
+
 $refetapa = $_POST['refetapa'];
-$res = $serviciosArmarPlayOff->insertarArmarPlayOff($refplayoffequipo_a,$refplayoffresultado_a,$refplayoffequipo_b,$refplayoffresultado_b,$fechajuego,$hora,$refcancha,$chequeado,$refetapa,$penalesa,$penalesb);
+$refzona = $_POST['refzona'];
+
+$res = $serviciosArmarPlayOff->insertarArmarPlayOff($refplayoffequipo_a,$refplayoffresultado_a,$refplayoffequipo_b,$refplayoffresultado_b,$fechajuego,$hora,$refcancha,$chequeado,$refetapa,$penalesa,$penalesb,$refzona);
 if ((integer)$res > 0) {
 echo '';
 } else {
@@ -622,7 +629,9 @@ $chequeado = 1;
 $chequeado = 0;
 }
 $refetapa = $_POST['refetapa'];
-$res = $serviciosArmarPlayOff->modificarArmarPlayOff($id,$refplayoffequipo_a,$refplayoffresultado_a,$refplayoffequipo_b,$refplayoffresultado_b,$fechajuego,$hora,$refcancha,$chequeado,$refetapa,$penalesa,$penalesb);
+$refzona = $_POST['refzona'];
+
+$res = $serviciosArmarPlayOff->modificarArmarPlayOff($id,$refplayoffequipo_a,$refplayoffresultado_a,$refplayoffequipo_b,$refplayoffresultado_b,$fechajuego,$hora,$refcancha,$chequeado,$refetapa,$penalesa,$penalesb,$refzona);
 if ($res == true) {
 echo '';
 } else {
@@ -2791,6 +2800,7 @@ function insertarPagos($serviciosPagos) {
 	} else {
 		echo 'Huvo un error al insertar datos';
 	}
+	//echo $res;
 }
 
 function modificarPagos($serviciosPagos) {
