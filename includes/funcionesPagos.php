@@ -12,7 +12,7 @@ class ServiciosPagos {
 
 	function insertarPagos($refequipo,$reftorneo,$refzona,$reffecha,$importe,$observacion,$fechacreacion) {
 	$sql = "insert into dbpagos(idpago,refequipo,reftorneo,refzona,reffecha,importe,observacion,fechacreacion)
-	values ('',".$refequipo.",".$reftorneo.",".$refzona.",".$reffecha.",".$importe.",'".utf8_decode($observacion)."','".utf8_decode($fechacreacion)."')";
+	values ('',".$refequipo.",".$reftorneo.",".$refzona.",".$reffecha.",".str_replace(",","",$importe).",'".utf8_decode($observacion)."','".utf8_decode($fechacreacion)."')";
 	$res = $this->query($sql,1);
 	return $res;
 	}
@@ -21,7 +21,7 @@ class ServiciosPagos {
 	function modificarPagos($id,$refequipo,$reftorneo,$refzona,$reffecha,$importe,$observacion,$fechacreacion) {
 	$sql = "update dbpagos
 	set
-	refequipo = ".$refequipo.",reftorneo = ".$reftorneo.",refzona = ".$refzona.",reffecha = ".$reffecha.",importe = ".$importe.",observacion = '".utf8_decode($observacion)."',fechacreacion = '".utf8_decode($fechacreacion)."'
+	refequipo = ".$refequipo.",reftorneo = ".$reftorneo.",refzona = ".$refzona.",reffecha = ".$reffecha.",importe = ".str_replace(",","",$importe).",observacion = '".utf8_decode($observacion)."',fechacreacion = '".utf8_decode($fechacreacion)."'
 	where idpago =".$id;
 	$res = $this->query($sql,0);
 	return $res;
