@@ -298,6 +298,56 @@ return $res;
 }
 
 
+function traerJugadoresPorPlayOffA($idPlayOff,$idTorneo,$idZona) {
+	$sql = "select
+				j.idjugador,
+				concat(j.apellido, ', ', j.nombre) as apyn,
+				j.dni,
+				ee.nombre,
+				ee.idequipo,
+			   
+				a.goles,
+				e.reftorneo
+			from		(select
+						distinct pp.refequipo, pp.reftorneo
+						from		tbplayoff p
+						inner join
+						dbplayoff pp ON p.refplayoffequipo_a = pp.idplayoff
+						where pp.refzona = ".$idZona." and pp.reftorneo = ".$idTorneo." and p.refzona =".$idZona." and p.idplayoff = ".$idPlayOff.") e
+				left join		dbjugadores j on  j.idequipo = e.refequipo 
+				inner join		dbequipos ee on ee.idequipo = e.refequipo
+				left join		dbgolesplayoff a on a.refplayoff = ".$idPlayOff." and a.refjugador = j.idjugador
+				order by concat(j.apellido, ', ', j.nombre)";	
+	$res = $this->query($sql,0);
+	return $res;
+}
+
+
+function traerJugadoresPorPlayOffB($idPlayOff,$idTorneo,$idZona) {
+	$sql = "select
+				j.idjugador,
+				concat(j.apellido, ', ', j.nombre) as apyn,
+				j.dni,
+				ee.nombre,
+				ee.idequipo,
+			   
+				a.goles,
+				e.reftorneo
+			from		(select
+						distinct pp.refequipo, pp.reftorneo
+						from		tbplayoff p
+						inner join
+						dbplayoff pp ON p.refplayoffequipo_b = pp.idplayoff
+						where pp.refzona = ".$idZona." and pp.reftorneo = ".$idTorneo." and p.refzona =".$idZona." and p.idplayoff = ".$idPlayOff.") e
+				left join		dbjugadores j on  j.idequipo = e.refequipo 
+				inner join		dbequipos ee on ee.idequipo = e.refequipo
+				left join		dbgolesplayoff a on a.refplayoff = ".$idPlayOff." and a.refjugador = j.idjugador
+				order by concat(j.apellido, ', ', j.nombre)";	
+	$res = $this->query($sql,0);
+	return $res;
+}
+
+
 	function query($sql,$accion) {
 		
 		require_once 'appconfig.php';

@@ -326,6 +326,18 @@ $(document).ready(function(){
 			alert("Error, vuelva a realizar la acción.");	
 		  }
 	});//fin del boton modificar
+	
+	
+	$("#example").on("click",'.goleadores', function(){
+		  usersid =  $(this).attr("id");
+		  if (!isNaN(usersid)) {
+			
+			url = "estadisticas.php?idtorneo="+<?php echo $idTorneo; ?>+"&idzona="+<?php echo $idZona; ?>+"&id=" + usersid;
+			$(location).attr('href',url);
+		  } else {
+			alert("Error, vuelva a realizar la acción.");	
+		  }
+	});//fin del boton modificar
 
 	function buscarEquipo(idTorneo,idZona) {
 		$.ajax({

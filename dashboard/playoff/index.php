@@ -15,6 +15,7 @@ include ('../../includes/funcionesHTML.php');
 include ('../../includes/funcionesEquipos.php');
 include ('../../includes/funcionesGrupos.php');
 include ('../../includes/funcionesPlayoff.php');
+include ('../../includes/funcionesZonasEquipos.php');
 
 $serviciosFunciones = new Servicios();
 $serviciosUsuario 	= new ServiciosUsuarios();
@@ -22,6 +23,7 @@ $serviciosHTML 		= new ServiciosHTML();
 $serviciosEquipos 	= new ServiciosE();
 $serviciosGrupos	= new ServiciosG();
 $serviciosPlayOff = new ServiciosPlayOff();
+$serviciosZonasEquipos = new ServiciosZonasEquipos();
 
 $fecha = date('Y-m-d');
 
@@ -36,7 +38,7 @@ $tabla 			= "dbplayoff";
 $lblCambio	 	= array("refequipo","reftorneo","refzona","fechacreacion");
 $lblreemplazo	= array("Equipo","Torneo","Categorias","Fecha Creación");
 
-$resEquipos 	= $serviciosEquipos->TraerEquipos();
+$resEquipos 	= $serviciosEquipos->TraerEquiposPorTorneo($_SESSION['idtorneo_predio']);
 
 $cadRef = '';
 while ($rowTT = mysql_fetch_array($resEquipos)) {
@@ -49,8 +51,9 @@ $resTorneos 	= $serviciosFunciones->TraerTorneos();
 
 $cadRefT = '';
 while ($rowT = mysql_fetch_array($resTorneos)) {
-	$cadRefT = $cadRefT.'<option value="'.$rowT[0].'">'.$rowT[4].' - '.$rowT[1].'</option>';
-	
+	if ($rowT['idtipotorneo'] == $_SESSION['idtorneo_predio']) {
+		$cadRefT = $cadRefT.'<option value="'.$rowT[0].'" selected>'.$rowT[4].' - '.$rowT[1].'</option>';
+	}
 }
 
 $resZonas 	= $serviciosGrupos->TraerGrupos();
@@ -343,17 +346,18 @@ $(document).ready(function(){
 						
 						$("#refzona").html(cad);
 						
-						buscarEquipo(idTorneo,$("#refzona").val());
+						//buscarEquipo(idTorneo,$("#refzona").val());
 					}
 						
 				}
 		});
 	}
 	
+	/*
 	$("#refzona").change(function(e) {
         buscarEquipo($("#reftorneo").val(),$("#refzona").val());
     });
-	
+	*/
 	
 	
 

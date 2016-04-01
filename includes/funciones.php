@@ -70,7 +70,9 @@ class Servicios {
 				$classMod = 'varmodificarplayoff';
 				$classEli = 'varborrar';
 				$idresultados = "resultados";
-				$adicional = '';
+				$adicional = '<li>
+                                        <a href="javascript:void(0)" class="goleadores" id="****">Cargar Goles</a>
+                                        </li>';
 				break;
 			default:
 				$classMod = 'varmodificar';
@@ -1104,7 +1106,7 @@ return $res;
 		THEN  '1'
 		ELSE  '0'
 		END
-		) AS activo ,tt.descripciontorneo from dbtorneos t
+		) AS activo ,tt.descripciontorneo,tt.idtipotorneo from dbtorneos t
 				inner join
 				tbtipotorneo tt on t.reftipotorneo = tt.idtipotorneo
 				left
@@ -1112,7 +1114,8 @@ return $res;
 				on		ts.reftorneo = t.idtorneo
 				left join
 				tbsedes ss on ss.idsede = ts.refsede
-				group by t.idtorneo,t.nombre,t.fechacreacion, t.activo,tt.descripciontorneo
+				where t.activo = 1
+				group by t.idtorneo,t.nombre,t.fechacreacion, t.activo,tt.descripciontorneo,tt.idtipotorneo
 				order by idtorneo desc";
 		return $this-> query($sql,0);
 	}

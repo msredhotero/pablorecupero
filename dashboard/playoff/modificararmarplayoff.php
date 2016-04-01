@@ -29,25 +29,26 @@ $fecha = date('Y-m-d');
 $resMenu = $serviciosHTML->menu($_SESSION['nombre_predio'],"Armar PlayOff",$_SESSION['refroll_predio'],$_SESSION['torneo_predio']);
 
 $id = $_GET['id'];
-
-$resRseultado = $serviciosPlayOff->traerArmarPlayOffPorId($id);
-
 $idTorneo = $_GET['idtorneo'];
 $idZona = $_GET['idzona'];
+
+$resResultado = $serviciosPlayOff->traerArmarPlayOff($idTorneo, $idZona);
+
+
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
 $tabla 			= "tbplayoff";
 
 
-$lblCambio	 	= array("refplayoffequipo_a","refplayoffresultado_a","refplayoffequipo_b","refplayoffresultado_b","fechajuego","refcancha","refetapa","penalesa","penalesb");
-$lblreemplazo	= array("Equipo 1","Resultado 1","Equipo 2","Resultado 2","Fecha Juego","Cancha","Etapa","Penales A","Penales B");
+$lblCambio	 	= array("refplayoffequipo_a","refplayoffresultado_a","refplayoffequipo_b","refplayoffresultado_b","fechajuego","refcancha","refetapa","penalesa","penalesb","refzona");
+$lblreemplazo	= array("Equipo 1","Resultado 1","Equipo 2","Resultado 2","Fecha Juego","Cancha","Etapa","Penales A","Penales B","Categoria");
 
 $resEquiposA = $serviciosPlayOff->traerPlayOffPorTorneoZona($idTorneo,$idZona);
 $resEquiposB = $serviciosPlayOff->traerPlayOffPorTorneoZona($idTorneo,$idZona);
 
 $cadRef = '';
 while ($rowTT = mysql_fetch_array($resEquiposA)) {
-	if (mysql_result($resResultado,0,'refplayoffequipo_a') == $rowTT[0]) {
+	if (mysql_result($resResultado,0,'refplayoffresultado_a') == $rowTT[0]) {
 		$cadRef = $cadRef.'<option value="'.$rowTT[0].'" selected>'.$rowTT[1].' - '.$rowTT[2].'</option>';
 	} else {
 		$cadRef = $cadRef.'<option value="'.$rowTT[0].'">'.$rowTT[1].' - '.$rowTT[2].'</option>';	
@@ -58,7 +59,7 @@ while ($rowTT = mysql_fetch_array($resEquiposA)) {
 
 $cadRefB = '';
 while ($rowTTB = mysql_fetch_array($resEquiposB)) {
-	if (mysql_result($resResultado,0,'refplayoffequipo_b') == $rowTTB[0]) {
+	if (mysql_result($resResultado,0,'refplayoffresultado_b') == $rowTTB[0]) {
 		$cadRefB = $cadRefB.'<option value="'.$rowTTB[0].'" selected>'.$rowTTB[1].' - '.$rowTTB[2].'</option>';
 	} else {
 		$cadRefB = $cadRefB.'<option value="'.$rowTTB[0].'">'.$rowTTB[1].' - '.$rowTTB[2].'</option>';	
@@ -90,7 +91,7 @@ while ($rowC = mysql_fetch_array($resCanchas)) {
 }
 
 
-$resHorarios 	= $serviciosFunciones->TraerHorarios($_SESSION['torneo_predio']);
+$resHorarios 	= $serviciosFunciones->TraerHorarios($_SESSION['idtorneo_predio']);
 
 $cadRef4 = '';
 while ($rowH = mysql_fetch_array($resHorarios)) {
@@ -101,9 +102,18 @@ while ($rowH = mysql_fetch_array($resHorarios)) {
 	}
 }
 
+$resZonas 	= $serviciosGrupos->TraerGrupos();
 
-$refdescripcion = array(0 => $cadRef,1=>$cadRef,2=>$cadRef2,3=>$cadRef3,4=>$cadRef4);
-$refCampo	 	= array("refplayoffequipo_a","refplayoffequipo_b","refetapa","refcancha","hora"); 
+$cadRef5 = '';
+while ($rowZo = mysql_fetch_array($resZonas)) {
+	if ($rowZo[0] == $idZona) {
+		$cadRef5 = $cadRef5.'<option value="'.$rowZo[0].'" selected>'.$rowZo[1].'</option>';
+	}
+	
+}
+
+$refdescripcion = array(0 => $cadRef,1=>$cadRef,2=>$cadRef2,3=>$cadRef3,4=>$cadRef4,5=>$cadRef5);
+$refCampo	 	= array("refplayoffequipo_a","refplayoffequipo_b","refetapa","refcancha","hora","refzona"); 
 //////////////////////////////////////////////  FIN de los opciones //////////////////////////
 
 
@@ -127,9 +137,7 @@ $cabeceras 		= "	<th>Equipo 1</th>
 
 
 
-$formulario 	= $serviciosFunciones->camposTabla("insertarArmarPlayOff",$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
-
-$lstCargados 	= $serviciosFunciones->camposTablaView($cabeceras,$serviciosPlayOff->traerArmarPlayOff($idTorneo,$idZona),11);
+$formulario 	= $serviciosFunciones->camposTablaModificar($id,"idplayoff","modificarArmarPlayOff",$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
 
 if ($_SESSION['refroll_predio'] != 1) {
 
@@ -193,11 +201,11 @@ if ($_SESSION['refroll_predio'] != 1) {
 
 <div id="content">
 
-<h3>Armar Fixture del PlayOff</h3>
+<h3>Modificar Fixture del PlayOff</h3>
 
     <div class="boxInfoLargo">
         <div id="headBoxInfo">
-        	<p style="color: #fff; font-size:18px; height:16px;">Carga del Fixture</p>
+        	<p style="color: #fff; font-size:18px; height:16px;">Modificar</p>
         	
         </div>
     	<div class="cuerpoBox">
@@ -220,7 +228,7 @@ if ($_SESSION['refroll_predio'] != 1) {
                 <div class="col-md-12">
                 <ul class="list-inline" style="margin-top:15px;">
                     <li>
-                        <button type="button" class="btn btn-primary" id="cargar" style="margin-left:0px;">Guardar</button>
+                        <button type="button" class="btn btn-warning" id="cargar" style="margin-left:0px;">Modificar</button>
                     </li>
                     <li>
                         <button type="button" class="btn btn-default" id="volver" style="margin-left:0px;">Volver</button>
@@ -233,15 +241,6 @@ if ($_SESSION['refroll_predio'] != 1) {
     	</div>
     </div>
     
-    <div class="boxInfoLargo">
-        <div id="headBoxInfo">
-        	<p style="color: #fff; font-size:18px; height:16px;">Equipos Cargados</p>
-        	
-        </div>
-    	<div class="cuerpoBox">
-        	<?php echo $lstCargados; ?>
-    	</div>
-    </div>
     
     
 
@@ -252,12 +251,12 @@ if ($_SESSION['refroll_predio'] != 1) {
 
 
 </div>
-<div id="dialog2" title="Eliminar Equipos">
+<div id="dialog2" title="Eliminar PlayOff">
     	<p>
         	<span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
-            ¿Esta seguro que desea eliminar el equipo?.<span id="proveedorEli"></span>
+            ¿Esta seguro que desea eliminar el partido?.<span id="proveedorEli"></span>
         </p>
-        <p><strong>Importante: </strong>Si elimina el equipo no permanecera en el PlayOff/p>
+
         <input type="hidden" value="" id="idEliminar" name="idEliminar">
 </div>
 <script type="text/javascript" src="../../js/jquery.dataTables.min.js"></script>
@@ -479,7 +478,7 @@ $(document).ready(function(){
                                             $(".alert").removeClass("alert-danger");
 											$(".alert").removeClass("alert-info");
                                             $(".alert").addClass("alert-success");
-                                            $(".alert").html('<strong>Ok!</strong> Se cargo exitosamente la <strong>Cancha</strong>. ');
+                                            $(".alert").html('<strong>Ok!</strong> Se modifico exitosamente. ');
 											$(".alert").delay(3000).queue(function(){
 												/*aca lo que quiero hacer 
 												  después de los 2 segundos de retraso*/

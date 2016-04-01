@@ -30,6 +30,22 @@ class ServiciosE {
 				facebooksubcapitan from dbequipos order by nombre";
 		return $this-> query($sql,0);
 	}
+	
+	function TraerEquiposPorTorneo($idtorneo) {
+		$sql  = "select
+					distinct e.idequipo, e.nombre
+				from		dbequipos e
+				left
+				join		dbtorneoge tge
+				on			tge.refequipo = e.idequipo
+				left
+				join		dbtorneos t
+				on			t.idtorneo = tge.reftorneo and t.activo = 1
+				where		t.reftipotorneo = ".$idtorneo." 
+				order by e.nombre";
+		return $this->query($sql,0);
+		
+	}
 
 	
 	function TraerIdEquipo($id) {
