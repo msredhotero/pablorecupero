@@ -381,7 +381,8 @@ class ServiciosZonasEquipos {
 					else '0' 
 					end
 					) as jugo,
-			g.nombre
+			g.nombre,
+				f.idfecha
 					from dbfixture as fi
 					        inner 
 					        join tbfechas AS f
@@ -455,7 +456,8 @@ class ServiciosZonasEquipos {
 					when fi.jugo = 1 then '1'
 					else '0'
 				end) as jugo,
-				g.nombre
+				g.nombre,
+				f.idfecha
 			from
 				dbfixture as fi
 					inner join
@@ -472,7 +474,7 @@ class ServiciosZonasEquipos {
 			where
 				tp.idtipotorneo =  ".$_SESSION['idtorneo_predio']."
 				) ff			
-					 order by ff.nombre,ff.fecha,ff.hora";
+					 order by ff.nombre,ff.idfecha,ff.fecha,ff.hora";
 		 return $this-> query($sql,0);
 	}
 	

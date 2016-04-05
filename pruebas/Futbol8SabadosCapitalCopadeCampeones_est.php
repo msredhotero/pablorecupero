@@ -161,7 +161,7 @@ $idTorneo = mysql_result($serviciosFunciones->TraerTorneosActivoPorTipo($idTipoT
 
 echo (substr($cadZon,0,strlen($cadZon)-1));
 
-$etapas = $serviciosPlayOff->TraerEtaposPorTorneosZonas(25,$idzona);
+$etapas = $serviciosPlayOff->TraerEtaposPorTorneosZonas($idTorneo,$idzona);
 
 
 
@@ -176,7 +176,7 @@ $resOctavos = $serviciosPlayOff->traerArmarPlayOffPorEtapa($idTorneo,$idzona,2);
 $resCuartos = $serviciosPlayOff->traerArmarPlayOffPorEtapa($idTorneo,$idzona,3); //Cuartos
 
 $resSemiFinal = $serviciosPlayOff->traerArmarPlayOffPorEtapa($idTorneo,$idzona,4); //SemiFinal
-
+//echo $resSemiFinal;
 $resTercer = $serviciosPlayOff->traerArmarPlayOffPorEtapa($idTorneo,$idzona,5); //Tercer puesto
 
 $resFinal = $serviciosPlayOff->traerArmarPlayOffPorEtapa($idTorneo,$idzona,6); //Final
@@ -198,7 +198,7 @@ $cadCuerpo = '';
 
 
 while ($rowEtapas = mysql_fetch_array($etapas)) { 
-
+echo $rowEtapas['1'];
 $idTab += 1;	
 
 	switch ($rowEtapas['1']) {
@@ -213,7 +213,7 @@ $idTab += 1;
 
 								<div class="col col1"></div>
 
-								<div class="col col2 col-number">EQUIPO A</div>
+								<div class="col col2">EQUIPO A</div>
 
 								<div class="col col3 col-number">RESULT. A</div>
 
@@ -221,7 +221,7 @@ $idTab += 1;
 
 								<div class="col col5 col-number">RESULT. B</div>
 
-								<div class="col col6 col-number">EQUIPO B</div>
+								<div class="col col6">EQUIPO B</div>
 
 								<div class="col col7 col-number">FECHA</div>
 
@@ -560,7 +560,7 @@ $idTab += 1;
 			break;
 
 		case 'SemiFinal':
-			echo 'asdasd';
+			echo 'entro';
 			$cadCab .= '<div class="tab-tabla " id="tab-tabla-'.$idTab.'">'.$rowEtapas['1'].'</div>';
 
 			$cadCuerpo .= '<div class="posiciones list" id="tabla-posiciones-'.$idTab.'">
@@ -674,7 +674,7 @@ $idTab += 1;
 							</div>
 
 						</div>';
-
+			//echo $cadCuerpo;
 			break;
 
 		case 'Tercer':

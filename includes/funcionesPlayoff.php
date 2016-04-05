@@ -225,6 +225,15 @@ return $res;
 /* Fin */	
 
 function TraerEtaposPorTorneosZonas($idTorneo,$idZona) {
+	$zonas4 = $this->traerZonaPorTipoTorneos($idTorneo);
+	$cadZon = '';
+
+	while ($rz = mysql_fetch_array($zonas4)) {
+	
+		$cadZon .= $rz['refgrupo'].",";	
+	
+	}
+	
 	$sql = "select 
 			e.idetapa, e.descripcion, e.valor
 		from
@@ -239,7 +248,7 @@ function TraerEtaposPorTorneosZonas($idTorneo,$idZona) {
 			tbetapas e ON p.refetapa = e.idetapa
 				inner join
 			tbcanchas c ON p.refcancha = c.idcancha
-		where pp.refzona = ".$idZona." and pp.reftorneo = ".$idTorneo." and p.refzona =".$idZona."
+		where pp.reftorneo = ".$idTorneo."
 		group by e.idetapa, e.descripcion, e.valor
 		order by e.idetapa";
 	//return $sql;	
@@ -248,6 +257,14 @@ function TraerEtaposPorTorneosZonas($idTorneo,$idZona) {
 }
 
 function traerArmarPlayOffPorEtapa($idTorneo, $idZona, $idEtapa) {
+	$zonas4 = $this->traerZonaPorTipoTorneos($idTorneo);
+	$cadZon = '';
+
+	while ($rz = mysql_fetch_array($zonas4)) {
+	
+		$cadZon .= $rz['refgrupo'].",";	
+	
+	}
 $sql = "select 
 			p.idplayoff,
 			(select 
@@ -291,7 +308,7 @@ $sql = "select
 			tbetapas e ON p.refetapa = e.idetapa
 				inner join
 			tbcanchas c ON p.refcancha = c.idcancha
-		where pp.refzona = ".$idZona." and pp.reftorneo = ".$idTorneo." and p.refetapa = ".$idEtapa."
+		where pp.refzona in (".(substr($cadZon,0,strlen($cadZon)-1)).") and pp.reftorneo = ".$idTorneo." and p.refetapa = ".$idEtapa."
 		order by 1";
 $res = $this->query($sql,0);
 return $res;
@@ -346,6 +363,66 @@ function traerJugadoresPorPlayOffB($idPlayOff,$idTorneo,$idZona) {
 	$res = $this->query($sql,0);
 	return $res;
 }
+
+
+function traerZonaPorTipoTorneos($idtorneo) {
+		$sql = "select 
+                            distinct tge.refgrupo,g.nombre,tp.descripciontorneo
+                        from
+                            dbtorneos t
+                                inner join
+                            tbtipotorneo tp ON tp.idtipotorneo = t.reftipotorneo
+                                        inner join
+                                dbtorneoge tge ON tge.reftorneo = t.idtorneo
+                                        inner join
+                                dbgrupos g ON g.idgrupo = tge.refgrupo
+                        where	t.activo = 1 and t.idtorneo = ".$idtorneo."
+                        order by g.idgrupo ";	
+		return $this-> query($sql,0);
+	}
+
+
+/* PARA GolesPlayoff */
+
+function insertarGolesPlayoff($refplayoff,$reftorneo,$refzona,$refequipo,$refjugador,$goles) {
+$sql = "insert into dbgolesplayoff(idgolesplayoff,refplayoff,reftorneo,refzona,refequipo,refjugador,goles)
+values ('',".$refplayoff.",".$reftorneo.",".$refzona.",".$refequipo.",".$refjugador.",".$goles.")";
+$res = $this->query($sql,1);
+return $res;
+}
+
+
+function modificarGolesPlayoff($id,$refplayoff,$reftorneo,$refzona,$refequipo,$refjugador,$goles) {
+$sql = "update dbgolesplayoff
+set
+refplayoff = ".$refplayoff.",reftorneo = ".$reftorneo.",refzona = ".$refzona.",refequipo = ".$refequipo.",refjugador = ".$refjugador.",goles = ".$goles."
+where idgolesplayoff =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function eliminarGolesPlayoff($id) {
+$sql = "delete from dbgolesplayoff where idgolesplayoff =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerGolesPlayoff() {
+$sql = "select idgolesplayoff,refplayoff,reftorneo,refzona,refequipo,refjugador,goles from dbgolesplayoff order by 1";
+$res = $this->query($sql,0);
+return $res;
+}
+
+
+function traerGolesPlayoffPorId($id) {
+$sql = "select idgolesplayoff,refplayoff,reftorneo,refzona,refequipo,refjugador,goles from dbgolesplayoff where idgolesplayoff =".$id;
+$res = $this->query($sql,0);
+return $res;
+}
+
+/* Fin */
 
 
 	function query($sql,$accion) {

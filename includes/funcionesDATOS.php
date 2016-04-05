@@ -608,6 +608,10 @@ select
 	
 	
 	function Goleadores($idtorneo,$zona,$idfecha) {
+		
+		$sqlTorneo = "select idtorneo from dbtorneos where reftipotorneo = ".$idtorneo." and activo = 1";
+		$refTorneo = mysql_result($this->query($sqlTorneo,0),0,0);
+		
 		$sql = 'select
 				t.apyn,t.nombre,t.cantidad,t.reemplzado, t.volvio, t.refequipo, t.refjugador, t.reemplzadovolvio
 				from
@@ -653,7 +657,27 @@ left join dbreemplazo rrr on rrr.refequipo = a.refequipo and rrr.reffecha <= '.$
 left join
 	dbreemplazovolvio rv ON rv.refreemplazo = rrr.idreemplazo and rv.refzona in ('.$zona.')			
 					where	tp.idtipotorneo = '.$idtorneo.' and tge.refgrupo in ('.$zona.') and fi.reffecha <= '.$idfecha.'
-
+					
+					union all
+					
+					SELECT 
+						CONCAT(j.apellido, ", ", j.nombre) AS apyn,
+						e.nombre,
+						gp.goles,
+						0 AS reemplzado,
+						0 AS volvio,
+						gp.refequipo,
+						gp.refjugador,
+						0 AS reemplzadovolvio
+					FROM
+						dbgolesplayoff gp
+							INNER JOIN
+						dbjugadores j ON gp.refjugador = j.idjugador
+							inner join
+						dbequipos e ON e.idequipo = gp.refequipo
+					WHERE
+						gp.reftorneo = '.$refTorneo.'
+							
 				) r
 				group by r.nombre,r.apyn ,r.reemplzado, r.volvio,r.refequipo, r.refjugador, r.reemplzadovolvio
 				) t

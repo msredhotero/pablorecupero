@@ -238,7 +238,7 @@ $resJugadoresB = $serviciosPlayOff->traerJugadoresPorPlayOffB($id,$idTorneo,$idZ
                             </th>
                             <th>
                             	<div align="center">
-                                	<input type="number" class="form-control input-sm" name="goles<?php echo $row[0]; ?>" id="goles<?php echo $row[0]; ?>" style="width:45px;" value="<?php echo $row["goles"]; ?>"/>
+                                	<input type="number" class="form-control input-sm" name="goles<?php echo $row[0]; ?>" id="goles<?php echo $row[0]; ?>" style="width:55px;" value="<?php echo $row["goles"]; ?>"/>
                                 </div>
                             </th>
                             
@@ -291,7 +291,7 @@ $resJugadoresB = $serviciosPlayOff->traerJugadoresPorPlayOffB($id,$idTorneo,$idZ
                             </th>
                             <th>
                             	<div align="center">
-                                	<input type="number" class="form-control input-sm" name="goles<?php echo $rowB[0]; ?>" id="goles<?php echo $rowB[0]; ?>" style="width:45px;" value="<?php echo $rowB["goles"]; ?>"/>
+                                	<input type="number" class="form-control input-sm" name="goles<?php echo $rowB[0]; ?>" id="goles<?php echo $rowB[0]; ?>" style="width:55px;" value="<?php echo $rowB["goles"]; ?>"/>
                                 </div>
                             </th>
                             
@@ -484,198 +484,21 @@ $(document).ready(function(){
 		});
 	});
 	
-	
-	function jugo(idFixture) {
-		$.ajax({
-				data:  {idFixture: idFixture, accion: 'marcarJugo'},
-				url:   '../../ajax/ajax.php',
-				type:  'post',
-				beforeSend: function () {
-						
-				},
-				success:  function (response) {
-						alert('Se marco correctamente');
-						
-				}
-		});	
-	}
-	
-	function chequeado(idFixture) {
-		$.ajax({
-				data:  {idFixture: idFixture, accion: 'marcarChequeado'},
-				url:   '../../ajax/ajax.php',
-				type:  'post',
-				beforeSend: function () {
-						
-				},
-				success:  function (response) {
-						alert('Se marco correctamente');
-						
-				}
-		});	
-	}
-	
-	$("#jugo").click(function(){
 
-		$.ajax({
-			data:  {idFixture: <?php echo $idFixture; ?>, accion: 'marcarJugo'},
-			url:   '../../ajax/ajax.php',
-			type:  'post',
-			beforeSend: function () {
-					
-			},
-			success:  function (response) {
-					alert('Se marco correctamente');
-					
-			}
-		});	
-
-	});//fin del boton jugo
 	
-	
-	$("#chequeado").click(function(){
-
-		$.ajax({
-				data:  {idFixture: <?php echo $idFixture; ?>, accion: 'marcarChequeado'},
-				url:   '../../ajax/ajax.php',
-				type:  'post',
-				beforeSend: function () {
-						
-				},
-				success:  function (response) {
-						alert('Se marco correctamente');
-						
-				}
-		});
-
-	});//fin del boton chequeado
-	
-	$('#guardarsolo').click(function(event) {
-			$.ajax({
-				data:  {resultado_a: 	$('#resultado_a').val(),
-						resultado_b: 	$('#resultado_b').val(),
-						reffixture:	<?php echo $idFixture; ?>,
-						accion: 	'modificarFixtureResultados'},
-				url:   '../../ajax/ajax.php',
-				type:  'post',
-				success:  function (response) {
-					if (response == '') {
-				
-						$('#msgResultadoS').html("<img src='../../imagenes/check.gif'> Se cargo correctamente!!");
-						$('#msgResultadoS').show(300);
-						$('#msgResultadoS').toggle(120);
-						$('#msgResultadoS').show(150);
-					} else {
-						$('#msgResultadoS').show(300);
-						$('#msgResultadoS').toggle(120);
-						$('#msgResultadoS').show(150);
-						$('#msgResultadoS').html("<img src='../../imagenes/errorico.png'> " + response);
-						
-					}
-				}
-			}); 	
-	});
-
-	$('.guardarpuntosA').click(function(event){
-		usersid =  $(this).attr("id");
-		if (!isNaN(usersid)) {
-			 $.ajax({
-				data:  {rojas: 		$('#equiporojasa').val(),
-						azules: 	$('#equipoazulesa').val(),
-						amarillas: 	$('#equipoamarillasa').val(),
-						observacion:$('#equipoobservaciona').val(),
-						puntos: 	$('#puntobonusa').val(),
-						reffixture:	<?php echo $idFixture; ?>,
-						reffecha:	<?php echo $refFecha; ?>,
-						refequipo:	<?php echo $IdequipoA; ?>,
-						reftorneo:  <?php echo $refTorneoA; ?>,
-						accion: 	'insertarPuntosEquipos'},
-				url:   '../../ajax/ajax.php',
-				type:  'post',
-				beforeSend: function () {
-					$('#reffixture').html('')	
-				},
-				success:  function (response) {
-					if (response == '') {
-				
-						$('#msgResultadoA').html("<img src='../../imagenes/check.gif'> Se cargo correctamente!!");
-						$('#msgResultadoA').show(300);
-						$('#msgResultadoA').toggle(120);
-						$('#msgResultadoA').show(150);
-					} else {
-						$('#msgResultadoA').show(300);
-						$('#msgResultadoA').toggle(120);
-						$('#msgResultadoA').show(150);
-						$('#msgResultadoA').html("<img src='../../imagenes/errorico.png'> " + response);
-						
-					}
-				}
-			}); 
-		} else {
-			alert("Error, vuelva a realizar la acción.");	
-		}
-	});//fin del boton guardarPuntosA
-	
-	
-	
-	$('.guardarpuntosB').click(function(event){
-		usersid =  $(this).attr("id");
-		if (!isNaN(usersid)) {
-			 $.ajax({
-				data:  {rojas: 		$('#equiporojasb').val(),
-						azules: 	$('#equipoazulesb').val(),
-						amarillas: 	$('#equipoamarillasb').val(),
-						observacion:$('#equipoobservacionb').val(),
-						puntos: 	$('#puntobonusb').val(),
-						reffixture:	<?php echo $idFixture; ?>,
-						reffecha:	<?php echo $refFecha; ?>,
-						refequipo:	<?php echo $IdequipoB; ?>,
-						reftorneo:  <?php echo $refTorneoB; ?>,
-						accion: 	'insertarPuntosEquipos'},
-				url:   '../../ajax/ajax.php',
-				type:  'post',
-				beforeSend: function () {
-					$('#reffixture').html('')	
-				},
-				success:  function (response) {
-					if (response == '') {
-				
-						$('#msgResultadoB').html("<img src='../../imagenes/check.gif'> Se cargo correctamente!!");
-						$('#msgResultadoB').show(300);
-						$('#msgResultadoB').toggle(120);
-						$('#msgResultadoB').show(150);
-					} else {
-						$('#msgResultadoB').show(300);
-						$('#msgResultadoB').toggle(120);
-						$('#msgResultadoB').show(150);
-						$('#msgResultadoB').html("<img src='../../imagenes/errorico.png'> " + response);
-						
-					}
-				}
-			}); 
-		} else {
-			alert("Error, vuelva a realizar la acción.");	
-		}
-	});//fin del boton guardarPuntosB
 	
 	
 	$('.guardarjugadorA').click(function(event){
 		  usersid =  $(this).attr("id");
 		  if (!isNaN(usersid)) {
 			$.ajax({
-				data:  {jugo: 		$('#jugo'+usersid).is(':checked') ? 1 : 0,
-						goles: 		$('#goles'+usersid).val(),
-						cancha: 	$('#cancha'+usersid).val(),
-						arquero: 	$('#arquero'+usersid).val(),
-						amarillas: 	$('#amarillas'+usersid).val(),
-						azules: 	$('#azules'+usersid).val(),
-						rojas: 		$('#rojas'+usersid).val(),
-						puntos: 	$('#puntos'+usersid).val(),
-						mejor: 		$('#mejor'+usersid).is(':checked') ? 1 : 0,
-						reffixture:	<?php echo $idFixture; ?>,
+				data:  {goles: 		$('#goles'+usersid).val(),
+						refplayoff:	<?php echo $id; ?>,
 						refjugador:	usersid,
 						refequipo:	<?php echo $IdequipoA; ?>,
-						accion: 	'insertarEstadisticaPorJugador'},
+						reftorneo:	<?php echo $idTorneo; ?>,
+						refzona:	<?php echo $idZona; ?>,
+						accion: 	'insertarGolesPlayoff'},
 				url:   '../../ajax/ajax.php',
 				type:  'post',
 				beforeSend: function () {
@@ -710,19 +533,13 @@ $(document).ready(function(){
 		  usersid =  $(this).attr("id");
 		  if (!isNaN(usersid)) {
 			$.ajax({
-				data:  {jugo: 		$('#jugo'+usersid).is(':checked') ? 1 : 0,
-						goles: 		$('#goles'+usersid).val(),
-						cancha: 	$('#cancha'+usersid).val(),
-						arquero: 	$('#arquero'+usersid).val(),
-						amarillas: 	$('#amarillas'+usersid).val(),
-						azules: 	$('#azules'+usersid).val(),
-						rojas: 		$('#rojas'+usersid).val(),
-						puntos: 	$('#puntos'+usersid).val(),
-						mejor: 		$('#mejor'+usersid).is(':checked') ? 1 : 0,
-						reffixture:	<?php echo $idFixture; ?>,
+				data:  {goles: 		$('#goles'+usersid).val(),
+						refplayoff:	<?php echo $id; ?>,
 						refjugador:	usersid,
 						refequipo:	<?php echo $IdequipoB; ?>,
-						accion: 	'insertarEstadisticaPorJugador'},
+						reftorneo:	<?php echo $idTorneo; ?>,
+						refzona:	<?php echo $idZona; ?>,
+						accion: 	'insertarGolesPlayoff'},
 				url:   '../../ajax/ajax.php',
 				type:  'post',
 				beforeSend: function () {
@@ -754,35 +571,17 @@ $(document).ready(function(){
 		  }
 	});//fin del boton guardarJugadorB
 	
-	$('.varmodificar').click(function(event){
-		  usersid =  $(this).attr("id");
-		  if (!isNaN(usersid)) {
-			url = "modificaramonestados.php?id=" + usersid;
-			$(location).attr('href',url);
-		  } else {
-			alert("Error, vuelva a realizar la acción.");	
-		  }
-	});//fin del boton modificar
+	
 	
 	$('.volver').click(function(event){
 		  
-		url = "../fixture/";
+		url = "armarplayoff.php?idtorneo="+ <?php echo $idTorneo; ?> +"&idzona="+ <?php echo $idZona; ?>;
 		$(location).attr('href',url);
 		  
 	});//fin del boton modificar
 	
 	
-	$('#vergoleadores').click(function(event){
-
-		window.open('vergoleadores.php','_blank');
-
-	});//fin del boton modificar
 	
-	$('#veramonestados').click(function(event){
-
-		window.open('veramonestados.php','_blank');
-
-	});//fin del boton modificar
 	
 	
 	
@@ -792,51 +591,8 @@ $(document).ready(function(){
 
 	});//fin del boton abrir
 	
-	$('.marcar').click(function(event){
 
-		$("input:checkbox").each(function(){
-			//cada elemento seleccionado
-			var cad = $(this).attr("id");
-
-			if (cad.indexOf('jugo')>=0) {
-				$(this).prop("checked", "checked");
-			}
-		});
-
-	});//fin del boton abrir
 	
-	$('.desmarcar').click(function(event){
-
-		$("input:checkbox").each(function(){
-			//cada elemento seleccionado
-			var cad = $(this).attr("id");
-
-			if (cad.indexOf('jugo')>=0) {
-				$(this).prop("checked", "");
-			}
-		});
-
-	});//fin del boton abrir
-	
-	
-	
-	
-	$('#cargamasiva').click(function(e) {
-        
-		$("button:button").each(function(){
-			//cada elemento seleccionado
-			var cad = $(this).attr("id");
-			
-			if (parseInt(cad)>0) {
-				//$(this).prop("checked", "");
-				$(this).click();
-				
-				
-			}
-		});
-		
-		$('#chequeado').click();
-    });
 
 	
 	$('#cerrar').click(function(event){
@@ -958,7 +714,7 @@ $(document).ready(function(){
 												
 											});
 											$("#load").html('');
-											url = "estadisticas.php?id="+<?php echo $idFixture; ?>;
+											url = "armarplayoff.php?idtorneo="+ <?php echo $idTorneo; ?> +"&idzona="+ <?php echo $idZona; ?>;
 											$(location).attr('href',url);
                                             
 											
@@ -1036,6 +792,7 @@ $(document).ready(function(){
 	
 	function validador(){
 		$error = "";
+
 		
 		if ($("#refequipo").val() == "") {
 			

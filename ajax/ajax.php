@@ -106,6 +106,16 @@ break;
 case 'eliminarArmarPlayOff':
 eliminarArmarPlayOff($serviciosPlayOff);
 break; 
+
+case 'insertarGolesPlayoff':
+insertarGolesPlayoff($serviciosPlayOff);
+break;
+case 'modificarGolesPlayoff':
+modificarGolesPlayoff($serviciosPlayOff);
+break;
+case 'eliminarGolesPlayoff':
+eliminarGolesPlayoff($serviciosPlayOff);
+break; 
 /* Fin */
 
 /* PARA Sedes */
@@ -643,6 +653,47 @@ $id = $_POST['id'];
 $res = $serviciosArmarPlayOff->eliminarArmarPlayOff($id);
 echo $res;
 } 
+
+
+/* PARA GolesPlayoff */
+function insertarGolesPlayoff($serviciosGolesPlayoff) {
+$refplayoff = $_POST['refplayoff'];
+$reftorneo = $_POST['reftorneo'];
+$refzona = $_POST['refzona'];
+$refequipo = $_POST['refequipo'];
+$refjugador = $_POST['refjugador'];
+$goles = $_POST['goles'];
+$res = $serviciosGolesPlayoff->insertarGolesPlayoff($refplayoff,$reftorneo,$refzona,$refequipo,$refjugador,$goles);
+if ((integer)$res > 0) {
+echo '';
+} else {
+echo 'Huvo un error al insertar datos';
+}
+}
+function modificarGolesPlayoff($serviciosGolesPlayoff) {
+$id = $_POST['id'];
+$refplayoff = $_POST['refplayoff'];
+$reftorneo = $_POST['reftorneo'];
+$refzona = $_POST['refzona'];
+$refequipo = $_POST['refequipo'];
+$refjugador = $_POST['refjugador'];
+$goles = $_POST['goles'];
+$res = $serviciosGolesPlayoff->modificarGolesPlayoff($id,$refplayoff,$reftorneo,$refzona,$refequipo,$refjugador,$goles);
+if ($res == true) {
+echo '';
+} else {
+echo 'Huvo un error al modificar datos';
+}
+}
+function eliminarGolesPlayoff($serviciosGolesPlayoff) {
+$id = $_POST['id'];
+$res = $serviciosGolesPlayoff->eliminarGolesPlayoff($id);
+echo $res;
+}
+
+/* Fin */ 
+
+
 /* Fin */ 
 
 /* PARA Canchas */
