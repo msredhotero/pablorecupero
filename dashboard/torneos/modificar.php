@@ -256,7 +256,7 @@ $(document).ready(function(){
 		$(location).attr('href',url);
 	});//fin del boton modificar
 	
-	$('.varborrar').click(function(event){
+	$("#example").on("click",'.varborrar', function(){
 		  usersid =  $(this).attr("id");
 		  if (!isNaN(usersid)) {
 			$("#idEliminar").val(usersid);
@@ -269,6 +269,8 @@ $(document).ready(function(){
 			alert("Error, vuelva a realizar la acción.");	
 		  }
 	});//fin del boton eliminar
+	
+
 
 	 $( "#dialog2" ).dialog({
 		 	

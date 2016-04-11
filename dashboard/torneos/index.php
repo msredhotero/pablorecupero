@@ -262,7 +262,8 @@ $(document).ready(function(){
 		  }
 	} );
 	
-	 $('.varborrar').click(function(event){
+	
+	 $("#example").on("click",'.varborrar', function(){
 		  usersid =  $(this).attr("id");
 		  if (!isNaN(usersid)) {
 			$("#idEliminar").val(usersid);
@@ -276,7 +277,7 @@ $(document).ready(function(){
 		  }
 	});//fin del boton eliminar
 	
-	$('.varmodificar').click(function(event){
+	$("#example").on("click",'.varmodificar', function(){
 		  usersid =  $(this).attr("id");
 		  if (!isNaN(usersid)) {
 			url = "modificar.php?id=" + usersid;
