@@ -1077,7 +1077,7 @@ $(document).ready(function(){
 			}
 		});
 		
-		$('#chequeado').click();
+		
     });
 
 	
