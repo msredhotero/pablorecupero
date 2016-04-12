@@ -171,7 +171,7 @@ if ($_SESSION['refroll_predio'] != 1) {
                     
                         <label class="control-label" style="text-align:left" for="apyn">Nombre</label>
                         <div class="input-group col-md-12">
-                            <input id="nombre" class="form-control" type="text" required placeholder="Ingrese el Nombre..." value="<?php echo mysql_result($resResultado,0,'apellido'); ?>" name="nombre">
+                            <input id="nombre" class="form-control" type="text" required placeholder="Ingrese el Nombre..." value="<?php echo mysql_result($resResultado,0,'nombre'); ?>" name="nombre">
                         </div>
                     
                     </div>
