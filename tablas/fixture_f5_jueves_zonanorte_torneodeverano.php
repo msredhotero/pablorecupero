@@ -20,13 +20,13 @@ $serviciosDatos = new ServiciosDatos();
 if (isset($_GET["id"])) {
 	$idTipoTorneo = $_GET["id"];
 } else {
-	$idTipoTorneo = 1;
+	$idTipoTorneo = 74;
 }
 
 if (isset($_GET["zona"])) {
 	$idzona = $_GET['zona'];
 } else {
-	$idzona = 22;
+	$idzona = 1899;
 }
 
 if (isset($_GET["fecha"])) {
@@ -39,11 +39,22 @@ if (isset($_GET["fecha"])) {
 
 $resZonasTorneos = $serviciosDatos->traerZonasPorTorneo($idTipoTorneo);
 
+$sqlTorneo = "select idtorneo from dbtorneos where reftipotorneo = ".$idTipoTorneo." and activo = 1";
+$refTorneo = mysql_result($serviciosDatos->query($sqlTorneo,0),0,0);
+		
 $cadCabeceras 	= '';
 $cadCuerpo 		= '';
 
 
 $cant = 1;
+$sedes = '';
+$sedes = $serviciosFunciones->traerSedesPorTorneo($refTorneo);
+			
+$cadSedes = '';
+while ($rowS = mysql_fetch_array($sedes)) {
+	$cadSedes .=  utf8_encode($rowS['nombre'])." - ";	
+}
+			
 while ($row = mysql_fetch_array($resZonasTorneos)) { 
 	$cadCabeceras .= '<div class="tab-tabla'; 
     if ($cant ==1) { 
@@ -62,6 +73,8 @@ while ($row = mysql_fetch_array($resZonasTorneos)) {
 <div class="texto">Fechas: </div>';
 		while ($rowFF = mysql_fetch_array($lstFechas)) {
 			$res = $serviciosDatos->traerResultadosPorTorneoZonaFecha($idTipoTorneo,$idzona,$rowFF[0]);
+			
+			
 			$cadCuerpo .= '<div class="fecha-selector'; 
 			if ($cant2 == 1) {
 				$cadCuerpo .= ' selected';	
@@ -91,7 +104,7 @@ while ($row = mysql_fetch_array($resZonasTorneos)) {
 											<div class="more">
 												<div class="row">
 													<div class="title">Sede:</div>
-													<div class="text">Area Chica</div>
+													<div class="text">'.substr($cadSedes,0,strlen($cadSedes)-3).'</div>
 												</div>
 												<div class="row">
 													<div class="title">Fecha:</div>

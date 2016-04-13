@@ -2139,7 +2139,7 @@ select
 		$conex = mysql_connect($hostname,$username,$password) or die ("no se puede conectar".mysql_error());
 		
 		mysql_select_db($database);
-		
+		//mysql_query("SET NAMES 'utf8'");
 		$result = mysql_query($sql,$conex);
 		if ($accion && $result) {
 			$result = mysql_insert_id();

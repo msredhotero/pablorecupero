@@ -1877,7 +1877,7 @@ function modificarTorneo($serviciosFunciones) {
 	
 
 	if ($res == true) {
-		$serviciosFunciones->eliminarTorneosSedesPorTorneos($res);
+		$serviciosFunciones->eliminarTorneosSedesPorTorneos($id);
 			$resFechas = $serviciosFunciones->traerSedes();
 			$cad = 'sede';
 			while ($rowFS = mysql_fetch_array($resFechas)) {
