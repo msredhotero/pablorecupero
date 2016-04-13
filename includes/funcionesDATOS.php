@@ -269,7 +269,7 @@ class ServiciosDatos {
 		       ((sum(case when r.resultado_a > r.resultado_b then 1 else 0 end) * 2) +
 		        (sum(case when r.resultado_a = r.resultado_b then 1 else 0 end) * 1)) as pts,
 		        r.idequipo,
-				sum(case
+				max(case
                 when r.resultado_a is null then 0
                 else fp.puntos
            		 end) as puntos,
@@ -477,7 +477,7 @@ class ServiciosDatos {
 				
 				) as r
 				left
-				join	(select refequipo,puntos as puntos, reftorneo from tbconducta where reffecha ='.$idfecha.'
+				join	(select refequipo,max(puntos) as puntos, reftorneo from tbconducta where reffecha <='.$idfecha.' group by refequipo,reftorneo
 				) fp
 				on		r.idequipo = fp.refequipo and fp.reftorneo = r.idtorneo
 				left join dbtorneos t ON t.idtorneo = fp.reftorneo and t.activo = 1
@@ -2121,7 +2121,7 @@ select
 			sa.idequipo) ro ON ro.idequipo = fix.idequipo
 				order by fix.golesencontra';
 		$res = $this->query($sql,0);
-		return $sql;	
+		return $res;	
 	}
         
 	function query($sql,$accion) {

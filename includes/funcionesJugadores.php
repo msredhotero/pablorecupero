@@ -560,7 +560,7 @@ function traerAcumuladosAmarillasPorTorneoZonaJugador($idfecha,$idjugador,$idtip
 					where (cantidad <> 3 and ultimafecha < ".$idfecha.") or (cantidad = 3 and ultimafecha = ".$idfecha.") or (cantidad < 3 and ultimafecha = ".$idfecha.")
 					
 					order by t.nombre, t.apyn";	*/
-					
+				/*	
 		$sql = "select
 				t.refequipo, t.nombre, t.apyn, t.dni, (case when t.cantidad > 3 then mod(t.cantidad,3) else t.cantidad end) as cantidad,ultimafecha,fecha,t.reemplzado, t.volvio
 				from
@@ -576,9 +576,7 @@ function traerAcumuladosAmarillasPorTorneoZonaJugador($idfecha,$idjugador,$idtip
 					inner
 					join		dbjugadores j
 					on			j.idjugador = a.refjugador
-					/*inner
-					join		dbfixture fi
-					on			fi.idfixture = a.reffixture*/
+
 					inner 
 					join 		(select idfixture,reffecha from dbfixture fix
 									inner join dbtorneoge tge ON fix.reftorneoge_a = tge.idtorneoge
@@ -603,7 +601,67 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 
 
 					order by (t.cantidadAmarillas + t.cantidadAzules) desc,t.nombre, t.apyn";
-								
+		*/
+		$sql = "select
+				t.refequipo, t.nombre, t.apyn, t.dni, 
+				COALESCE(t.cantidad,0) as cantidad,
+				COALESCE(t.cantidadazules,0) as cantidadazules,
+				COALESCE(t.cantidadrojas,0) as cantidadrojas,
+				ultimafecha,
+				fecha,t.reemplzado, t.volvio, t.refjugador, t.reemplzadovolvio
+				from
+				(
+				select
+					a.refequipo, e.nombre, concat(j.apellido,', ',j.nombre) as apyn, 
+					j.dni, 
+					count(a.amarillas) as cantidad,
+					count(a.azul) as cantidadazules,
+					count(a.rojas) as cantidadrojas,
+					max(fi.reffecha) as ultimafecha, 
+					max(ff.tipofecha) as fecha
+					, (case when rr.idreemplazo is null then false else true end) as reemplzado
+					, (case when rrr.idreemplazo is null then 0 else 1 end) as volvio,
+					a.refjugador,
+					(case
+						when rv.idreemplazovolvio is null then 0
+						else 1
+					end) as reemplzadovolvio
+					from		tbamonestados a
+					inner
+					join		dbequipos e
+					on			e.idequipo = a.refequipo
+					inner
+					join		dbjugadores j
+					on			j.idjugador = a.refjugador
+					/*inner
+					join		dbfixture fi
+					on			fi.idfixture = a.reffixture*/
+					inner 
+					join 		(select fix.idfixture,fix.reffecha,tt.idtorneo from dbfixture fix
+									inner join dbtorneoge tge ON fix.reftorneoge_a = tge.idtorneoge
+									or fix.reftorneoge_b = tge.idtorneoge
+									inner join dbtorneos tt ON tt.idtorneo = tge.reftorneo
+									and tt.reftipotorneo in (".$idtipoTorneo.")
+									and tt.activo = 1
+									group by idfixture,reffecha) fi
+					on			fi.idfixture = a.reffixture
+					inner
+					join		tbfechas ff
+					on			ff.idfecha = fi.reffecha
+left join dbreemplazo rr on rr.refequiporeemplazado = e.idequipo and rr.reffecha <= ".$idfecha." and rr.reftorneo = fi.idtorneo
+left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$idfecha." and rrr.reftorneo = fi.idtorneo
+left join
+	dbreemplazovolvio rv ON rv.refreemplazo = rrr.idreemplazo and rv.refzona in (".$idzona.")
+					
+					where	j.idjugador = ".$idjugador."
+					and (a.amarillas is not null or a.azul is not null or a.rojas is not null)
+					and fi.reffecha <= ".$idfecha."
+					group by a.refequipo, e.nombre, j.apellido,j.nombre, j.dni, a.refjugador
+				) t
+					
+					
+					order by (case when t.cantidad > 3 then mod(t.cantidad,3) else t.cantidad end) desc,t.nombre, t.apyn";	
+											
 		$res = $this-> query($sql,0);
 		if (mysql_num_rows($res)>0) {
 			return mysql_result($res,0,'cantidad');
