@@ -1652,6 +1652,7 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 	}
 	
 	function fairplay($idtipoTorneo,$idzona,$reffecha) {
+		
 		$sql = "select
 				e.nombre, ss.puntos, ppe.amarillas, ppe.rojas,ppe.azules, pe.observacion, ss.refequipo
 				
@@ -1684,6 +1685,60 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 				where	tp.idtipotorneo = ".$idtipoTorneo." and tge.refgrupo in (".$idzona.") and ss.reffecha = ".$reffecha."
 				group by e.nombre, ss.puntos, ppe.amarillas, ppe.rojas,ppe.azules, pe.observacion, ss.refequipo
 				order by ss.puntos desc";
+				
+				
+				$sql = "select 
+					tt.nombre,
+					tt.puntos,
+					ppe.amarillas,
+					ppe.rojas,
+					ppe.azules,
+					pe.observacion,
+					tt.refequipo
+				from
+					(select e.nombre,
+							COALESCE(max(ss.puntos),0) as puntos,
+							ss.refequipo,
+							ss.reftorneo,
+							ss.reffecha
+						from dbequipos e
+						left join
+					tbconducta ss ON e.idequipo = ss.refequipo
+						inner join
+					dbtorneoge tge ON tge.refequipo = e.idequipo
+						inner join
+					dbtorneos t ON tge.reftorneo = t.idtorneo
+						and t.activo = 1
+						and t.idtorneo = ss.reftorneo
+						inner join
+					tbtipotorneo tp ON t.reftipotorneo = tp.idtipotorneo
+						where
+							tp.idtipotorneo = ".$idtipoTorneo."
+							and tge.refgrupo in (".$idzona.")
+							and ss.reffecha <= ".$reffecha."
+						group by 	e.nombre,
+									ss.refequipo,
+									ss.reftorneo,
+									ss.reffecha) tt
+						inner join
+					tbpuntosequipos pe ON pe.refequipo = tt.refequipo
+						and tt.reftorneo = pe.reftorneo
+						and tt.reffecha = pe.reffecha
+						inner join
+					(select 
+						sum(COALESCE(amarillas, 0)) as amarillas,
+							sum(COALESCE(rojas, 0)) as rojas,
+							sum(COALESCE(azules, 0)) as azules,
+							refequipo,
+							reftorneo
+					from
+						tbpuntosequipos
+					group by refequipo , reftorneo) ppe ON ppe.refequipo = tt.refequipo
+						and ppe.reftorneo = tt.reftorneo
+						and ppe.reftorneo = tt.reftorneo
+				
+				group by tt.nombre , tt.puntos , ppe.amarillas , ppe.rojas , ppe.azules , pe.observacion , tt.refequipo
+				order by tt.puntos desc";
 		return $this-> query($sql,0);
 	}
 	
@@ -2066,7 +2121,7 @@ select
 			sa.idequipo) ro ON ro.idequipo = fix.idequipo
 				order by fix.golesencontra';
 		$res = $this->query($sql,0);
-		return $res;	
+		return $sql;	
 	}
         
 	function query($sql,$accion) {
