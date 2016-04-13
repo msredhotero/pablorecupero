@@ -130,6 +130,45 @@ if ($_SESSION['refroll_predio'] != 1) {
 $resJugadoresA = $serviciosPlayOff->traerJugadoresPorPlayOffA($id,$idTorneo,$idZona);
 $resJugadoresB = $serviciosPlayOff->traerJugadoresPorPlayOffB($id,$idTorneo,$idZona);
 
+
+if (mysql_num_rows($resJugadoresA)>0) {
+	$equipoA	= mysql_result($resJugadoresA,0,'nombre');
+	$IdequipoA	= mysql_result($resJugadoresA,0,'idequipo');
+	$refTorneoA = mysql_result($resJugadoresA,0,'reftorneo');
+	$refPuntosEquiposA = $serviciosPlayOff->traerPuntosEquiposPlayoffPorPlayOffTorneoZonaEquipo($id,$idTorneo,$idZona,$IdequipoA);
+	if (mysql_num_rows($refPuntosEquiposA)>0) {
+		//$ePuntosA 		= mysql_result($refPuntosEquiposA,0,'puntos');
+		$eAmarillasA 	= mysql_result($refPuntosEquiposA,0,'amarillas');
+		$eRojasA 		= mysql_result($refPuntosEquiposA,0,'rojas');
+		$eAzulesA 		= mysql_result($refPuntosEquiposA,0,'azules');	
+		//$eObservacionA 	= mysql_result($refPuntosEquiposA,0,'observacion');
+	} else {
+		//$ePuntosA 		= '';
+		$eAmarillasA 	= '';
+		$eRojasA 		= '';
+		$eAzulesA 		= '';
+		//$eObservacionA 	= '';	
+	}
+}
+if (mysql_num_rows($resJugadoresB)>0) {
+	$equipoB	= mysql_result($resJugadoresB,0,'nombre');
+	$IdequipoB	= mysql_result($resJugadoresB,0,'idequipo');
+	$refTorneoB = mysql_result($resJugadoresB,0,'reftorneo');
+	$refPuntosEquiposB = $serviciosPlayOff->traerPuntosEquiposPlayoffPorPlayOffTorneoZonaEquipo($id,$idTorneo,$idZona,$IdequipoB);
+	if (mysql_num_rows($refPuntosEquiposB)>0) {
+		//$ePuntosB 		= mysql_result($refPuntosEquiposB,0,'puntos');
+		$eAmarillasB 	= mysql_result($refPuntosEquiposB,0,'amarillas');
+		$eRojasB 		= mysql_result($refPuntosEquiposB,0,'rojas');
+		$eAzulesB 		= mysql_result($refPuntosEquiposB,0,'azules');	
+		//$eObservacionB 	= mysql_result($refPuntosEquiposB,0,'observacion');
+	} else {
+		//$ePuntosB 		= '';
+		$eAmarillasB 	= '';
+		$eRojasB 		= '';
+		$eAzulesB 		= '';	
+		//$eObservacionB 	= '';
+	}
+}
 ?>
 
 <!DOCTYPE HTML>
@@ -219,6 +258,9 @@ $resJugadoresB = $serviciosPlayOff->traerJugadoresPorPlayOffB($id,$idTorneo,$idZ
                         	<th>Jugador</th>
                             <th>DNI</th>
                             <th><div align="center"><img src="../../imagenes/pelotaweb.png"></div></th>
+                            <th><div align="center"><img src="../../imagenes/icoAmarilla.png"></div></th>
+                            <th><div align="center"><img src="../../imagenes/azul.png"></div></th>
+                            <th><div align="center"><img src="../../imagenes/icoRoja.png"></div></th>
                             <th><div align="center">Acción</div></th>
                         </tr>
                     </thead>
@@ -242,6 +284,22 @@ $resJugadoresB = $serviciosPlayOff->traerJugadoresPorPlayOffB($id,$idTorneo,$idZ
                                 </div>
                             </th>
                             
+                            
+                            <th>
+                            	<div align="center">	
+                                	<input type="number" class="form-control input-sm" name="amarillas<?php echo $row[0]; ?>" id="amarillas<?php echo $row[0]; ?>" style="width:45px;" value="<?php echo $row["amarillas"]; ?>"/>
+                                </div>
+                            </th>
+                            <th>
+                            	<div align="center">
+                                	<input type="number" class="form-control input-sm" name="azules<?php echo $row[0]; ?>" id="azules<?php echo $row[0]; ?>" style="width:45px;" value="<?php echo $row["azules"]; ?>"/>
+                                </div>
+                            </th>
+                            <th>
+                            	<div align="center">
+                                	<input type="number" class="form-control input-sm" name="rojas<?php echo $row[0]; ?>" id="rojas<?php echo $row[0]; ?>" style="width:45px;" value="<?php echo $row["rojas"]; ?>"/>
+                                </div>
+                            </th>
                             <th>
                             	<div align="center">
                                 	
@@ -261,6 +319,41 @@ $resJugadoresB = $serviciosPlayOff->traerJugadoresPorPlayOffB($id,$idTorneo,$idZ
                 
                 
                 
+                <div class='row' style="margin-left:15px; margin-right:15px;">
+                    <h4>Sanciones del Equipo</h4>
+                    
+                    
+                    <div class="form-group col-md-2" align="center">
+                     <label class="control-label" style="text-align:left" for="reftorneo"><img src="../../imagenes/icoAmarilla.png">Canilleras</label>
+                        <div class="input-group col-md-8">
+                            <input type="text" id="equipoamarillasa" name="equipoamarillasa" value="<?php echo $eAmarillasA; ?>" class="form-control" required/>
+                        </div>
+                        
+                    </div>
+                    <div class="form-group col-md-2 hidden" align="center">
+                     <label class="control-label" style="text-align:left" for="reftorneo"><img src="../../imagenes/azul.png"></label>
+                        <div class="input-group col-md-8">
+                            <input type="text" id="equipoazulesa" name="equipoazulesa" value="<?php echo $eAzulesA; ?>" class="form-control" required/>
+                        </div>
+                        
+                    </div>
+                    <div class="form-group col-md-2" align="center">
+                     <label class="control-label" style="text-align:left" for="reftorneo"><img src="../../imagenes/icoRoja.png">Ausente</label>
+                        <div class="input-group col-md-8">
+                            <input type="text" id="equiporojasa" name="equiporojasa" value="<?php echo $eRojasA; ?>" class="form-control" required/>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                    
+                    <div class="form-group col-md-12" align="left">
+                    	<button type="button" class="btn btn-primary guardarpuntosA" id="<?php echo $IdequipoA; ?>" style="margin-left:0px;">Guardar Tarjetas</button>
+                        <h4 id="msgResultadoA"></h4>
+                    </div>
+                    
+                </div>
+                
                 <hr>
                 
                 
@@ -272,6 +365,9 @@ $resJugadoresB = $serviciosPlayOff->traerJugadoresPorPlayOffB($id,$idTorneo,$idZ
                         	<th>Jugador</th>
                             <th>DNI</th>
                             <th><div align="center"><img src="../../imagenes/pelotaweb.png"></div></th>
+                            <th><div align="center"><img src="../../imagenes/icoAmarilla.png"></div></th>
+                            <th><div align="center"><img src="../../imagenes/azul.png"></div></th>
+                            <th><div align="center"><img src="../../imagenes/icoRoja.png"></div></th>
                             <th><div align="center">Acción</div></th>
                         </tr>
                     </thead>
@@ -294,6 +390,21 @@ $resJugadoresB = $serviciosPlayOff->traerJugadoresPorPlayOffB($id,$idTorneo,$idZ
                                 	<input type="number" class="form-control input-sm" name="goles<?php echo $rowB[0]; ?>" id="goles<?php echo $rowB[0]; ?>" style="width:55px;" value="<?php echo $rowB["goles"]; ?>"/>
                                 </div>
                             </th>
+                            <th>
+                            	<div align="center">	
+                                	<input type="number" class="form-control input-sm" name="amarillas<?php echo $rowB[0]; ?>" id="amarillas<?php echo $rowB[0]; ?>" style="width:45px;" value="<?php echo $rowB["amarillas"]; ?>"/>
+                                </div>
+                            </th>
+                            <th>
+                            	<div align="center">
+                                	<input type="number" class="form-control input-sm" name="azules<?php echo $rowB[0]; ?>" id="azules<?php echo $rowB[0]; ?>" style="width:45px;" value="<?php echo $rowB["azules"]; ?>"/>
+                                </div>
+                            </th>
+                            <th>
+                            	<div align="center">
+                                	<input type="number" class="form-control input-sm" name="rojas<?php echo $rowB[0]; ?>" id="rojas<?php echo $rowB[0]; ?>" style="width:45px;" value="<?php echo $rowB["rojas"]; ?>"/>
+                                </div>
+                            </th>
                             
                             <th>
                             	<div align="center">
@@ -313,16 +424,47 @@ $resJugadoresB = $serviciosPlayOff->traerJugadoresPorPlayOffB($id,$idTorneo,$idZ
                 </table>
 
                 
+                <div class='row' style="margin-left:15px; margin-right:15px;">
+                    <h4>Puntos Bonus - Sanciones del Equipo</h4>
+                    
+                    
+                    <div class="form-group col-md-2" align="center">
+                     <label class="control-label" style="text-align:center" for="reftorneo"><img src="../../imagenes/icoAmarilla.png">Canilleras</label>
+                        <div class="input-group col-md-8">
+                            <input type="text" id="equipoamarillasb" name="equipoamarillasb" value="<?php echo $eAmarillasB; ?>" class="form-control" required/>
+                        </div>
+                        
+                    </div>
+                    <div class="form-group col-md-2 hidden" align="center">
+                     <label class="control-label" style="text-align:center" for="reftorneo"><img src="../../imagenes/azul.png"></label>
+                        <div class="input-group col-md-8">
+                            <input type="text" id="equipoazulesb" name="equipoazulesb" value="<?php //echo $eAzulesB; ?>" class="form-control" required/>
+                        </div>
+                        
+                    </div>
+                    <div class="form-group col-md-2" align="center">
+                     <label class="control-label" style="text-align:center" for="reftorneo"><img src="../../imagenes/icoRoja.png">Ausente</label>
+                        <div class="input-group col-md-8">
+                            <input type="text" id="equiporojasb" name="equiporojasb" value="<?php echo $eRojasB; ?>" class="form-control" required/>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                    <div class="form-group col-md-12" align="left">
+                    	<button type="button" class="btn btn-primary guardarpuntosB" id="<?php echo $IdequipoB; ?>" style="margin-left:0px;">Guardar Tarjetas</button>
+                        <h4 id="msgResultadoB"></h4>
+                    </div>
+                    
+                </div>
+              	
                 
+            
+            </div>
             
             
             	
-                <div class="form-group col-md-12">
-                    <div class="input-group col-md-12">
-                        <button type="button" class="btn btn-primary" id="guardarsolo">Guardar</button>
-                        <h4 id="msgResultadoS"></h4>
-                    </div>
-                </div>
+                
             </div>
             
             
@@ -485,7 +627,85 @@ $(document).ready(function(){
 	});
 	
 
+	$('.guardarpuntosA').click(function(event){
+		usersid =  $(this).attr("id");
+		if (!isNaN(usersid)) {
+			 $.ajax({
+				data:  {rojas: 		$('#equiporojasa').val(),
+						azules: 	$('#equipoazulesa').val(),
+						amarillas: 	$('#equipoamarillasa').val(),
+						
+						refplayoff:	<?php echo $id; ?>,
+						reftorneo:	<?php echo $idTorneo; ?>,
+						refequipo:	<?php echo $IdequipoA; ?>,
+						refzona:  <?php echo $idZona; ?>,
+						accion: 	'insertarPuntosEquiposPlayoff'},
+				url:   '../../ajax/ajax.php',
+				type:  'post',
+				beforeSend: function () {
+					$('#reffixture').html('')	
+				},
+				success:  function (response) {
+					if (response == '') {
+				
+						$('#msgResultadoA').html("<img src='../../imagenes/check.gif'> Se cargo correctamente!!");
+						$('#msgResultadoA').show(300);
+						$('#msgResultadoA').toggle(120);
+						$('#msgResultadoA').show(150);
+					} else {
+						$('#msgResultadoA').show(300);
+						$('#msgResultadoA').toggle(120);
+						$('#msgResultadoA').show(150);
+						$('#msgResultadoA').html("<img src='../../imagenes/errorico.png'> " + response);
+						
+					}
+				}
+			}); 
+		} else {
+			alert("Error, vuelva a realizar la acción.");	
+		}
+	});//fin del boton guardarPuntosA
 	
+	
+	
+	$('.guardarpuntosB').click(function(event){
+		usersid =  $(this).attr("id");
+		if (!isNaN(usersid)) {
+			 $.ajax({
+				data:  {rojas: 		$('#equiporojasb').val(),
+						azules: 	$('#equipoazulesb').val(),
+						amarillas: 	$('#equipoamarillasb').val(),
+						
+						refplayoff:	<?php echo $id; ?>,
+						reftorneo:	<?php echo $idTorneo; ?>,
+						refequipo:	<?php echo $IdequipoB; ?>,
+						refzona:  <?php echo $idZona; ?>,
+						accion: 	'insertarPuntosEquiposPlayoff'},
+				url:   '../../ajax/ajax.php',
+				type:  'post',
+				beforeSend: function () {
+					$('#reffixture').html('')	
+				},
+				success:  function (response) {
+					if (response == '') {
+				
+						$('#msgResultadoB').html("<img src='../../imagenes/check.gif'> Se cargo correctamente!!");
+						$('#msgResultadoB').show(300);
+						$('#msgResultadoB').toggle(120);
+						$('#msgResultadoB').show(150);
+					} else {
+						$('#msgResultadoB').show(300);
+						$('#msgResultadoB').toggle(120);
+						$('#msgResultadoB').show(150);
+						$('#msgResultadoB').html("<img src='../../imagenes/errorico.png'> " + response);
+						
+					}
+				}
+			}); 
+		} else {
+			alert("Error, vuelva a realizar la acción.");	
+		}
+	});//fin del boton guardarPuntosB
 	
 	
 	$('.guardarjugadorA').click(function(event){
@@ -493,6 +713,9 @@ $(document).ready(function(){
 		  if (!isNaN(usersid)) {
 			$.ajax({
 				data:  {goles: 		$('#goles'+usersid).val(),
+						amarillas: 	$('#amarillas'+usersid).val(),
+						azules: 	$('#azules'+usersid).val(),
+						rojas: 		$('#rojas'+usersid).val(),
 						refplayoff:	<?php echo $id; ?>,
 						refjugador:	usersid,
 						refequipo:	<?php echo $IdequipoA; ?>,
@@ -534,6 +757,9 @@ $(document).ready(function(){
 		  if (!isNaN(usersid)) {
 			$.ajax({
 				data:  {goles: 		$('#goles'+usersid).val(),
+						amarillas: 	$('#amarillas'+usersid).val(),
+						azules: 	$('#azules'+usersid).val(),
+						rojas: 		$('#rojas'+usersid).val(),
 						refplayoff:	<?php echo $id; ?>,
 						refjugador:	usersid,
 						refequipo:	<?php echo $IdequipoB; ?>,

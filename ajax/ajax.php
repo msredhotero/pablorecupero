@@ -116,6 +116,16 @@ break;
 case 'eliminarGolesPlayoff':
 eliminarGolesPlayoff($serviciosPlayOff);
 break; 
+
+case 'insertarPuntosEquiposPlayoff': 
+insertarPuntosEquiposPlayoff($serviciosPlayOff); 
+break; 
+case 'modificarPuntosEquiposPlayoff': 
+modificarPuntosEquiposPlayoff($serviciosPlayOff); 
+break; 
+case 'eliminarPuntosEquiposPlayoff': 
+eliminarPuntosEquiposPlayoff($serviciosPlayOff); 
+break; 
 /* Fin */
 
 /* PARA Sedes */
@@ -663,12 +673,31 @@ $refzona = $_POST['refzona'];
 $refequipo = $_POST['refequipo'];
 $refjugador = $_POST['refjugador'];
 $goles = $_POST['goles'];
-$res = $serviciosGolesPlayoff->insertarGolesPlayoff($refplayoff,$reftorneo,$refzona,$refequipo,$refjugador,$goles);
-if ((integer)$res > 0) {
-echo '';
-} else {
-echo 'Huvo un error al insertar datos';
-}
+$amarillas = $_POST['amarillas']; 
+$azules = $_POST['azules']; 
+$rojas = $_POST['rojas']; 
+
+
+
+$resExiste = $serviciosGolesPlayoff->traerGolesPlayoffPorPlayOffTorneoZonaEquipoJugador($refplayoff,$reftorneo,$refzona,$refequipo,$refjugador);
+
+	if (mysql_num_rows($resExiste)<1) {
+		
+		$res = $serviciosGolesPlayoff->insertarGolesPlayoff($refplayoff,$reftorneo,$refzona,$refequipo,$refjugador,$goles,$amarillas,$azules,$rojas);
+		if ((integer)$res > 0) {
+			echo '';
+		} else {
+			echo 'Huvo un error al insertar datos ';
+		}
+	} else {
+		$res = $serviciosGolesPlayoff->modificarGolesPlayoff(mysql_result($resExiste,0,0) ,$refplayoff,$reftorneo,$refzona,$refequipo,$refjugador,$goles,$amarillas,$azules,$rojas);
+		if ($res == true) {
+			echo '';
+		} else {
+			echo 'Huvo un error al modificar datos';
+		}
+	}
+	
 }
 function modificarGolesPlayoff($serviciosGolesPlayoff) {
 $id = $_POST['id'];
@@ -691,6 +720,67 @@ $res = $serviciosGolesPlayoff->eliminarGolesPlayoff($id);
 echo $res;
 }
 
+
+function insertarPuntosEquiposPlayoff($serviciosPuntosEquiposPlayoff) { 
+$refequipo = $_POST['refequipo']; 
+$amarillas = $_POST['amarillas']; 
+$azules = $_POST['azules']; 
+$rojas = $_POST['rojas']; 
+$refplayoff = $_POST['refplayoff']; 
+$refzona = $_POST['refzona']; 
+$reftorneo = $_POST['reftorneo']; 
+
+//aca//
+$res = $serviciosPuntosEquiposPlayoff->insertarPuntosEquiposPlayoff($refequipo,$amarillas,$azules,$rojas,$refplayoff,$refzona,$reftorneo); 
+if ((integer)$res > 0) { 
+echo ''; 
+} else { 
+echo 'Huvo un error al insertar datos';	
+} 
+
+$resExiste = $serviciosPuntosEquiposPlayoff->traerPuntosEquiposPlayoffPorPlayOffTorneoZonaEquipo($refplayoff,$reftorneo,$refzona,$refequipo);
+
+	if (mysql_num_rows($resExiste)<1) {
+		$serviciosPuntosEquiposPlayoff->eliminarPuntosEquiposPlayoffPorPlayOffTorneoZonaEquipo($refplayoff,$reftorneo,$refzona,$refequipo);
+		$res = $serviciosPuntosEquiposPlayoff->insertarPuntosEquiposPlayoff($refequipo,$amarillas,$azules,$rojas,$refplayoff,$refzona,$reftorneo);
+		if ((integer)$res > 0) {
+			echo '';
+		} else {
+			echo 'Huvo un error al insertar datos ';
+		}
+	} else {
+		$res = $serviciosPuntosEquiposPlayoff->modificarPuntosEquiposPlayoff(mysql_result($resExiste,0,0) ,$refequipo,$amarillas,$azules,$rojas,$refplayoff,$refzona,$reftorneo);
+		if ($res == true) {
+			echo '';
+		} else {
+			echo 'Huvo un error al modificar datos';
+		}
+	}
+
+} 
+
+
+function modificarPuntosEquiposPlayoff($serviciosPuntosEquiposPlayoff) { 
+$id = $_POST['id']; 
+$refequipo = $_POST['refequipo']; 
+$amarillas = $_POST['amarillas']; 
+$azules = $_POST['azules']; 
+$rojas = $_POST['rojas']; 
+$refplayoff = $_POST['refplayoff']; 
+$refzona = $_POST['refzona']; 
+$reftorneo = $_POST['reftorneo']; 
+$res = $serviciosPuntosEquiposPlayoff->modificarPuntosEquiposPlayoff($id,$refequipo,$amarillas,$azules,$rojas,$refplayoff,$refzona,$reftorneo); 
+if ($res == true) { 
+echo ''; 
+} else { 
+echo 'Huvo un error al modificar datos'; 
+} 
+} 
+function eliminarPuntosEquiposPlayoff($serviciosPuntosEquiposPlayoff) { 
+$id = $_POST['id']; 
+$res = $serviciosPuntosEquiposPlayoff->eliminarPuntosEquiposPlayoff($id); 
+echo $res; 
+} 
 /* Fin */ 
 
 

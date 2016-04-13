@@ -324,6 +324,9 @@ function traerJugadoresPorPlayOffA($idPlayOff,$idTorneo,$idZona) {
 				ee.idequipo,
 			   
 				a.goles,
+				a.amarillas,
+				a.azules,
+				a.rojas,
 				e.reftorneo
 			from		(select
 						distinct pp.refequipo, pp.reftorneo
@@ -349,6 +352,9 @@ function traerJugadoresPorPlayOffB($idPlayOff,$idTorneo,$idZona) {
 				ee.idequipo,
 			   
 				a.goles,
+				a.amarillas,
+				a.azules,
+				a.rojas,
 				e.reftorneo
 			from		(select
 						distinct pp.refequipo, pp.reftorneo
@@ -384,44 +390,105 @@ function traerZonaPorTipoTorneos($idtorneo) {
 
 /* PARA GolesPlayoff */
 
-function insertarGolesPlayoff($refplayoff,$reftorneo,$refzona,$refequipo,$refjugador,$goles) {
-$sql = "insert into dbgolesplayoff(idgolesplayoff,refplayoff,reftorneo,refzona,refequipo,refjugador,goles)
-values ('',".$refplayoff.",".$reftorneo.",".$refzona.",".$refequipo.",".$refjugador.",".$goles.")";
-$res = $this->query($sql,1);
-return $res;
+
+function insertarGolesPlayoff($refplayoff,$reftorneo,$refzona,$refequipo,$refjugador,$goles,$amarillas,$azules,$rojas) { 
+$sql = "insert into dbgolesplayoff(idgolesplayoff,refplayoff,reftorneo,refzona,refequipo,refjugador,goles,amarillas,azules,rojas) 
+values ('',".$refplayoff.",".$reftorneo.",".$refzona.",".$refequipo.",".$refjugador.",".($goles == '' ? 'null' : $goles).",".($amarillas == '' ? 'null' : $amarillas).",".($azules == '' ? 'null' : $azules).",".($rojas == '' ? 'null' : $rojas).")"; 
+$res = $this->query($sql,1); 
+return $res; 
+} 
+
+
+function modificarGolesPlayoff($id,$refplayoff,$reftorneo,$refzona,$refequipo,$refjugador,$goles,$amarillas,$azules,$rojas) { 
+$sql = "update dbgolesplayoff 
+set 
+refplayoff = ".$refplayoff.",reftorneo = ".$reftorneo.",refzona = ".$refzona.",refequipo = ".$refequipo.",refjugador = ".$refjugador.",goles = ".($goles == '' ? 'null' : $goles).",amarillas = ".($amarillas == '' ? 'null' : $amarillas).",azules = ".($azules == '' ? 'null' : $azules).",rojas = ".($rojas == '' ? 'null' : $rojas)." 
+where idgolesplayoff =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function eliminarGolesPlayoff($id) { 
+$sql = "delete from dbgolesplayoff where idgolesplayoff =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function traerGolesPlayoff() { 
+$sql = "select idgolesplayoff,refplayoff,reftorneo,refzona,refequipo,refjugador,goles,amarillas,azules,rojas from dbgolesplayoff order by 1"; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function traerGolesPlayoffPorId($id) { 
+$sql = "select idgolesplayoff,refplayoff,reftorneo,refzona,refequipo,refjugador,goles,amarillas,azules,rojas from dbgolesplayoff where idgolesplayoff =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+function traerGolesPlayoffPorPlayOffTorneoZonaEquipoJugador($idplayoff,$reftorneo,$refzona,$refequipo,$refjugador) { 
+$sql = "select idgolesplayoff,refplayoff,reftorneo,refzona,refequipo,refjugador,goles,amarillas,azules,rojas from dbgolesplayoff where refplayoff =".$idplayoff." and reftorneo=".$reftorneo." and refzona=".$refzona." and refequipo=".$refequipo." and refjugador=".$refjugador; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+/* PARA PuntosEquiposPlayoff */
+
+function insertarPuntosEquiposPlayoff($refequipo,$amarillas,$azules,$rojas,$refplayoff,$refzona,$reftorneo) { 
+$sql = "insert into tbpuntosequiposplayoff(idpuntosequipoplayoff,refequipo,amarillas,azules,rojas,refplayoff,refzona,reftorneo) 
+values ('',".$refequipo.",".($amarillas == '' ? 'null' : $amarillas).",".($azules == '' ? 'null' : $azules).",".($rojas == '' ? 'null' : $rojas).",".$refplayoff.",".$refzona.",".$reftorneo.")"; 
+$res = $this->query($sql,1); 
+return $res; 
+} 
+
+
+function modificarPuntosEquiposPlayoff($id,$refequipo,$amarillas,$azules,$rojas,$refplayoff,$refzona,$reftorneo) { 
+$sql = "update tbpuntosequiposplayoff 
+set 
+refequipo = ".$refequipo.",amarillas = ".($amarillas == '' ? 'null' : $amarillas).",azules = ".($azules == '' ? 'null' : $azules).",rojas = ".($rojas == '' ? 'null' : $rojas).",refplayoff = ".$refplayoff.",refzona = ".$refzona.",reftorneo = ".$reftorneo." 
+where idpuntosequipoplayoff =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function eliminarPuntosEquiposPlayoff($id) { 
+$sql = "delete from tbpuntosequiposplayoff where idpuntosequipoplayoff =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+function eliminarPuntosEquiposPlayoffPorPlayOffTorneoZonaEquipo($idplayoff,$reftorneo,$refzona,$refequipo) { 
+$sql = "delete from tbpuntosequiposplayoff where refplayoff =".$idplayoff." and reftorneo=".$reftorneo." and refzona=".$refzona." and refequipo=".$refequipo; 
+$res = $this->query($sql,0); 
+return $res; 
 }
 
 
-function modificarGolesPlayoff($id,$refplayoff,$reftorneo,$refzona,$refequipo,$refjugador,$goles) {
-$sql = "update dbgolesplayoff
-set
-refplayoff = ".$refplayoff.",reftorneo = ".$reftorneo.",refzona = ".$refzona.",refequipo = ".$refequipo.",refjugador = ".$refjugador.",goles = ".$goles."
-where idgolesplayoff =".$id;
-$res = $this->query($sql,0);
-return $res;
-}
+function traerPuntosEquiposPlayoff() { 
+$sql = "select idpuntosequipoplayoff,refequipo,amarillas,azules,rojas,refplayoff,refzona,reftorneo from tbpuntosequiposplayoff order by 1"; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
 
 
-function eliminarGolesPlayoff($id) {
-$sql = "delete from dbgolesplayoff where idgolesplayoff =".$id;
-$res = $this->query($sql,0);
-return $res;
-}
+function traerPuntosEquiposPlayoffPorId($id) { 
+$sql = "select idpuntosequipoplayoff,refequipo,amarillas,azules,rojas,refplayoff,refzona,reftorneo from tbpuntosequiposplayoff where idpuntosequipoplayoff =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
 
+function traerPuntosEquiposPlayoffPorPlayOffTorneoZonaEquipo($idplayoff,$reftorneo,$refzona,$refequipo) { 
+$sql = "select idpuntosequipoplayoff,refequipo,amarillas,azules,rojas,refplayoff,refzona,reftorneo from tbpuntosequiposplayoff where refplayoff =".$idplayoff." and reftorneo=".$reftorneo." and refzona=".$refzona." and refequipo=".$refequipo; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
 
-function traerGolesPlayoff() {
-$sql = "select idgolesplayoff,refplayoff,reftorneo,refzona,refequipo,refjugador,goles from dbgolesplayoff order by 1";
-$res = $this->query($sql,0);
-return $res;
-}
-
-
-function traerGolesPlayoffPorId($id) {
-$sql = "select idgolesplayoff,refplayoff,reftorneo,refzona,refequipo,refjugador,goles from dbgolesplayoff where idgolesplayoff =".$id;
-$res = $this->query($sql,0);
-return $res;
-}
-
+/* Fin */
 /* Fin */
 
 
