@@ -231,7 +231,7 @@ class ServiciosDatos {
 					dbtorneos t ON t.idtorneo = tge.reftorneo
 				where
 					fi.chequeado = 1 and t.reftipotorneo =".$idtorneo."
-						and tge.refgrupo = ".$idzona."
+						and tge.refgrupo in (".$idzona.")
 				group by ff.idfecha , ff.tipofecha
 				order by ff.idfecha desc
 				limit 1";	
