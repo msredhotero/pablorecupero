@@ -217,10 +217,43 @@ class ServiciosDatos {
 		return $puntos;
 	}
 	
+	function UltimaFechaPorTorneoZona($idtorneo,$idzona) {
+		$sql = "select 
+					ff.idfecha, ff.tipofecha
+				from
+					dbfixture fi
+						inner join
+					tbfechas ff ON ff.idfecha = fi.reffecha
+						inner join
+					dbtorneoge tge ON (tge.idtorneoge = fi.reftorneoge_a
+						or tge.idtorneoge = fi.reftorneoge_b)
+						inner join
+					dbtorneos t ON t.idtorneo = tge.reftorneo
+				where
+					fi.chequeado = 1 and t.reftipotorneo =".$idtorneo."
+						and tge.refgrupo = ".$idzona."
+				group by ff.idfecha , ff.tipofecha
+				order by ff.idfecha desc
+				limit 1";	
+		return $this-> query($sql,0);
+	}
+	
 	function TraerFixturePorZonaTorneo($idtorneo,$zona,$idfecha) {
 		
 		$sqlTorneo = "select idtorneo from dbtorneos where reftipotorneo = ".$idtorneo." and activo = 1";
 		$refTorneo = mysql_result($this->query($sqlTorneo,0),0,0);
+		
+		$idfecha = $serviciosFunciones->UltimaFechaPorTorneoZona($idtorneo,$zona);
+		
+		if (mysql_num_rows($idfecha)>0) {
+		
+			$idfecha = mysql_result($idfecha,0,0);	
+		
+		} else {
+		
+			$idfecha = 23;	
+		
+		}
 		
 		$sql = '
 			select
