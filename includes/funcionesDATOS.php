@@ -243,7 +243,7 @@ class ServiciosDatos {
 		$sqlTorneo = "select idtorneo from dbtorneos where reftipotorneo = ".$idtorneo." and activo = 1";
 		$refTorneo = mysql_result($this->query($sqlTorneo,0),0,0);
 		
-		$idfecha = $serviciosFunciones->UltimaFechaPorTorneoZona($idtorneo,$zona);
+		$idfecha = $this->UltimaFechaPorTorneoZona($idtorneo,$zona);
 		
 		if (mysql_num_rows($idfecha)>0) {
 		
