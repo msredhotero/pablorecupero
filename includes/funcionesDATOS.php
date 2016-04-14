@@ -1652,7 +1652,7 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 	}
 	
 	function fairplay($idtipoTorneo,$idzona,$reffecha) {
-		
+		/*
 		$sql = "select
 				e.nombre, ss.puntos, ppe.amarillas, ppe.rojas,ppe.azules, pe.observacion, ss.refequipo
 				
@@ -1685,7 +1685,7 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 				where	tp.idtipotorneo = ".$idtipoTorneo." and tge.refgrupo in (".$idzona.") and ss.reffecha = ".$reffecha."
 				group by e.nombre, ss.puntos, ppe.amarillas, ppe.rojas,ppe.azules, pe.observacion, ss.refequipo
 				order by ss.puntos desc";
-				
+				*/
 				
 				$sql = "select 
 					tt.nombre,
@@ -1700,7 +1700,7 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 							COALESCE(max(ss.puntos),0) as puntos,
 							ss.refequipo,
 							ss.reftorneo,
-							ss.reffecha
+							max(ss.reffecha) as reffecha
 						from dbequipos e
 						left join
 					tbconducta ss ON e.idequipo = ss.refequipo
@@ -1718,8 +1718,7 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 							and ss.reffecha <= ".$reffecha."
 						group by 	e.nombre,
 									ss.refequipo,
-									ss.reftorneo,
-									ss.reffecha) tt
+									ss.reftorneo) tt
 						inner join
 					tbpuntosequipos pe ON pe.refequipo = tt.refequipo
 						and tt.reftorneo = pe.reftorneo

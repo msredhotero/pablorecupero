@@ -1276,7 +1276,7 @@ function TraerFixturePorZonaTorneo($serviciosDatos) {
 	$zona		= $_POST['zona'];
 	$idfecha	= $_POST['reffecha'];
 	$res2 = $serviciosDatos->TraerFixturePorZonaTorneo($idtorneo,$idzona,$idfecha);
-	echo $res2;
+	//echo $res2;
 	$cad2 = '
 	<div class="row">
                 	<table class="table table-responsive table-striped table3" style="margin:2px 20px;">
