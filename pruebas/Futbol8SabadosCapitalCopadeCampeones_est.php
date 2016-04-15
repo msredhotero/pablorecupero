@@ -46,7 +46,7 @@ if (isset($_GET["id"])) {
 
 } else {
 
-	$idTipoTorneo = 30;  /** Esto es lo unico que hay que modificar */
+	$idTipoTorneo = 66;  /** Esto es lo unico que hay que modificar */
 
 }
 
