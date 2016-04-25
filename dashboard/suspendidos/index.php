@@ -348,6 +348,7 @@ $(document).ready(function(){
 		
 		$.ajax({
 			data:  {refequipo: $('#refequipo').val(),
+					reffixture: 0,
 					accion: 'traerFixturePorEquipo'},
 			url:   '../../ajax/ajax.php',
 			type:  'post',

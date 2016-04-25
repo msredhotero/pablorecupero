@@ -645,6 +645,18 @@ select
 		$sqlTorneo = "select idtorneo from dbtorneos where reftipotorneo = ".$idtorneo." and activo = 1";
 		$refTorneo = mysql_result($this->query($sqlTorneo,0),0,0);
 		
+		$idfecha = $this->UltimaFechaPorTorneoZona($idtorneo,$zona);
+		
+		if (mysql_num_rows($idfecha)>0) {
+		
+			$idfecha = mysql_result($idfecha,0,0);	
+		
+		} else {
+		
+			$idfecha = 23;	
+		
+		}
+		
 		$sql = 'select
 				t.apyn,t.nombre,t.cantidad,t.reemplzado, t.volvio, t.refequipo, t.refjugador, t.reemplzadovolvio
 				from
@@ -1398,6 +1410,19 @@ left join
 	
 	//amarillas de la pagina
 	function traerAcumuladosAmarillasPorTorneoZona($idtipoTorneo,$idzona,$idfecha) {
+		
+		$idfecha = $this->UltimaFechaPorTorneoZona($idtipoTorneo,$idzona);
+		
+		if (mysql_num_rows($idfecha)>0) {
+		
+			$idfecha = mysql_result($idfecha,0,0);	
+		
+		} else {
+		
+			$idfecha = 23;	
+		
+		}
+		
 		$sql = "select
 				t.refequipo, t.nombre, t.apyn, t.dni, 
 				COALESCE(t.cantidad,0) as cantidad,
@@ -1685,6 +1710,18 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 	}
 	
 	function fairplay($idtipoTorneo,$idzona,$reffecha) {
+		
+		$idfecha = $this->UltimaFechaPorTorneoZona($idtipoTorneo,$idzona);
+		
+		if (mysql_num_rows($idfecha)>0) {
+		
+			$reffecha = mysql_result($idfecha,0,0);	
+		
+		} else {
+		
+			$reffecha = 23;	
+		
+		}
 		/*
 		$sql = "select
 				e.nombre, ss.puntos, ppe.amarillas, ppe.rojas,ppe.azules, pe.observacion, ss.refequipo
@@ -1814,7 +1851,19 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
         function TraerFixturePorZonaTorneoMenosGoles($idtorneo,$zona,$idfecha) {
                 $sqlTorneo = "select idtorneo from dbtorneos where reftipotorneo = ".$idtorneo." and activo = 1";
 		$refTorneo = mysql_result($this->query($sqlTorneo,0),0,0);
-                
+        
+		$idfecha = $this->UltimaFechaPorTorneoZona($idtorneo,$zona);
+		
+		if (mysql_num_rows($idfecha)>0) {
+		
+			$idfecha = mysql_result($idfecha,0,0);	
+		
+		} else {
+		
+			$idfecha = 23;	
+		
+		}
+		
 		$sql = '
 			select
 			fix.nombre,
@@ -1822,9 +1871,9 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 			fix.ganados,
 			fix.empatados,
 			fix.perdidos,
-			fix.golesafavor,
-			(case when rr.idreemplazo is null then fix.golesencontra + COALESCE(rrr.golesencontra,0) else fix.golesencontra + rr.golesencontra end) as golesencontra,
-			fix.golesafavor - (case when rr.idreemplazo is null then fix.golesencontra + COALESCE(rrr.golesencontra,0) else fix.golesencontra + rr.golesencontra end) as diferencia,
+			COALESCE(fix.golesafavor,0) as golesafavor,
+			COALESCE((case when rr.idreemplazo is null then fix.golesencontra + COALESCE(rrr.golesencontra,0) else fix.golesencontra + rr.golesencontra end),0) as golesencontra,
+			COALESCE(fix.golesafavor - (case when rr.idreemplazo is null then fix.golesencontra + COALESCE(rrr.golesencontra,0) else fix.golesencontra + rr.golesencontra end),0) as diferencia,
 			((case when rr.idreemplazo is null then fix.pts + COALESCE(rrr.puntos,0) else fix.pts + rr.puntos end)
 			-
 			COALESCE((case 	when fix.puntos >= 15 and fix.puntos< 20 then 1
@@ -1852,7 +1901,7 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 			(
 				select 
 		       r.nombre,
-		       count(*) as partidos,
+		       sum(case when r.resultado_a is null then 0 else 1 end) as partidos,
 		       sum(case when r.resultado_a > r.resultado_b then 1 else 0 end) as ganados, 
 		       sum(case when r.resultado_a = r.resultado_b then 1 else 0 end) as empatados,
 		       sum(case when r.resultado_a < r.resultado_b then 1 else 0 end) as perdidos,
@@ -1862,7 +1911,10 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 		       ((sum(case when r.resultado_a > r.resultado_b then 1 else 0 end) * 2) +
 		        (sum(case when r.resultado_a = r.resultado_b then 1 else 0 end) * 1)) as pts,
 		        r.idequipo,
-				fp.puntos,
+				max(case
+                when r.resultado_a is null then 0
+                else fp.puntos
+           		 end) as puntos,
 				(case when r.equipoactivo = 0 then false else true end) as equipoactivo,
 		r.idtorneo, sum(r.bonus) as bonus
 		
@@ -1944,7 +1996,7 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 				Inner Join dbfixture fi ON tge.idtorneoge = fi.reftorneoge_a
 				inner join tbtipotorneo tp ON tp.idtipotorneo = t.reftipotorneo
 				inner join tbfechas f ON fi.refFecha = f.idfecha
-				inner join tbpuntosequipos pe on pe.refequipo = e.idequipo and pe.reffixture = fi.idfixture
+				inner join tbpuntosequipos pe on pe.refequipo = e.idequipo and pe.reffixture = fi.idfixture and pe.reffecha = f.idfecha and pe.reftorneo = t.idtorneo
 				where tge.refgrupo in ('.$zona.')
 				and tp.idtipotorneo = '.$idtorneo.'
 				and fi.reffecha <= '.$idfecha.' 
@@ -2028,17 +2080,49 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 				Inner Join dbfixture fi ON tge.idtorneoge = fi.reftorneoge_b
 				inner join tbtipotorneo tp ON tp.idtipotorneo = t.reftipotorneo
 				inner join tbfechas f ON fi.refFecha = f.idfecha
-				inner join tbpuntosequipos pe on pe.refequipo = e.idequipo and pe.reffixture = fi.idfixture
+				inner join tbpuntosequipos pe on pe.refequipo = e.idequipo and pe.reffixture = fi.idfixture and pe.reffecha = f.idfecha and pe.reftorneo = t.idtorneo
 				where tge.refgrupo in ('.$zona.')
 				and tp.idtipotorneo = '.$idtorneo.'
 				and fi.reffecha <= '.$idfecha.' 
 				and t.activo = 1
+				
+				union all
+				
+				 SELECT 
+        e.idequipo,
+            e.nombre,
+            t.activo,
+            t.idtorneo,
+            f.tipofecha,
+            fi.hora,
+            null as resultado_b,
+            null as resultado_a,
+            fi.reffecha,
+            tge.refgrupo,
+            tge.activo as equipoactivo,
+            0 as bonus
+
+    FROM
+        dbtorneoge tge
+    Inner Join dbequipos e ON tge.refequipo = e.idequipo
+    inner join dbgrupos g ON tge.refgrupo = g.idgrupo
+    Inner Join dbtorneos t ON t.idtorneo = tge.reftorneo
+    Inner Join dbfixture fi ON tge.idtorneoge = fi.reftorneoge_b or tge.idtorneoge = fi.reftorneoge_a
+    inner join tbtipotorneo tp ON tp.idtipotorneo = t.reftipotorneo
+    inner join tbfechas f ON fi.refFecha = f.idfecha
+
+    where tge.refgrupo in ('.$zona.')
+				and tp.idtipotorneo = '.$idtorneo.'
+				and fi.reffecha <= '.$idfecha.' 
+				and t.activo = 1
+			and fi.jugo = 0 and fi.chequeado = 0
+				
 				) as r
-				inner
-				join	(select refequipo,puntos as puntos, reftorneo from tbconducta where reffecha ='.$idfecha.'
+				left
+				join	(select refequipo,max(puntos) as puntos, reftorneo from tbconducta where reffecha <='.$idfecha.' group by refequipo,reftorneo
 				) fp
 				on		r.idequipo = fp.refequipo and fp.reftorneo = r.idtorneo
-				inner join dbtorneos t ON t.idtorneo = fp.reftorneo and t.activo = 1
+				left join dbtorneos t ON t.idtorneo = fp.reftorneo and t.activo = 1
 				group by r.nombre,r.idequipo 
 ) as fix
 
@@ -2086,7 +2170,7 @@ select
 				inner join dbfixture fix ON fix.idfixture = a.reffixture
 				inner join tbfechas f ON f.idfecha = fix.reffecha
 				inner join dbtorneoge tge ON tge.refequipo = e.idequipo
-					and fix.reftorneoge_b = tge.idtorneoge
+					and fix.reftorneoge_b = tge.idtorneoge 
 				where
 					a.amarillas = 1 and tge.reftorneo = '.$refTorneo.'
 						and fix.reffecha <= '.$idfecha.'

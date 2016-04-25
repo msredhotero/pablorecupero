@@ -2878,13 +2878,18 @@ echo $res;
 
 function traerFixturePorEquipo($serviciosZonasEquipos) {
 	$idequipo		=	$_POST['refequipo'];
+	$reffixture		=	$_POST['reffixture'];
 	
 	$res4 = $serviciosZonasEquipos->traerFixturePorEquipo($idequipo);
 	
 
 	$cad = '';
 	while ($row4 = mysql_fetch_array($res4)) {
-		$cad = $cad.'<option value="'.$row4[0].'">'.$row4[7].' - '.$row4[8].'</td>';	
+		if ($reffixture == $row4[0]) { 
+			$cad = $cad.'<option value="'.$row4[0].'" selected="selected">'.$row4[7].' - '.$row4[8].'</td>';	
+		} else {
+			$cad = $cad.'<option value="'.$row4[0].'">'.$row4[7].' - '.$row4[8].'</td>';	
+		}
 	}
 	echo $cad;
 		

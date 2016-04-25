@@ -29,6 +29,8 @@ $id = $_GET['id'];
 
 $resResultado = $serviciosJugadores->traerSuspendidosPorId($id);
 
+$refFixture = mysql_result($resResultado,0,'reffixture');
+
 /////////////////////// Opciones de la pagina  ////////////////////
 $tabla = 'tbsuspendidos';
 
@@ -291,6 +293,7 @@ $(document).ready(function(){
 	function traerFechas() {
 		$.ajax({
 			data:  {refequipo: $('#refequipo').val(),
+					reffixture: <?php echo $refFixture; ?>,
 					accion: 'traerFixturePorEquipo'},
 			url:   '../../ajax/ajax.php',
 			type:  'post',
