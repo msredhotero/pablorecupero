@@ -628,8 +628,8 @@ select
 			sa.idequipo) ro ON ro.idequipo = fix.idequipo
 	
 	
-				order by (case when rr.idreemplazo is null then fix.pts + fix.bonus + COALESCE(rrr.puntos,0) else fix.pts + rr.puntos end) desc, fix.puntos,
-	  fix.golesafavor - (case when rr.idreemplazo is null then fix.golesencontra + COALESCE(rrr.golesencontra,0) else fix.golesencontra + rr.golesencontra end) desc,
+				order by (case when rr.idreemplazo is null then fix.pts + fix.bonus + COALESCE(rrr.puntos,0) else fix.pts + rr.puntos end) desc, 
+	  fix.golesafavor - (case when rr.idreemplazo is null then fix.golesencontra + COALESCE(rrr.golesencontra,0) else fix.golesencontra + rr.golesencontra end) desc,fix.puntos,
 	  fix.golesafavor desc,
 	  (case when rr.idreemplazo is null then fix.golesencontra + COALESCE(rrr.golesencontra,0) else fix.golesencontra + rr.golesencontra end),
 	  fix.ganados desc';
