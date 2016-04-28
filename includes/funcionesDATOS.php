@@ -1411,6 +1411,9 @@ left join
 	//amarillas de la pagina
 	function traerAcumuladosAmarillasPorTorneoZona($idtipoTorneo,$idzona,$idfecha) {
 		
+		$sqlTorneo = "select idtorneo from dbtorneos where reftipotorneo = ".$idtipoTorneo." and activo = 1";
+		$refTorneo = mysql_result($this->query($sqlTorneo,0),0,0);
+		
 		$idfecha = $this->UltimaFechaPorTorneoZona($idtipoTorneo,$idzona);
 		
 		if (mysql_num_rows($idfecha)>0) {
@@ -1432,14 +1435,30 @@ left join
 				fecha,t.reemplzado, t.volvio, t.refjugador, t.reemplzadovolvio
 				from
 				(
+				
+				select
+					r.refequipo, r.nombre, r.apyn, 
+					r.dni, 
+					sum(r.amarillas) as cantidad,
+					count(r.azul) as cantidadazules,
+					count(r.rojas) as cantidadrojas,
+					max(r.reffecha) as ultimafecha, 
+					max(r.tipofecha) as fecha
+					, max(r.reemplzado) as reemplzado
+					, max(r.volvio) as volvio,
+					r.refjugador,
+					max(r.reemplzadovolvio) as reemplzadovolvio
+				from
+                (
+				
 				select
 					a.refequipo, e.nombre, concat(j.apellido,', ',j.nombre) as apyn, 
 					j.dni, 
-					count(a.amarillas) as cantidad,
-					count(a.azul) as cantidadazules,
-					count(a.rojas) as cantidadrojas,
-					max(fi.reffecha) as ultimafecha, 
-					max(ff.tipofecha) as fecha
+					a.amarillas,
+					a.azul,
+					a.rojas,
+					fi.reffecha, 
+					ff.tipofecha
 					, (case when rr.idreemplazo is null then false else true end) as reemplzado
 					, (case when rrr.idreemplazo is null then 0 else 1 end) as volvio,
 					a.refjugador,
@@ -1492,7 +1511,33 @@ left join
 											where		tp.idtipotorneo in (".$idtipoTorneo.") and tge.refgrupo in (".$idzona."))
 					and (a.amarillas is not null or a.azul is not null or a.rojas is not null)
 					and fi.reffecha <= ".$idfecha."
-					group by a.refequipo, e.nombre, j.apellido,j.nombre, j.dni, a.refjugador
+					
+					
+					UNION ALL 
+                    
+                    SELECT 
+                    
+                    gp.refequipo, e.nombre, concat(j.apellido,', ',j.nombre) as apyn, 
+					j.dni, 
+					gp.amarillas,
+					gp.azules,
+					gp.rojas,
+					null as reffecha, 
+					null as tipofecha
+					, 0 as reemplzado
+					, 0 as volvio,
+					gp.refjugador,
+					0 as reemplzadovolvio
+                    
+				FROM
+					dbgolesplayoff gp
+				INNER JOIN dbjugadores j ON gp.refjugador = j.idjugador
+				INNER JOIN dbequipos e ON e.idequipo = gp.refequipo
+				WHERE
+					gp.reftorneo = ".$refTorneo."
+                ) r    
+                    group by r.refequipo, r.nombre, r.apyn, r.dni, r.refjugador    
+                    
 				) t
 					
 					

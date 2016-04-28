@@ -8,6 +8,7 @@ if (!isset($_SESSION['usua_predio']))
 } else {
 
 
+
 include ('../../includes/funcionesUsuarios.php');
 include ('../../includes/funciones.php');
 include ('../../includes/funcionesHTML.php');

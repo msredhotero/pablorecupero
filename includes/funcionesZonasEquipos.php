@@ -474,7 +474,7 @@ class ServiciosZonasEquipos {
 			where
 				tp.idtipotorneo =  ".$_SESSION['idtorneo_predio']."
 				) ff			
-					 order by ff.nombre,ff.idfecha,ff.fecha,ff.hora";
+					 order by ff.nombre,ff.idfecha,ff.fecha,ff.hora, ff.idfixture";
 		 return $this-> query($sql,0);
 	}
 	
@@ -813,7 +813,7 @@ class ServiciosZonasEquipos {
 		
 		$sql = "update dbfixture
 		set
-		reftorneoge_a = ".$reftorneoge_a.",resultado_a = ".$resultado_a.",reftorneoge_b = ".$reftorneoge_b.",resultado_b = ".$resultado_b.",fechajuego = '".$fechajuego."',refFecha = ".$refFecha.",cancha = '".utf8_decode($cancha)."',hora = '".$horario."', chequeado = ".$chequeado." , jugo = ".$jugo." 
+		reftorneoge_a = ".$reftorneoge_a.",resultado_a = ".$resultado_a.",reftorneoge_b = ".$reftorneoge_b.",resultado_b = ".$resultado_b.",fechajuego = '".$fechajuego."',refFecha = ".$refFecha.",cancha = '".utf8_decode($cancha)."',hora = '".$horario."'
 		where Idfixture =".$id;
 		
 		$res = $this->query($sql,0);
@@ -1954,6 +1954,49 @@ $res = $this->query($sql,0);
 return $res;
 }
 
+
+
+/* PARA Audit */
+
+function insertarAudit($tabla,$idtabla,$campo,$previousvalue,$newvalue,$dateupdate,$user,$action) { 
+$sql = "insert into audit(idaudit,tabla,idtabla,campo,previousvalue,newvalue,dateupdate,user,action) 
+values ('','".utf8_decode($tabla)."',".$idtabla.",'".$campo."','".utf8_decode($previousvalue)."','".utf8_decode($newvalue)."','".utf8_decode($dateupdate)."','".utf8_decode($user)."','".utf8_decode($action)."')"; 
+$res = $this->query($sql,1); 
+return $res; 
+} 
+
+
+function modificarAudit($id,$tabla,$idtabla,$idmodificado,$previousvalue,$newvalue,$dateupdate,$user,$action) { 
+$sql = "update audit 
+set 
+tabla = '".utf8_decode($tabla)."',idtabla = ".$idtabla.",idmodificado = ".$idmodificado.",previousvalue = '".utf8_decode($previousvalue)."',newvalue = '".utf8_decode($newvalue)."',dateupdate = '".utf8_decode($dateupdate)."',user = '".utf8_decode($user)."',action = '".utf8_decode($action)."' 
+where idaudit =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function eliminarAudit($id) { 
+$sql = "delete from audit where idaudit =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function traerAudit() { 
+$sql = "select idaudit,tabla,idtabla,idmodificado,previousvalue,newvalue,dateupdate,user,action from audit order by 1"; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function traerAuditPorId($id) { 
+$sql = "select idaudit,tabla,idtabla,idmodificado,previousvalue,newvalue,dateupdate,user,action from audit where idaudit =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+/* Fin */
 /* Fin */	
 	
 	function query($sql,$accion) {

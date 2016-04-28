@@ -689,6 +689,7 @@ $resExiste = $serviciosGolesPlayoff->traerGolesPlayoffPorPlayOffTorneoZonaEquipo
 		} else {
 			echo 'Huvo un error al insertar datos ';
 		}
+		//echo $res;
 	} else {
 		$res = $serviciosGolesPlayoff->modificarGolesPlayoff(mysql_result($resExiste,0,0) ,$refplayoff,$reftorneo,$refzona,$refequipo,$refjugador,$goles,$amarillas,$azules,$rojas);
 		if ($res == true) {

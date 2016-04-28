@@ -651,7 +651,13 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 left join dbreemplazo rr on rr.refequiporeemplazado = e.idequipo and rr.reffecha <= ".$idfecha." and rr.reftorneo = fi.idtorneo
 left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$idfecha." and rrr.reftorneo = fi.idtorneo
 left join
-	dbreemplazovolvio rv ON rv.refreemplazo = rrr.idreemplazo and rv.refzona in (".$idzona.")
+	dbreemplazovolvio rv ON rv.refreemplazo = rrr.idreemplazo and rv.refzona in (select distinct tge.refgrupo from dbfixture fix
+																				inner join dbtorneoge tge ON fix.reftorneoge_a = tge.idtorneoge
+																				or fix.reftorneoge_b = tge.idtorneoge
+																				inner join dbtorneos tt ON tt.idtorneo = tge.reftorneo
+																				and tt.reftipotorneo in (".$idtipoTorneo.")
+																				and tt.activo = 1
+																				group by idfixture,reffecha)
 					
 					where	j.idjugador = ".$idjugador."
 					and (a.amarillas is not null or a.azul is not null or a.rojas is not null)

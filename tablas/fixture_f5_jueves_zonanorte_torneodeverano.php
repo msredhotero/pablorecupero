@@ -104,7 +104,7 @@ while ($row = mysql_fetch_array($resZonasTorneos)) {
 											<div class="more">
 												<div class="row">
 													<div class="title">Sede:</div>
-													<div class="text">'.substr($cadSedes,0,strlen($cadSedes)-3).'</div>
+													<div class="text">'.(strlen($cadSedes) >3 ? substr($cadSedes,0,strlen($cadSedes)-3) : '').'</div>
 												</div>
 												<div class="row">
 													<div class="title">Fecha:</div>
