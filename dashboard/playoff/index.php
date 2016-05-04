@@ -325,33 +325,7 @@ $(document).ready(function(){
 		});
 	}
 	
-	function buscarZona(idTorneo) {
-		$.ajax({
-				data:  {reftorneo: idTorneo, 
-						accion: 'traerZonaPorTorneos'},
-				url:   '../../ajax/ajax.php',
-				type:  'post',
-				beforeSend: function () {
-						
-				},
-				success:  function (response) {
-					if(response){
-						var cad = '';	//idproducto,codigo,nombre,descripcion,stock,stockmin,preciocosto,precioventa,utilidad,estado,imagen,idcategoria,tipoimagen,nroserie,codigobarra
-						json = $.parseJSON(response);
-						
-						$.each(json, function(i, item) {
-							
-							cad = cad+'<option value="'+item.idgrupo+'">'+item.nombre+'</option>';
-						});
-						
-						$("#refzona").html(cad);
-						
-						//buscarEquipo(idTorneo,$("#refzona").val());
-					}
-						
-				}
-		});
-	}
+
 	
 	/*
 	$("#refzona").change(function(e) {
@@ -365,7 +339,7 @@ $(document).ready(function(){
         buscarZona($('#reftorneo').val());
     });
 	
-	buscarZona($('#reftorneo').val());
+
 
 
 	 $( "#dialog2" ).dialog({

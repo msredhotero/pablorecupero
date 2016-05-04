@@ -720,7 +720,17 @@ values ('',".$refjugador.",".$refequipo.",".$reffixture.",".($amarillas == '' ? 
 		$fechaJuego = mysql_result($resFixFecha,0,0);
 		$refTorneo = mysql_result($resFixFecha,0,1);
 		$refTipoTorneo = mysql_result($resFixFecha,0,2);
-			
+		
+		// verifico que exista la tabla de conducta //
+		/*$sqlEconducta = "select * from tbconducta where refequipo =".$refequipo." and reffecha =".$fechaJuego." and reftorneo =".$refTorneo;
+		
+		$resEC = $this->query($sqlEconducta,0);
+		if (mysql_num_rows($resEC)<1) {
+			//inserto la fila
+				
+		}
+		*/
+		
 		if ($amarillas == 1) {
 			
 			//// verificar que este en la tabla de conducta  ///
@@ -861,13 +871,17 @@ function modificarAmonestados($id,$refjugador,$refequipo,$reffixture,$amarillas,
 			
 			$cantidad = $this->traerAcumuladosAmarillasPorTorneoZonaJugador($fechaJuego,$refjugador,$refTipoTorneo);
 			
-			$sql = "update tbconducta
-					set
-					puntos = puntos + 1
-					where refequipo =".$refequipo." and reffecha =".$fechaJuego." and reftorneo =".$refTorneo;
-			$res2 = $this->query($sql,0);	
-			
 			if ($cantidad == 3) {
+				
+				// verifico si ya tiene una suspension ya que no podria tener dos simultaneas //
+				$resExisteSuspendido = $this->query("select idsuspendido from tbsuspendidos where reffixture = ".$reffixture." and refequipo =".$refequipo." and refjugador =".$refjugador,0);
+				
+				if (mysql_num_rows($resExisteSuspendido)>0) {
+					// lo elimino
+					$this->query("delete from tbsuspendidos where reffixture = ".$reffixture." and refequipo =".$refequipo." and refjugador =".$refjugador,0);
+				}
+				/////////////////// fin ////////////////////////////////////////////////////////
+				
 				$sqlSuspendido = "insert into tbsuspendidos(idsuspendido,refequipo,refjugador,motivos,cantidadfechas,fechacreacion,reffixture)
 				values ('',".$refequipo.",".$refjugador.",'".utf8_decode('Acumulación de 3 Amarillas')."','1','".date('Y-m-d H:i:s')."',".$reffixture.")";
 				$res4 = $this->query($sqlSuspendido,1);
@@ -885,14 +899,19 @@ function modificarAmonestados($id,$refjugador,$refequipo,$reffixture,$amarillas,
 			//// si esta modificar los puntos /////
 			
 			$cantidad = $this->traerAcumuladosAmarillasPorTorneoZonaJugador($fechaJuego,$refjugador,$refTipoTorneo);
-			
-			$sql = "update tbconducta
-					set
-					puntos = puntos + 2
-					where refequipo =".$refequipo." and reffecha =".$fechaJuego." and reftorneo =".$refTorneo;
-			$res2 = $this->query($sql,0);	
+				
 			
 			if ($cantidad == 3) {
+				
+				// verifico si ya tiene una suspension ya que no podria tener dos simultaneas //
+				$resExisteSuspendido = $this->query("select idsuspendido from tbsuspendidos where reffixture = ".$reffixture." and refequipo =".$refequipo." and refjugador =".$refjugador,0);
+				
+				if (mysql_num_rows($resExisteSuspendido)>0) {
+					// lo elimino
+					$this->query("delete from tbsuspendidos where reffixture = ".$reffixture." and refequipo =".$refequipo." and refjugador =".$refjugador,0);
+				}
+				/////////////////// fin ////////////////////////////////////////////////////////
+				
 				$sqlSuspendido = "insert into tbsuspendidos(idsuspendido,refequipo,refjugador,motivos,cantidadfechas,fechacreacion,reffixture)
 				values ('',".$refequipo.",".$refjugador.",'".utf8_decode('Acumulación de 3 Amarillas')."','1','".date('Y-m-d H:i:s')."',".$reffixture.")";
 				$res4 = $this->query($sqlSuspendido,1);
@@ -905,12 +924,17 @@ function modificarAmonestados($id,$refjugador,$refequipo,$reffixture,$amarillas,
 		
 		if ($amarillas == 2) {
 
-			$sql = "update tbconducta
-					set
-					puntos = puntos + 3
-					where refequipo =".$refequipo." and reffecha =".$fechaJuego." and reftorneo =".$refTorneo;
-			$res3 = $this->query($sql,0);
 			
+			// verifico si ya tiene una suspension ya que no podria tener dos simultaneas //
+				$resExisteSuspendido = $this->query("select idsuspendido from tbsuspendidos where reffixture = ".$reffixture." and refequipo =".$refequipo." and refjugador =".$refjugador,0);
+				
+				if (mysql_num_rows($resExisteSuspendido)>0) {
+					// lo elimino
+					$this->query("delete from tbsuspendidos where reffixture = ".$reffixture." and refequipo =".$refequipo." and refjugador =".$refjugador,0);
+				}
+				/////////////////// fin ////////////////////////////////////////////////////////
+				
+				
 			$sqlSuspendido = "insert into tbsuspendidos(idsuspendido,refequipo,refjugador,motivos,cantidadfechas,fechacreacion,reffixture)
 			values ('',".$refequipo.",".$refjugador.",'Doble Amarilla','1','".date('Y-m-d H:i:s')."',".$reffixture.")";
 			$res4 = $this->query($sqlSuspendido,1);
@@ -926,11 +950,14 @@ function modificarAmonestados($id,$refjugador,$refequipo,$reffixture,$amarillas,
 		
 		if ($rojas == 1) {
 
-			$sql = "update tbconducta
-					set
-					puntos = puntos + 3
-					where refequipo =".$refequipo." and reffecha =".$fechaJuego." and reftorneo =".$refTorneo;
-			$res3 = $this->query($sql,0);
+			// verifico si ya tiene una suspension ya que no podria tener dos simultaneas //
+				$resExisteSuspendido = $this->query("select idsuspendido from tbsuspendidos where reffixture = ".$reffixture." and refequipo =".$refequipo." and refjugador =".$refjugador,0);
+				
+				if (mysql_num_rows($resExisteSuspendido)>0) {
+					// lo elimino
+					$this->query("delete from tbsuspendidos where reffixture = ".$reffixture." and refequipo =".$refequipo." and refjugador =".$refjugador,0);
+				}
+				/////////////////// fin ////////////////////////////////////////////////////////
 			
 			
 			$sqlSuspendido = "insert into tbsuspendidos(idsuspendido,refequipo,refjugador,motivos,cantidadfechas,fechacreacion,reffixture)

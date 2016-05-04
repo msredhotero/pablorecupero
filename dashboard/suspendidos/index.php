@@ -372,9 +372,6 @@ $(document).ready(function(){
 			$("#idEliminar").val(usersid);
 			$("#dialog2").dialog("open");
 
-			
-			//url = "../clienteseleccionado/index.php?idcliente=" + usersid;
-			//$(location).attr('href',url);
 		  } else {
 			alert("Error, vuelva a realizar la acción.");	
 		  }
@@ -411,7 +408,7 @@ $(document).ready(function(){
 									},
 									success:  function (response) {
 											url = "index.php";
-											//$(location).attr('href',url);
+											$(location).attr('href',url);
 											
 									}
 							});

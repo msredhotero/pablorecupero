@@ -1756,6 +1756,10 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 	
 	function fairplay($idtipoTorneo,$idzona,$reffecha) {
 		
+		$sqlTorneo = "select idtorneo from dbtorneos where reftipotorneo = ".$idtipoTorneo." and activo = 1";
+		$refTorneo = mysql_result($this->query($sqlTorneo,0),0,0);
+		
+		
 		$idfecha = $this->UltimaFechaPorTorneoZona($idtipoTorneo,$idzona);
 		
 		if (mysql_num_rows($idfecha)>0) {
@@ -1805,9 +1809,9 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 				$sql = "select 
 					tt.nombre,
 					tt.puntos,
-					ppe.amarillas,
-					ppe.rojas,
-					ppe.azules,
+					ppe.amarillas + COALESCE(t.cantidad,0) as amarillas,
+    				ppe.rojas + COALESCE(t.cantidadrojas,0) as rojas,
+    				ppe.azules + COALESCE(t.cantidadazules,0) as azules,
 					pe.observacion,
 					tt.refequipo
 				from
@@ -1834,7 +1838,7 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 						group by 	e.nombre,
 									ss.refequipo,
 									ss.reftorneo) tt
-						inner join
+						left join
 					tbpuntosequipos pe ON pe.refequipo = tt.refequipo
 						and tt.reftorneo = pe.reftorneo
 						and tt.reffecha = pe.reffecha
@@ -1850,6 +1854,122 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 					group by refequipo , reftorneo) ppe ON ppe.refequipo = tt.refequipo
 						and ppe.reftorneo = tt.reftorneo
 						and ppe.reftorneo = tt.reftorneo
+					
+					left join
+        (select
+				t.refequipo, t.nombre,
+				COALESCE(t.cantidad,0) as cantidad,
+				COALESCE(t.cantidadazules,0) as cantidadazules,
+				COALESCE(t.cantidadrojas,0) as cantidadrojas
+				
+				from
+				(
+				
+				select
+					r.refequipo, r.nombre, r.apyn, 
+					r.dni, 
+					sum(r.amarillas) as cantidad,
+					count(r.azul) as cantidadazules,
+					count(r.rojas) as cantidadrojas,
+					max(r.reffecha) as ultimafecha, 
+					max(r.tipofecha) as fecha
+					, max(r.reemplzado) as reemplzado
+					, max(r.volvio) as volvio,
+					r.refjugador,
+					max(r.reemplzadovolvio) as reemplzadovolvio
+				from
+                (
+				
+				select
+					a.refequipo, e.nombre, concat(j.apellido,', ',j.nombre) as apyn, 
+					j.dni, 
+					a.amarillas,
+					a.azul,
+					a.rojas,
+					fi.reffecha, 
+					ff.tipofecha
+					, (case when rr.idreemplazo is null then false else true end) as reemplzado
+					, (case when rrr.idreemplazo is null then 0 else 1 end) as volvio,
+					a.refjugador,
+					(case
+						when rv.idreemplazovolvio is null then 0
+						else 1
+					end) as reemplzadovolvio
+					from		tbamonestados a
+					inner
+					join		dbequipos e
+					on			e.idequipo = a.refequipo
+					inner
+					join		dbjugadores j
+					on			j.idjugador = a.refjugador
+					/*inner
+					join		dbfixture fi
+					on			fi.idfixture = a.reffixture*/
+					inner 
+					join 		(select fix.idfixture,fix.reffecha,tt.idtorneo from dbfixture fix
+									inner join dbtorneoge tge ON fix.reftorneoge_a = tge.idtorneoge
+									or fix.reftorneoge_b = tge.idtorneoge
+									inner join dbtorneos tt ON tt.idtorneo = tge.reftorneo
+									and tt.reftipotorneo in (".$idtipoTorneo.")
+									and tt.activo = 1
+									group by idfixture,reffecha) fi
+					on			fi.idfixture = a.reffixture
+					inner
+					join		tbfechas ff
+					on			ff.idfecha = fi.reffecha
+left join dbreemplazo rr on rr.refequiporeemplazado = e.idequipo and rr.reffecha <= ".$reffecha." and rr.reftorneo = fi.idtorneo
+left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$reffecha." and rrr.reftorneo = fi.idtorneo
+left join
+	dbreemplazovolvio rv ON rv.refreemplazo = rrr.idreemplazo and rv.refzona in (".$idzona.")
+					
+					where	a.refequipo in (select
+											distinct e.idequipo
+											from		dbtorneoge tge
+											inner
+											join		dbequipos e
+											on			e.idequipo = tge.refequipo
+											inner
+											join		dbfixture fix
+											on			fix.reftorneoge_a = tge.idtorneoge or fix.reftorneoge_b = tge.idtorneoge
+											inner
+											join		dbtorneos t
+											on			t.idtorneo = tge.reftorneo and t.activo = 1
+											inner
+											join		tbtipotorneo tp
+											on			tp.idtipotorneo = t.reftipotorneo
+											where		tp.idtipotorneo in (".$idtipoTorneo.") and tge.refgrupo in (".$idzona."))
+					and (a.amarillas is not null or a.azul is not null or a.rojas is not null)
+					and fi.reffecha <= ".$reffecha."
+					
+					
+					UNION ALL 
+                    
+                    SELECT 
+                    
+                    gp.refequipo, e.nombre, concat(j.apellido,', ',j.nombre) as apyn, 
+					j.dni, 
+					gp.amarillas,
+					gp.azules,
+					gp.rojas,
+					null as reffecha, 
+					null as tipofecha
+					, 0 as reemplzado
+					, 0 as volvio,
+					gp.refjugador,
+					0 as reemplzadovolvio
+                    
+				FROM
+					dbgolesplayoff gp
+				INNER JOIN dbjugadores j ON gp.refjugador = j.idjugador
+				INNER JOIN dbequipos e ON e.idequipo = gp.refequipo
+				WHERE
+					gp.reftorneo = ".$refTorneo."
+                ) r    
+                    group by r.refequipo, r.nombre    
+                    
+				) t) t
+                on t.refequipo = tt.refequipo
+				
 				
 				group by tt.nombre , tt.puntos , ppe.amarillas , ppe.rojas , ppe.azules , pe.observacion , tt.refequipo
 				order by tt.puntos desc";
