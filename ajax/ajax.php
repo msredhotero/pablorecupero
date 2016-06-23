@@ -221,6 +221,19 @@ break;
 	case 'traerEquipoPorZonaTorneos':
 		traerEquipoPorZonaTorneos($serviciosEquipos);
 		break; 
+		
+		/* PARA RestarPuntos */
+		case 'insertarRestarPuntos': 
+		insertarRestarPuntos($serviciosEquipos); 
+		break; 
+		case 'modificarRestarPuntos': 
+		modificarRestarPuntos($serviciosEquipos); 
+		break; 
+		case 'eliminarRestarPuntos': 
+		eliminarRestarPuntos($serviciosEquipos); 
+		break; 
+		
+		/* Fin */
 	/* fin equipos */
 	
 	
@@ -2085,6 +2098,66 @@ $id = $_POST['id'];
 $res = $serviciosPuntosEquipos->eliminarPuntosEquipos($id);
 echo $res;
 }
+
+
+/* PARA RestarPuntos */
+function insertarRestarPuntos($serviciosRestarPuntos) { 
+$reftorneo = $_POST['reftorneo']; 
+$refzona = $_POST['refzona']; 
+$refequipo = $_POST['refequipo']; 
+$reffixture = $_POST['reffixture']; 
+$reffecha = $_POST['reffecha']; 
+$puntos = ($_POST['puntos'] == '' ? 0 : $_POST['puntos']); 
+$observacion = $_POST['observacion']; 
+
+
+$resExiste = $serviciosRestarPuntos->traerRestarPuntosPorFixtureEquipo($reffixture,$refequipo);
+
+	if (mysql_num_rows($resExiste)<1) {
+		
+		$res = $serviciosRestarPuntos->insertarRestarPuntos($reftorneo,$refzona,$refequipo,$reffixture,$reffecha,$puntos,$observacion);
+		if ((integer)$res > 0) {
+			echo '';
+		} else {
+			echo 'Huvo un error al insertar datos ';
+		}
+	} else {
+		$res = $serviciosRestarPuntos->modificarRestarPuntos(mysql_result($resExiste,0,0) ,$reftorneo,$refzona,$refequipo,$reffixture,$reffecha,$puntos,$observacion);
+		if ($res == true) {
+			echo '';
+		} else {
+			echo 'Huvo un error al modificar datos';
+		}
+	}
+	
+
+
+} 
+function modificarRestarPuntos($serviciosRestarPuntos) { 
+$id = $_POST['id']; 
+$reftorneo = $_POST['reftorneo']; 
+$refzona = $_POST['refzona']; 
+$refequipo = $_POST['refequipo']; 
+$reffixture = $_POST['reffixture']; 
+$reffecha = $_POST['reffecha']; 
+$puntos = $_POST['puntos']; 
+$observacion = $_POST['observacion']; 
+$res = $serviciosRestarPuntos->modificarRestarPuntos($id,$reftorneo,$refzona,$refequipo,$reffixture,$reffecha,$puntos,$observacion); 
+if ($res == true) { 
+echo ''; 
+} else { 
+echo 'Huvo un error al modificar datos'; 
+} 
+} 
+function eliminarRestarPuntos($serviciosRestarPuntos) { 
+$id = $_POST['id']; 
+$res = $serviciosRestarPuntos->eliminarRestarPuntos($id); 
+echo $res; 
+} 
+
+/* Fin */
+
+
 /* fin equipos */
 
 

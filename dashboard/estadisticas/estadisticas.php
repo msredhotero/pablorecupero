@@ -31,6 +31,9 @@ $resMenu = $serviciosHTML->menu($_SESSION['nombre_predio'],"Estadisticas",$_SESS
 $idFixture = $_GET['id'];
 
 $resFix = $serviciosZonasEquipos->TraerFixturePorId($idFixture);
+$resZona= $serviciosZonasEquipos->traerZonaPorFixture($idFixture);
+
+$refZona= mysql_result($resZona,0,0);
 
 $refFecha = mysql_result($resFix,0,6);
 $refChequeado = mysql_result($resFix,0,'chequeado');
@@ -104,7 +107,8 @@ if (mysql_num_rows($resJugadoresA)>0) {
 	$equipoA	= mysql_result($resJugadoresA,0,'nombre');
 	$IdequipoA	= mysql_result($resJugadoresA,0,'idequipo');
 	$refTorneoA = mysql_result($resJugadoresA,0,'reftorneo');
-	$refPuntosEquiposA = $serviciosEquipos->traerPuntosEquiposPorFixtureEquipoFechaTorneo($idFixture,$IdequipoA,$refFecha,$refTorneoA);
+	$refPuntosEquiposA  = $serviciosEquipos->traerPuntosEquiposPorFixtureEquipoFechaTorneo($idFixture,$IdequipoA,$refFecha,$refTorneoA);
+	$refRestaPuntoA		= $serviciosEquipos->traerRestarPuntosPorFixtureEquipo($idFixture,$IdequipoA);
 	if (mysql_num_rows($refPuntosEquiposA)>0) {
 		$ePuntosA 		= mysql_result($refPuntosEquiposA,0,'puntos');
 		$eAmarillasA 	= mysql_result($refPuntosEquiposA,0,'amarillas');
@@ -118,12 +122,21 @@ if (mysql_num_rows($resJugadoresA)>0) {
 		$eAzulesA 		= '';
 		$eObservacionA 	= '';	
 	}
+	
+	if (mysql_num_rows($refRestaPuntoA)>0) {
+		$eRestaPuntosA  = mysql_result($refRestaPuntoA,0,'puntos');
+		$eRestaObservacionA  = mysql_result($refRestaPuntoA,0,'observacion');
+	} else {
+		$eRestaPuntosA  = 0;
+		$eRestaObservacionA  = '';
+	}
 }
 if (mysql_num_rows($resJugadoresB)>0) {
 	$equipoB	= mysql_result($resJugadoresB,0,'nombre');
 	$IdequipoB	= mysql_result($resJugadoresB,0,'idequipo');
 	$refTorneoB = mysql_result($resJugadoresB,0,'reftorneo');
 	$refPuntosEquiposB = $serviciosEquipos->traerPuntosEquiposPorFixtureEquipoFechaTorneo($idFixture,$IdequipoB,$refFecha,$refTorneoB);
+	$refRestaPuntoB		= $serviciosEquipos->traerRestarPuntosPorFixtureEquipo($idFixture,$IdequipoB);
 	if (mysql_num_rows($refPuntosEquiposB)>0) {
 		$ePuntosB 		= mysql_result($refPuntosEquiposB,0,'puntos');
 		$eAmarillasB 	= mysql_result($refPuntosEquiposB,0,'amarillas');
@@ -136,6 +149,13 @@ if (mysql_num_rows($resJugadoresB)>0) {
 		$eRojasB 		= '';
 		$eAzulesB 		= '';	
 		$eObservacionB 	= '';
+	}
+	if (mysql_num_rows($refRestaPuntoB)>0) {
+		$eRestaPuntosB  = mysql_result($refRestaPuntoB,0,'puntos');
+		$eRestaObservacionB  = mysql_result($refRestaPuntoB,0,'observacion');
+	} else {
+		$eRestaPuntosB  = 0;
+		$eRestaObservacionB  = '';
 	}
 }
 
@@ -240,6 +260,9 @@ $resJugadoresB = $serviciosJugadores->traerJugadoresPorFixtureB($idFixture);
                     </li>
                 </ul>
                 </div>
+                <div style="margin-left:5px;padding-left:10px; border-left:12px solid #0C0; border-bottom:1px solid #eee;border-top:1px solid #CCC;">
+                <h4 style="color: #fff; background-color:#333; padding:6px;margin-left:-10px; margin-top:0;"><span class="glyphicon glyphicon-signal"></span> Datos Estadísticos</h4>
+                
                 <table class="table table-striped" style="margin:10px;">
                 	<caption style="font-size:1.5em; font-style:italic;">Equipo A: <?php echo $equipoA; ?></caption>
                     <thead>
@@ -332,9 +355,10 @@ $resJugadoresB = $serviciosJugadores->traerJugadoresPorFixtureB($idFixture);
 						?>
                     </tbody>
                 </table>
-                
-                <div class='row' style="margin-left:15px; margin-right:15px;">
-                    <h4>Puntos Bonus - Sanciones del Equipo</h4>
+                </div>
+  
+                <div class='row' style="margin-left:5px;padding-left:10px; padding-right:15px;border-left:12px solid #FF0; margin-bottom:-20px;">
+                    <h4 style="color: #fff; background-color:#333; padding:6px; margin-left:-10px; margin-top:0;"><span class="glyphicon glyphicon-info-sign"></span> Puntos Bonus - Sanciones del Equipo</h4>
                     <div class="form-group col-md-2">
                      <label class="control-label" style="text-align:left" for="reftorneo">Punto Bonus</label>
                         <div class="input-group col-md-8">
@@ -382,6 +406,36 @@ $resJugadoresB = $serviciosJugadores->traerJugadoresPorFixtureB($idFixture);
                 <hr>
                 
                 
+                <div class='row' style="margin-left:5px;padding-left:10px; padding-right:15px;border-left:12px solid #F00; margin-bottom:-20px;margin-top:-20px;">
+                    <h4 style="color: #fff; background-color:#333; padding:6px;margin-left:-10px; margin-top:0;"><span class="glyphicon glyphicon-minus-sign"></span> Descuentos de Puntos</h4>
+                    <div class="form-group col-md-2">
+                     <label class="control-label" style="text-align:left" for="reftorneo">Puntos</label>
+                        <div class="input-group col-md-8">
+                            <input type="text" id="restapuntoa" name="restapuntoa" class="form-control" value="<?php echo $eRestaPuntosA == '' ? 0 : $eRestaPuntosA; ?>" required/>
+                        </div>
+                    </div>
+                    
+
+                    <div class="form-group col-md-6" align="center">
+                     <label class="control-label" style="text-align:left" for="reftorneo">Observación</label>
+                        <div class="input-group col-md-12">
+                            <input type="text" id="restaobservaciona" name="restaobservaciona" value="<?php echo $eRestaObservacionA; ?>" class="form-control" required/>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                    <div class="form-group col-md-12" align="left">
+                    	<button type="button" class="btn btn-primary guardarRestapuntosA" id="<?php echo $IdequipoA; ?>" style="margin-left:0px;">Guardar Descuentos</button>
+                        <h4 id="msgRestaResultadoA"></h4>
+                    </div>
+                    
+                </div>
+                
+                <hr>
+                
+                <div style="margin-left:5px;padding-left:10px;border-left:12px solid #0C0; border-bottom:1px solid #eee; border-top:1px solid #CCC;">
+                <h4 style="color: #fff; background-color:#333; padding:6px;margin-left:-10px; margin-top:0;"><span class="glyphicon glyphicon-signal"></span> Datos Estadísticos</h4>
                 <table class="table table-striped" style="margin:10px;">
                 	<caption style="font-size:1.5em; font-style:italic;">Equipo B: <?php echo $equipoB; ?></caption>
                     <thead>
@@ -474,10 +528,10 @@ $resJugadoresB = $serviciosJugadores->traerJugadoresPorFixtureB($idFixture);
 						?>
                     </tbody>
                 </table>
-
+				</div>
                 
-                <div class='row' style="margin-left:15px; margin-right:15px;">
-                    <h4>Puntos Bonus - Sanciones del Equipo</h4>
+                <div class='row' style="margin-left:5px;padding-left:10px; padding-right:15px;border-left:12px solid #FF0; margin-bottom:-20px;">
+                    <h4 style="color: #fff; background-color:#333; padding:6px;margin-left:-10px; margin-top:0;"><span class="glyphicon glyphicon-info-sign"></span> Puntos Bonus - Sanciones del Equipo</h4>
                     <div class="form-group col-md-2">
                      <label class="control-label" style="text-align:left" for="reftorneo">Punto Bonus</label>
                         <div class="input-group col-md-8">
@@ -521,11 +575,40 @@ $resJugadoresB = $serviciosJugadores->traerJugadoresPorFixtureB($idFixture);
                     
                 </div>
               	
+                <hr>
                 
+                <div class='row' style="margin-left:5px;padding-left:10px; padding-right:15px;border-left:12px solid #F00; margin-bottom:-20px;margin-top:-20px;">
+                    <h4 style="color: #fff; background-color:#333; padding:6px;margin-left:-10px; margin-top:0;"><span class="glyphicon glyphicon-minus-sign"></span> Descuentos de Puntos</h4>
+                    <div class="form-group col-md-2">
+                     <label class="control-label" style="text-align:left" for="reftorneo">Puntos</label>
+                        <div class="input-group col-md-8">
+                            <input type="text" id="restapuntob" name="restapuntob" class="form-control" value="<?php echo $eRestaPuntosB == '' ? 0 : $eRestaPuntosB; ?>" required/>
+                        </div>
+                    </div>
+                    
+
+                    <div class="form-group col-md-6" align="center">
+                     <label class="control-label" style="text-align:left" for="reftorneo">Observación</label>
+                        <div class="input-group col-md-12">
+                            <input type="text" id="restaobservacionb" name="restaobservacionb" value="<?php echo $eRestaObservacionB; ?>" class="form-control" required/>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                    <div class="form-group col-md-12" align="left">
+                    	<button type="button" class="btn btn-primary guardarRestapuntosB" id="<?php echo $IdequipoB; ?>" style="margin-left:0px;">Guardar Descuentos</button>
+                        <h4 id="msgRestaResultadoB"></h4>
+                    </div>
+                    
+                </div>
+                
+                <hr>
             
             </div>
             
             <div class='row' style="margin-left:15px; margin-right:15px; border:1px solid #CCC;">
+            	<h4 style="color: #fff; background-color:#333; padding:6px;margin-left:0; margin-top:0;"><span class="glyphicon glyphicon-pencil"></span> Fixture</h4>
                 <div class="form-group col-md-3">
                  <label class="control-label" style="text-align:left" for="reftorneo">Chequeado</label>
                     <div class="input-group col-md-12">
@@ -817,7 +900,87 @@ $(document).ready(function(){
 				}
 			}); 	
 	});
-
+	
+	
+	$('.guardarRestapuntosA').click(function(event){
+		usersid =  $(this).attr("id");
+		if (!isNaN(usersid)) {
+			 $.ajax({
+				data:  {observacion:$('#restaobservaciona').val(),
+						puntos: 	$('#restapuntoa').val(),
+						reffixture:	<?php echo $idFixture; ?>,
+						reffecha:	<?php echo $refFecha; ?>,
+						refequipo:	<?php echo $IdequipoA; ?>,
+						reftorneo:  <?php echo $refTorneoA; ?>,
+						refzona:	<?php echo $refZona; ?>,
+						accion: 	'insertarRestarPuntos'},
+				url:   '../../ajax/ajax.php',
+				type:  'post',
+				beforeSend: function () {
+					$('#reffixture').html('')	
+				},
+				success:  function (response) {
+					if (response == '') {
+				
+						$('#msgRestaResultadoA').html("<img src='../../imagenes/check.gif'> Se cargo correctamente!!");
+						$('#msgRestaResultadoA').show(300);
+						$('#msgRestaResultadoA').toggle(120);
+						$('#msgRestaResultadoA').show(150);
+					} else {
+						$('#msgRestaResultadoA').show(300);
+						$('#msgRestaResultadoA').toggle(120);
+						$('#msgRestaResultadoA').show(150);
+						$('#msgRestaResultadoA').html("<img src='../../imagenes/errorico.png'> " + response);
+						
+					}
+				}
+			}); 
+		} else {
+			alert("Error, vuelva a realizar la acción.");	
+		}
+	});//fin del boton guardarPuntosA
+	
+	
+	
+	$('.guardarRestapuntosB').click(function(event){
+		usersid =  $(this).attr("id");
+		if (!isNaN(usersid)) {
+			 $.ajax({
+				data:  {observacion:$('#restaobservacionb').val(),
+						puntos: 	$('#restapuntob').val(),
+						reffixture:	<?php echo $idFixture; ?>,
+						reffecha:	<?php echo $refFecha; ?>,
+						refequipo:	<?php echo $IdequipoB; ?>,
+						reftorneo:  <?php echo $refTorneoB; ?>,
+						refzona:	<?php echo $refZona; ?>,
+						accion: 	'insertarRestarPuntos'},
+				url:   '../../ajax/ajax.php',
+				type:  'post',
+				beforeSend: function () {
+					$('#reffixture').html('')	
+				},
+				success:  function (response) {
+					if (response == '') {
+				
+						$('#msgRestaResultadoB').html("<img src='../../imagenes/check.gif'> Se cargo correctamente!!");
+						$('#msgRestaResultadoB').show(300);
+						$('#msgRestaResultadoB').toggle(120);
+						$('#msgRestaResultadoB').show(150);
+					} else {
+						$('#msgRestaResultadoB').show(300);
+						$('#msgRestaResultadoB').toggle(120);
+						$('#msgRestaResultadoB').show(150);
+						$('#msgRestaResultadoB').html("<img src='../../imagenes/errorico.png'> " + response);
+						
+					}
+				}
+			}); 
+		} else {
+			alert("Error, vuelva a realizar la acción.");	
+		}
+	});//fin del boton guardarPuntosB
+	
+	
 	$('.guardarpuntosA').click(function(event){
 		usersid =  $(this).attr("id");
 		if (!isNaN(usersid)) {

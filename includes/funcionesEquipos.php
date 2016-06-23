@@ -403,6 +403,56 @@ return $res;
 		return $this-> query($sql,0);
 	}
 	
+	
+	/* PARA RestarPuntos */
+
+function insertarRestarPuntos($reftorneo,$refzona,$refequipo,$reffixture,$reffecha,$puntos,$observacion) { 
+$sql = "insert into dbrestarpuntos(idrestapuntos,reftorneo,refzona,refequipo,reffixture,reffecha,puntos,observacion) 
+values ('',".$reftorneo.",".$refzona.",".$refequipo.",".$reffixture.",".$reffecha.",".$puntos.",'".utf8_decode($observacion)."')"; 
+$res = $this->query($sql,1); 
+return $res; 
+} 
+
+
+function modificarRestarPuntos($id,$reftorneo,$refzona,$refequipo,$reffixture,$reffecha,$puntos,$observacion) { 
+$sql = "update dbrestarpuntos 
+set 
+reftorneo = ".$reftorneo.",refzona = ".$refzona.",refequipo = ".$refequipo.",reffixture = ".$reffixture.",reffecha = ".$reffecha.",puntos = ".$puntos.",observacion = '".utf8_decode($observacion)."' 
+where idrestapuntos =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function eliminarRestarPuntos($id) { 
+$sql = "delete from dbrestarpuntos where idrestapuntos =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function traerRestarPuntos() { 
+$sql = "select idrestapuntos,reftorneo,refzona,refequipo,reffixture,reffecha,puntos,observacion from dbrestarpuntos order by 1"; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function traerRestarPuntosPorId($id) { 
+$sql = "select idrestapuntos,reftorneo,refzona,refequipo,reffixture,reffecha,puntos,observacion from dbrestarpuntos where idrestapuntos =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function traerRestarPuntosPorFixtureEquipo($idFixture, $idEquipo) { 
+$sql = "select idrestapuntos,reftorneo,refzona,refequipo,reffixture,reffecha,puntos,observacion from dbrestarpuntos where reffixture =".$idFixture." and refequipo = ".$idEquipo; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+/* Fin */
+
 	function query($sql,$accion) {
 		
 		require_once 'appconfig.php';

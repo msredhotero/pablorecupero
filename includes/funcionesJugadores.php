@@ -1252,6 +1252,8 @@ function traerJugadoresPorFixtureB($idfixture) {
 }
 
 
+
+
 	
 	function query($sql,$accion) {
 		

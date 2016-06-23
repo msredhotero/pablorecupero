@@ -187,7 +187,7 @@ if ($_SESSION['refroll_predio'] != 1) {
         	<span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
             ¿Esta seguro que desea eliminar el equipo?.<span id="proveedorEli"></span>
         </p>
-        <p><strong>Importante: </strong>Si elimina el equipo se perderan todos los datos de este</p>
+        <p><strong>Importante: </strong>Si elimina el equipo se perderan todos los datos de este, así también las estadisticas de los partidos, golas, tarjetas y playoff.</p>
         <input type="hidden" value="" id="idEliminar" name="idEliminar">
 </div>
 <script type="text/javascript" src="../../js/jquery.dataTables.min.js"></script>
@@ -222,7 +222,8 @@ $(document).ready(function(){
 		  }
 	} );
 	
-		$('.varborrar').click(function(event){
+
+		$("#example").on("click",'.varborrar', function(){
 		  usersid =  $(this).attr("id");
 		  if (!isNaN(usersid)) {
 			$("#idEliminar").val(usersid);

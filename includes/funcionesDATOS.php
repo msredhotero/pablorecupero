@@ -273,7 +273,7 @@ class ServiciosDatos {
 			end),0)
 			) + fix.bonus as pts,
 			fix.idequipo,
-			fix.puntos,
+			calcularFairplayPorTorneoEquipoFechaZona('.$refTorneo.',fix.idequipo,'.$idfecha.','.$zona.') as puntos,
 			fix.equipoactivo,
 			cast((fix.golesafavor / fix.partidos) as decimal(4,2)) as porcentajegoles,
 			round((fix.pts * 100) / (fix.partidos * 3)) as efectividad,
@@ -629,7 +629,7 @@ select
 	
 	
 				order by (case when rr.idreemplazo is null then fix.pts + fix.bonus + COALESCE(rrr.puntos,0) else fix.pts + rr.puntos end) desc, 
-	  fix.golesafavor - (case when rr.idreemplazo is null then fix.golesencontra + COALESCE(rrr.golesencontra,0) else fix.golesencontra + rr.golesencontra end) desc,fix.puntos,
+	  fix.golesafavor - (case when rr.idreemplazo is null then fix.golesencontra + COALESCE(rrr.golesencontra,0) else fix.golesencontra + rr.golesencontra end) desc,calcularFairplayPorTorneoEquipoFechaZona('.$refTorneo.',fix.idequipo,'.$idfecha.','.$zona.'),
 	  fix.golesafavor desc,
 	  (case when rr.idreemplazo is null then fix.golesencontra + COALESCE(rrr.golesencontra,0) else fix.golesencontra + rr.golesencontra end),
 	  fix.ganados desc';
@@ -1808,7 +1808,7 @@ left join dbreemplazo rrr on rrr.refequipo = e.idequipo and rrr.reffecha <= ".$i
 				
 				$sql = "select 
 					tt.nombre,
-					tt.puntos,
+					CALCULARFAIRPLAYPORTORNEOEQUIPOFECHA(".$refTorneo.",tt.refequipo,".$reffecha.") as puntos,
 					ppe.amarillas + COALESCE(t.cantidad,0) as amarillas,
     				ppe.rojas + COALESCE(t.cantidadrojas,0) as rojas,
     				ppe.azules + COALESCE(t.cantidadazules,0) as azules,
@@ -1972,7 +1972,7 @@ left join
 				
 				
 				group by tt.nombre , tt.puntos , ppe.amarillas , ppe.rojas , ppe.azules , pe.observacion , tt.refequipo
-				order by tt.puntos desc";
+				order by CALCULARFAIRPLAYPORTORNEOEQUIPOFECHA(".$refTorneo.",tt.refequipo,".$reffecha.") desc";
 		return $this-> query($sql,0);
 	}
 	
@@ -2404,7 +2404,15 @@ select
 		$res = $this->query($sql,0);
 		return $res;	
 	}
-        
+    
+	function traerDescuentos($idtorneo,$idzona,$idequipo,$idfecha) {
+		
+		$sql = "select idrestapuntos,reftorneo,refzona,refequipo,reffixture,reffecha,puntos,observacion from dbrestarpuntos where reftorneo =".$idtorneo." and refequipo = ".$idequipo." and refzona =".$idzona." and reffecha=".$idfecha;
+		
+		$res = $this->query($sql,0);
+		return $res;
+	}
+	
 	function query($sql,$accion) {
 		
 		

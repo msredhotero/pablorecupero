@@ -1997,6 +1997,20 @@ return $res;
 } 
 
 /* Fin */
+
+// nuevo 23/06/2016 ///
+function traerZonaPorFixture($idFixture) {
+$sql = "select
+		tge.refgrupo
+		from		dbfixture fix
+		inner
+		join		dbtorneoge tge
+		on			fix.reftorneoge_a = tge.IdTorneoGE
+		where		fix.Idfixture = ".$idFixture; 
+$res = $this->query($sql,0); 
+return $res; 
+	
+}
 /* Fin */	
 	
 	function query($sql,$accion) {
